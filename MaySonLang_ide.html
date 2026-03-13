@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaySonLang IDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ── RESET & ROOT ─────────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg0:      #0e1014;
+        --bg1:      #13161d;
+        --bg2:      #181c25;
+        --bg3:      #1e2330;
+        --border:   #252b3b;
+        --border2:  #2e3548;
+        --sel:      rgba(82,139,255,.18);
+
+        --fg:       #ced4e8;
+        --fg-dim:   #4e5878;
+        --fg-mid:   #8896b8;
+        --fg-hi:    #eef1fb;
+
+        --blue:     #528bff;
+        --cyan:     #56d1dc;
+        --green:    #7ec880;
+        --yellow:   #e8c872;
+        --orange:   #f0956a;
+        --red:      #e06c75;
+        --pink:     #d981b5;
+        --purple:   #a57bdb;
+
+        --tab-h:    38px;
+        --status-h: 26px;
+        --sidebar-w: 220px;
+        --font-ui:  'Outfit', sans-serif;
+        --font-code:'JetBrains Mono', monospace;
+      }
+
+      html, body { height: 100%; overflow: hidden; background: var(--bg0); color: var(--fg); font-family: var(--font-ui); }
+
+      /* ── LAYOUT ───────────────────────────────────────────────────── */
+      #app { display: flex; flex-direction: column; height: 100vh; }
+
+      /* TITLE BAR */
+      #titlebar {
+        height: 42px; flex-shrink: 0;
+        background: var(--bg1);
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: 0;
+        user-select: none;
+      }
+      .tb-logo {
+        display: flex; align-items: center; gap: 9px;
+        padding: 0 18px;
+        border-right: 1px solid var(--border);
+        height: 100%;
+      }
+      .tb-logo-icon {
+        width: 22px; height: 22px;
+        background: var(--blue);
+        border-radius: 5px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: 700; color: #fff;
+        box-shadow: 0 0 14px rgba(82,139,255,.5);
+      }
+      .tb-logo-text {
+        font-size: 13px; font-weight: 600; color: var(--fg-hi);
+        letter-spacing: 0.04em;
+      }
+      .tb-logo-ver {
+        font-size: 10px; color: var(--fg-dim);
+        background: var(--bg3); border-radius: 3px;
+        padding: 1px 5px;
+      }
+      .tb-menu { display: flex; height: 100%; }
+      .tb-menu-item {
+        padding: 0 14px; font-size: 12.5px; color: var(--fg-mid);
+        cursor: pointer; display: flex; align-items: center;
+        transition: color .15s, background .15s;
+        position: relative;
+      }
+      .tb-menu-item:hover { color: var(--fg-hi); background: var(--bg2); }
+      .tb-spacer { flex: 1; }
+      .tb-run-btn {
+        height: 100%; padding: 0 20px;
+        background: var(--blue); color: #fff;
+        border: none; cursor: pointer;
+        font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+        display: flex; align-items: center; gap: 8px;
+        transition: background .15s, box-shadow .15s;
+        letter-spacing: 0.03em;
+      }
+      .tb-run-btn:hover { background: #6aa0ff; box-shadow: 0 0 20px rgba(82,139,255,.4); }
+      .tb-run-btn:active { background: #3d73e8; }
+      .tb-run-btn svg { width: 13px; height: 13px; }
+      .tb-stop-btn {
+        height: 100%; padding: 0 14px;
+        background: transparent; color: var(--red);
+        border: none; border-left: 1px solid var(--border); cursor: pointer;
+        font-family: var(--font-ui); font-size: 12px;
+        display: flex; align-items: center; gap: 6px;
+        transition: background .15s;
+      }
+      .tb-stop-btn:hover { background: rgba(224,108,117,.1); }
+
+      /* BODY */
+      #body { flex: 1; display: flex; overflow: hidden; }
+
+      /* SIDEBAR */
+      #sidebar {
+        width: var(--sidebar-w); flex-shrink: 0;
+        background: var(--bg1);
+        border-right: 1px solid var(--border);
+        display: flex; flex-direction: column;
+        overflow: hidden;
+      }
+      .sb-section { padding: 10px 0; border-bottom: 1px solid var(--border); }
+      .sb-header {
+        font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--fg-dim);
+        padding: 0 14px 6px;
+      }
+      .sb-file {
+        display: flex; align-items: center; gap: 8px;
+        padding: 5px 14px; cursor: pointer; font-size: 12.5px;
+        color: var(--fg-mid); transition: background .1s, color .1s;
+        border-radius: 0;
+      }
+      .sb-file:hover { background: var(--bg2); color: var(--fg); }
+      .sb-file.active { background: var(--sel); color: var(--blue); }
+      .sb-file-icon { font-size: 13px; flex-shrink: 0; }
+      .sb-actions { padding: 8px 14px; display: flex; gap: 6px; flex-wrap: wrap; }
+      .sb-btn {
+        flex: 1; min-width: 60px;
+        padding: 5px 8px; font-size: 11px; font-family: var(--font-ui);
+        background: var(--bg3); color: var(--fg-mid); border: 1px solid var(--border2);
+        border-radius: 4px; cursor: pointer; transition: all .15s; text-align: center;
+      }
+      .sb-btn:hover { background: var(--bg2); color: var(--fg-hi); border-color: var(--blue); }
+
+      /* Snippets */
+      .snippet-item {
+        padding: 4px 14px; cursor: pointer; font-size: 11.5px;
+        color: var(--fg-mid); display: flex; align-items: center; gap: 8px;
+        transition: background .1s;
+      }
+      .snippet-item:hover { background: var(--bg2); color: var(--fg); }
+      .snippet-kw { color: var(--blue); font-family: var(--font-code); font-size: 11px; }
+      .snippet-desc { color: var(--fg-dim); font-size: 10.5px; }
+
+      /* MAIN AREA */
+      #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+      /* TABS */
+      #tabs {
+        height: var(--tab-h); flex-shrink: 0;
+        background: var(--bg1); border-bottom: 1px solid var(--border);
+        display: flex; align-items: flex-end; overflow-x: auto; overflow-y: hidden;
+      }
+      #tabs::-webkit-scrollbar { height: 3px; }
+      #tabs::-webkit-scrollbar-thumb { background: var(--border2); }
+      .tab {
+        height: 34px; padding: 0 16px;
+        display: flex; align-items: center; gap: 8px;
+        font-size: 12.5px; color: var(--fg-dim); cursor: pointer;
+        border-right: 1px solid var(--border);
+        border-top: 2px solid transparent;
+        transition: all .12s; white-space: nowrap; flex-shrink: 0;
+      }
+      .tab:hover { color: var(--fg); background: var(--bg2); }
+      .tab.active {
+        color: var(--fg-hi); background: var(--bg0);
+        border-top-color: var(--blue);
+      }
+      .tab-close {
+        width: 16px; height: 16px; border-radius: 3px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; color: var(--fg-dim); opacity: 0;
+        transition: opacity .1s, background .1s;
+      }
+      .tab:hover .tab-close { opacity: 1; }
+      .tab-close:hover { background: var(--bg3); color: var(--red); }
+      .tab-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+      .tab-new {
+        width: 38px; height: var(--tab-h);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; color: var(--fg-dim); cursor: pointer;
+        transition: color .1s;
+      }
+      .tab-new:hover { color: var(--fg-hi); }
+
+      /* EDITOR + OUTPUT SPLIT */
+      #editor-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+      #split { flex: 1; display: flex; overflow: hidden; }
+
+      /* EDITOR PANEL */
+      #editor-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+      /* GUTTER + CODE */
+      #code-wrap { flex: 1; display: flex; overflow: auto; background: var(--bg0); }
+      #gutter {
+        width: 36px; flex-shrink: 0;
+        background: var(--bg1); border-right: 1px solid var(--border);
+        padding: 14px 0;
+        font-family: var(--font-code); font-size: 13px; line-height: 1.65;
+        color: var(--fg-dim); text-align: right; padding-right: 12px;
+        user-select: none; min-height: 100%;
+      }
+      #editor {
+        flex: 1; border: none; outline: none; resize: none;
+        background: transparent; color: var(--fg);
+        font-family: var(--font-code); font-size: 13px; line-height: 1.65;
+        padding: 14px 18px; tab-size: 2; caret-color: var(--blue);
+        white-space: pre; overflow-wrap: normal; overflow-x: auto;
+        min-height: 100%;
+      }
+      #editor::selection { background: var(--sel); }
+
+      /* RESIZE HANDLE */
+      #resize-handle {
+        width: 4px; background: var(--border); cursor: col-resize; flex-shrink: 0;
+        transition: background .15s;
+      }
+      #resize-handle:hover, #resize-handle.dragging { background: var(--blue); }
+
+      /* OUTPUT PANEL */
+      #output-panel {
+        width: 38%; flex-shrink: 0;
+        display: flex; flex-direction: column; overflow: hidden;
+        background: var(--bg0); border-left: 1px solid var(--border);
+      }
+      .panel-header {
+        height: 32px; flex-shrink: 0;
+        background: var(--bg1); border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; padding: 0 14px;
+        gap: 10px;
+      }
+      .panel-title {
+        font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+        text-transform: uppercase; color: var(--fg-dim);
+      }
+      .panel-dot { width: 7px; height: 7px; border-radius: 50%; }
+      .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+      .dot-red   { background: var(--red);   box-shadow: 0 0 6px var(--red); }
+      .dot-idle  { background: var(--fg-dim); }
+      .panel-clear {
+        margin-left: auto; font-size: 10.5px; color: var(--fg-dim);
+        background: none; border: 1px solid var(--border); border-radius: 3px;
+        padding: 2px 8px; cursor: pointer; font-family: var(--font-ui);
+        transition: all .12s;
+      }
+      .panel-clear:hover { color: var(--red); border-color: var(--red); }
+
+      #output {
+        flex: 1; overflow-y: auto; padding: 12px 16px;
+        font-family: var(--font-code); font-size: 12.5px; line-height: 1.75;
+      }
+      .out-line { display: block; }
+      .out-normal  { color: var(--fg-hi); }
+      .out-error   { color: var(--red); }
+      .out-warning { color: var(--yellow); }
+      .out-info    { color: var(--fg-dim); font-style: italic; }
+      .out-success { color: var(--green); }
+      .out-prompt  { color: var(--cyan); }
+
+      /* FIND BAR */
+      #find-bar {
+        height: 36px; flex-shrink: 0;
+        background: var(--bg2); border-top: 1px solid var(--border);
+        display: none; align-items: center; padding: 0 12px; gap: 8px;
+      }
+      #find-bar.visible { display: flex; }
+      #find-input {
+        flex: 1; background: var(--bg3); border: 1px solid var(--border2); border-radius: 4px;
+        color: var(--fg); font-family: var(--font-code); font-size: 12px;
+        padding: 4px 10px; outline: none;
+      }
+      #find-input:focus { border-color: var(--blue); }
+      .find-btn {
+        padding: 4px 10px; background: var(--bg3); border: 1px solid var(--border2);
+        border-radius: 4px; color: var(--fg-mid); cursor: pointer; font-size: 11px;
+        font-family: var(--font-ui); transition: all .1s;
+      }
+      .find-btn:hover { color: var(--fg-hi); border-color: var(--blue); }
+      #find-close { background: none; border: none; color: var(--fg-dim); cursor: pointer; font-size: 16px; padding: 0 4px; }
+
+      /* STATUS BAR */
+      #statusbar {
+        height: var(--status-h); flex-shrink: 0;
+        background: var(--blue); color: rgba(255,255,255,.85);
+        display: flex; align-items: center; padding: 0 12px; gap: 16px;
+        font-size: 11px; user-select: none;
+      }
+      .sb-item { display: flex; align-items: center; gap: 5px; opacity: .85; }
+      .sb-item.right { margin-left: auto; }
+      .sb-sep { width: 1px; height: 14px; background: rgba(255,255,255,.25); }
+      #status-msg { font-weight: 500; opacity: 1; }
+
+      /* CONTEXT MENU */
+      #ctx-menu {
+        position: fixed; display: none;
+        background: var(--bg2); border: 1px solid var(--border2);
+        border-radius: 6px; box-shadow: 0 8px 32px rgba(0,0,0,.5);
+        padding: 4px; z-index: 999; min-width: 170px;
+      }
+      .ctx-item {
+        padding: 7px 14px; font-size: 12.5px; color: var(--fg);
+        cursor: pointer; border-radius: 4px; display: flex; justify-content: space-between;
+        align-items: center;
+      }
+      .ctx-item:hover { background: var(--bg3); color: var(--blue); }
+      .ctx-sep { height: 1px; background: var(--border); margin: 4px 0; }
+      .ctx-shortcut { font-size: 11px; color: var(--fg-dim); }
+
+      /* MODAL */
+      #modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,.6);
+        display: none; align-items: center; justify-content: center; z-index: 998;
+      }
+      #modal-overlay.visible { display: flex; }
+      #modal {
+        background: var(--bg2); border: 1px solid var(--border2);
+        border-radius: 10px; width: 480px; padding: 24px;
+        box-shadow: 0 24px 64px rgba(0,0,0,.6);
+      }
+      #modal h2 { font-size: 16px; color: var(--fg-hi); margin-bottom: 16px; }
+      #modal textarea {
+        width: 100%; height: 160px; background: var(--bg0);
+        border: 1px solid var(--border2); border-radius: 6px;
+        color: var(--fg); font-family: var(--font-code); font-size: 12px;
+        padding: 12px; outline: none; resize: vertical;
+      }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+      .modal-btn {
+        padding: 8px 18px; border-radius: 5px; font-family: var(--font-ui);
+        font-size: 13px; cursor: pointer; border: none; font-weight: 500;
+      }
+      .modal-btn.primary { background: var(--blue); color: #fff; }
+      .modal-btn.primary:hover { background: #6aa0ff; }
+      .modal-btn.secondary { background: var(--bg3); color: var(--fg); border: 1px solid var(--border2); }
+      .modal-btn.secondary:hover { border-color: var(--blue); }
+
+      /* SCROLLBARS */
+      ::-webkit-scrollbar { width: 7px; height: 7px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--fg-dim); }
+
+      /* ANIMATIONS */
+      @keyframes fadeSlide { from { opacity:0; transform:translateY(4px); } to { opacity:1; } }
+      .out-line { animation: fadeSlide .12s ease; }
+
+      /* INPUT PROMPT */
+      #input-row {
+        display: none; align-items: center; gap: 8px;
+        padding: 8px 16px; background: var(--bg2); border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      #input-row.visible { display: flex; }
+      #input-prompt-label { color: var(--cyan); font-family: var(--font-code); font-size: 12px; }
+      #input-field {
+        flex: 1; background: var(--bg0); border: 1px solid var(--border2);
+        border-radius: 4px; color: var(--fg); font-family: var(--font-code);
+        font-size: 12.5px; padding: 5px 10px; outline: none;
+      }
+      #input-field:focus { border-color: var(--cyan); }
+      #input-submit {
+        padding: 5px 14px; background: var(--cyan); border: none; border-radius: 4px;
+        color: var(--bg0); font-family: var(--font-ui); font-size: 12px;
+        font-weight: 600; cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- TITLE BAR -->
+      <div id="titlebar">
+        <div class="tb-logo">
+          <div class="tb-logo-icon">MS</div>
+          <div class="tb-logo-text">MaySon</div>
+          <div class="tb-logo-ver">IDE</div>
+        </div>
+        <div class="tb-menu">
+          <div class="tb-menu-item" onclick="menuFile()">File</div>
+          <div class="tb-menu-item" onclick="menuEdit()">Edit</div>
+          <div class="tb-menu-item" onclick="menuView()">View</div>
+          <div class="tb-menu-item" onclick="showHelp()">Help</div>
+        </div>
+        <div class="tb-spacer"></div>
+        <button class="tb-stop-btn" onclick="stopExec()" title="Stop">
+          <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="3" y="3" width="10" height="10" rx="1"/></svg>
+          Stop
+        </button>
+        <button class="tb-run-btn" onclick="runCode()" title="Ctrl+Enter">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6z"/></svg>
+          Run
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div id="body">
+
+        <!-- SIDEBAR -->
+        <div id="sidebar">
+          <div class="sb-section">
+            <div class="sb-header">Files</div>
+            <div id="file-list"></div>
+            <div class="sb-actions">
+              <button class="sb-btn" onclick="newFile()">+ New</button>
+              <button class="sb-btn" onclick="openFile()">Open</button>
+              <button class="sb-btn" onclick="saveFile()">Save</button>
+            </div>
+          </div>
+
+          <div class="sb-section" style="flex:1;overflow-y:auto;">
+            <div class="sb-header">Snippets</div>
+            <div id="snippets-list"></div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div id="main">
+          <!-- TABS -->
+          <div id="tabs">
+            <div id="tab-list"></div>
+            <div class="tab-new" onclick="newFile()" title="New File">+</div>
+          </div>
+
+          <!-- EDITOR AREA -->
+          <div id="editor-area">
+            <div id="split">
+              <!-- Editor panel -->
+              <div id="editor-panel">
+                <div id="code-wrap">
+                  <div id="gutter">1</div>
+                  <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+                </div>
+                <div id="find-bar">
+                  <span style="font-size:11px;color:var(--fg-dim)">Find:</span>
+                  <input id="find-input" type="text" placeholder="Search..." />
+                  <button class="find-btn" onclick="findNext()">Next</button>
+                  <button class="find-btn" onclick="findPrev()">Prev</button>
+                  <button id="find-close" onclick="closeFindBar()">×</button>
+                </div>
+              </div>
+
+              <!-- Resize handle -->
+              <div id="resize-handle"></div>
+
+              <!-- Output panel -->
+              <div id="output-panel">
+                <div class="panel-header">
+                  <span class="panel-dot dot-idle" id="out-dot"></span>
+                  <span class="panel-title">Output</span>
+                  <span id="exec-time" style="font-size:10.5px;color:var(--fg-dim);margin-left:4px;"></span>
+                  <button class="panel-clear" onclick="clearOutput()">Clear</button>
+                </div>
+                <div id="output"><span class="out-line out-info">// Run your code with Ctrl+Enter or the Run button</span></div>
+                <div id="input-row">
+                  <span id="input-prompt-label" class="out-prompt">› </span>
+                  <input id="input-field" type="text" placeholder="Enter value..." />
+                  <button id="input-submit" onclick="submitInput()">Enter</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS BAR -->
+      <div id="statusbar">
+        <div class="sb-item" id="status-msg">Ready</div>
+        <div class="sb-sep"></div>
+        <div class="sb-item" id="status-cursor">Ln 1, Col 1</div>
+        <div class="sb-sep"></div>
+        <div class="sb-item" id="status-lines">0 lines</div>
+        <div class="sb-item right" id="status-lang">MaySonLang</div>
+        <div class="sb-sep"></div>
+        <div class="sb-item">UTF-8</div>
+      </div>
+    </div>
+
+    <!-- CONTEXT MENU -->
+    <div id="ctx-menu">
+      <div class="ctx-item" onclick="ctxCut()">Cut <span class="ctx-shortcut">Ctrl+X</span></div>
+      <div class="ctx-item" onclick="ctxCopy()">Copy <span class="ctx-shortcut">Ctrl+C</span></div>
+      <div class="ctx-item" onclick="ctxPaste()">Paste <span class="ctx-shortcut">Ctrl+V</span></div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item" onclick="selectAll()">Select All <span class="ctx-shortcut">Ctrl+A</span></div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item" onclick="openFindBar()">Find <span class="ctx-shortcut">Ctrl+F</span></div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal-overlay">
+      <div id="modal">
+        <h2 id="modal-title">New File</h2>
+        <textarea id="modal-content"></textarea>
+        <div class="modal-actions">
+          <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+          <button class="modal-btn primary" id="modal-ok" onclick="modalConfirm()">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+      // ══════════════════════════════════════════════════════════════════
+      //  MaySonLang INTERPRETER  (full JS port)
+      // ══════════════════════════════════════════════════════════════════
+
+      class MaySonLangError extends Error {
+        constructor(msg, line){ super(line ? `Line ${line}: ${msg}` : msg); this.msLine = line; }
+      }
+      class ReturnSignal { constructor(v){ this.value = v; } }
+      class BreakSignal  {}
+      class ContinueSignal {}
+
+      /* ── TOKENISER ── */
+      function tokenize(src){
+        return src.split('\n').map((raw, i) => {
+          const stripped = raw.trimEnd();
+          const text = stripped.trimStart();
+          if(!text || text.startsWith('#')) return null;
+          return { line: i+1, indent: stripped.length - text.length, content: text };
+        }).filter(Boolean);
+      }
+
+      /* ── EXPRESSION EVALUATOR ── */
+      function argSplit(s){
+        const parts=[], cur=[];
+        let depth=0, inStr=false, strCh='';
+        for(const ch of s){
+          if(inStr){ cur.push(ch); if(ch===strCh) inStr=false; continue; }
+          if(ch==='"'||ch==="'"){ inStr=true; strCh=ch; cur.push(ch); continue; }
+          if(ch==='('||ch==='[') depth++;
+          if(ch===')'||ch===']') depth--;
+          if(ch===','&&depth===0){ parts.push(cur.join('').trim()); cur.length=0; continue; }
+          cur.push(ch);
+        }
+        const last=cur.join('').trim(); if(last) parts.push(last);
+        return parts;
+      }
+
+      function findOp(expr, op){
+        let depth=0, inStr=false, strCh='';
+        for(let i=0;i<expr.length;i++){
+          const ch=expr[i];
+          if(inStr){ if(ch===strCh&&expr[i-1]!=='\\') inStr=false; continue; }
+          if(ch==='"'||ch==="'"){ inStr=true; strCh=ch; continue; }
+          if(ch==='('||ch==='[') depth++;
+          if(ch===')'||ch===']') depth--;
+          if(depth===0&&expr.slice(i,i+op.length)===op) return i;
+        }
+        return -1;
+      }
+
+      function splitKeyword(expr, kw){
+        const pat=` ${kw} `, parts=[], cur=[];
+        let depth=0, inStr=false, strCh='', i=0;
+        while(i<expr.length){
+          const ch=expr[i];
+          if(inStr){ cur.push(ch); if(ch===strCh&&expr[i-1]!=='\\') inStr=false; i++; continue; }
+          if(ch==='"'||ch==="'"){ inStr=true; strCh=ch; cur.push(ch); i++; continue; }
+          if(ch==='('||ch==='[') depth++;
+          if(ch===')'||ch===']') depth--;
+          if(depth===0&&expr.slice(i,i+pat.length)===pat){ parts.push(cur.join('').trim()); cur.length=0; i+=pat.length; continue; }
+          cur.push(ch); i++;
+        }
+        parts.push(cur.join('').trim());
+        return parts.length>1?parts:null;
+      }
+
+      function arithTokenize(expr){
+        const toks=[], cur=[];
+        let depth=0, inStr=false, strCh='', foundOp=false;
+        for(let i=0;i<expr.length;i++){
+          const ch=expr[i];
+          if(inStr){ cur.push(ch); if(ch===strCh&&expr[i-1]!=='\\') inStr=false; continue; }
+          if(ch==='"'||ch==="'"){ inStr=true; strCh=ch; cur.push(ch); continue; }
+          if(ch==='('||ch==='['){depth++;cur.push(ch);continue;}
+          if(ch===')'||ch===']'){depth--;cur.push(ch);continue;}
+          if(depth===0){
+            const two=expr.slice(i,i+2);
+            if(two==='//'){toks.push(cur.join('').trim());cur.length=0;toks.push('//');foundOp=true;i++;continue;}
+            if('+-*/%^'.includes(ch)){
+              if(ch==='-'&&cur.join('').trim()===''&&(toks.length===0||'+-*/%^//'.includes(toks[toks.length-1]))){cur.push(ch);continue;}
+              toks.push(cur.join('').trim());cur.length=0;toks.push(ch);foundOp=true;continue;
+            }
+          }
+          cur.push(ch);
+        }
+        toks.push(cur.join('').trim());
+        if(!foundOp||toks.some((t,i)=>i%2===0&&t==='')) return null;
+        return toks;
+      }
+
+      function evalExpr(expr, scope, fns, line){
+        expr=expr.trim();
+        if(!expr) return null;
+
+        // String literal
+        if(expr[0]==='"'||expr[0]==="'"){
+          const ch=expr[0]; let j=1;
+          while(j<expr.length){
+            if(expr[j]==='\\'&&j+1<expr.length){j+=2;continue;}
+            if(expr[j]===ch){ if(j===expr.length-1) return expr.slice(1,j).replace(/\\n/g,'\n').replace(/\\t/g,'\t'); break; }
+            j++;
+          }
+        }
+
+        // call keyword in expression
+        if(expr.startsWith('call ')){
+          const inner=expr.slice(5).trim();
+          const m=fnCallPattern(inner);
+          if(m){ const args=argSplit(m[1]).map(a=>evalExpr(a,scope,fns,line)); return callFn(m[0],args,scope,fns,line); }
+        }
+
+        // Boolean/null
+        if(expr==='true') return true;
+        if(expr==='false') return false;
+        if(expr==='null'||expr==='nothing') return null;
+
+        // Number
+        if(/^-?\d+$/.test(expr)) return parseInt(expr);
+        if(/^-?\d*\.\d+$/.test(expr)) return parseFloat(expr);
+
+        // List literal
+        if(expr.startsWith('[')&&expr.endsWith(']')){
+          const inner=expr.slice(1,-1).trim();
+          if(!inner) return [];
+          return argSplit(inner).map(a=>evalExpr(a,scope,fns,line));
+        }
+
+        // Parenthesised
+        if(expr.startsWith('(')&&expr.endsWith(')')) return evalExpr(expr.slice(1,-1),scope,fns,line);
+
+        // Logic: or / and
+        const orParts=splitKeyword(expr,'or');
+        if(orParts) return orParts.some(p=>!!evalExpr(p,scope,fns,line));
+        const andParts=splitKeyword(expr,'and');
+        if(andParts) return andParts.every(p=>!!evalExpr(p,scope,fns,line));
+        if(expr.startsWith('not ')) return !evalExpr(expr.slice(4).trim(),scope,fns,line);
+
+        // Comparisons
+        for(const op of ['>=','<=','!=',' is not ',' is ','==','>','<']){
+          const idx=findOp(expr,op);
+          if(idx!==-1){
+            const L=evalExpr(expr.slice(0,idx).trim(),scope,fns,line);
+            const R=evalExpr(expr.slice(idx+op.length).trim(),scope,fns,line);
+            if(op==='=='||op===' is ') return L==R;
+            if(op==='!='||op===' is not ') return L!=R;
+            if(op==='>') return L>R; if(op==='<') return L<R;
+            if(op==='>=') return L>=R; if(op==='<=') return L<=R;
+          }
+        }
+
+        // Arithmetic
+        const at=arithTokenize(expr);
+        if(at){
+          const vals=at.filter((_,i)=>i%2===0).map(t=>evalExpr(t,scope,fns,line));
+          const ops=at.filter((_,i)=>i%2===1);
+          // ^
+          for(let i=ops.length-1;i>=0;i--){ if(ops[i]==='^'){vals.splice(i,2,Math.pow(vals[i],vals[i+1]));ops.splice(i,1);} }
+          // * / // %
+          let i=0; while(i<ops.length){
+            if('*/%//'.includes(ops[i])){
+              const op=ops[i];
+              let r;
+              if(op==='*') r=vals[i]*vals[i+1];
+              else if(op==='/') r=vals[i]/vals[i+1];
+              else if(op==='//') r=Math.trunc(vals[i]/vals[i+1]);
+              else r=vals[i]%vals[i+1];
+              vals.splice(i,2,r); ops.splice(i,1);
+            } else i++;
+          }
+          // + -
+          let res=vals[0];
+          for(let k=0;k<ops.length;k++){
+            if(ops[k]==='+') res=(typeof res==='string'||typeof vals[k+1]==='string')?String(res)+String(vals[k+1]):res+vals[k+1];
+            else res=res-vals[k+1];
+          }
+          return res;
+        }
+
+        // Function call name(args)
+        const fm=fnCallPattern(expr);
+        if(fm){ const args=argSplit(fm[1]).map(a=>evalExpr(a,scope,fns,line)); return callFn(fm[0],args,scope,fns,line); }
+
+        // List index arr[i]
+        const im=indexPattern(expr);
+        if(im){ const arr=resolveVar(im[0],scope,line); const idx=evalExpr(im[1],scope,fns,line); return arr[idx]; }
+
+        // Variable
+        if(/^[A-Za-z_][A-Za-z0-9_]*$/.test(expr)) return resolveVar(expr,scope,line);
+
+        throw new MaySonLangError(`Cannot evaluate: ${JSON.stringify(expr)}`,line);
+      }
+
+      function fnCallPattern(expr){
+        if(!expr.endsWith(')')) return null;
+        const p=expr.indexOf('('); if(p<0) return null;
+        const name=expr.slice(0,p).trim();
+        if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) return null;
+        return [name, expr.slice(p+1,-1)];
+      }
+      function indexPattern(expr){
+        if(!expr.endsWith(']')) return null;
+        const b=expr.indexOf('['); if(b<0) return null;
+        const name=expr.slice(0,b).trim();
+        if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) return null;
+        return [name, expr.slice(b+1,-1)];
+      }
+      function resolveVar(name, scope, line){
+        if(name==='true') return true; if(name==='false') return false;
+        if(name==='null'||name==='nothing') return null;
+        if(name in scope) return scope[name];
+        throw new MaySonLangError(`Undefined variable: '${name}'`, line);
+      }
+
+      /* ── BUILT-INS ── */
+      const BUILTINS = {
+        len:   a=>a[0].length??0,
+        type:  a=>typeof a[0],
+        number:a=>{ const n=Number(a[0]); return Number.isInteger(n)?n:n; },
+        text:  a=>String(a[0]),
+        round: a=>Math.round(a[0]),
+        floor: a=>Math.floor(a[0]),
+        ceil:  a=>Math.ceil(a[0]),
+        abs:   a=>Math.abs(a[0]),
+        sqrt:  a=>Math.sqrt(a[0]),
+        max:   a=>Math.max(...a),
+        min:   a=>Math.min(...a),
+        sum:   a=>Array.isArray(a[0])?a[0].reduce((s,x)=>s+x,0):a.reduce((s,x)=>s+x,0),
+        random:_=>Math.random(),
+        randint:a=>Math.floor(Math.random()*(a[1]-a[0]+1))+a[0],
+        upper: a=>String(a[0]).toUpperCase(),
+        lower: a=>String(a[0]).toLowerCase(),
+        title: a=>String(a[0]).replace(/\b\w/g,c=>c.toUpperCase()),
+        strip: a=>String(a[0]).trim(),
+        replace:a=>String(a[0]).replaceAll(String(a[1]),String(a[2])),
+        split: a=>String(a[0]).split(a.length>1?String(a[1]):/\s+/),
+        join:  a=>a[0].join(a.length>1?String(a[1]):''),
+        contains:a=>{ const h=a[0],n=a[1]; return typeof h==='string'?h.includes(n):Array.isArray(h)&&h.includes(n); },
+        startswith:a=>String(a[0]).startsWith(String(a[1])),
+        endswith:  a=>String(a[0]).endsWith(String(a[1])),
+        range: a=>a.length===1?[...Array(a[0])].map((_,i)=>i):
+                  a.length===2?[...Array(Math.max(0,a[1]-a[0]))].map((_,i)=>i+a[0]):
+                  [...Array(Math.max(0,Math.ceil((a[1]-a[0])/a[2])))].map((_,i)=>a[0]+i*a[2]),
+        sort:  a=>[...a[0]].sort((x,y)=>x>y?1:x<y?-1:0),
+        reverse:a=>[...a[0]].reverse(),
+        unique:a=>[...new Set(a[0])],
+        first: a=>a[0][0],
+        last:  a=>a[0][a[0].length-1],
+        slice: a=>a[0].slice(a[1],a[2]),
+        input: null, // handled specially
+        exit:  _=>{ throw new MaySonLangError('Program exited'); },
+      };
+
+      let inputResolver = null;
+
+      function callFn(name, args, scope, fns, line){
+        if(name==='input'){
+          // async input handled via promise + UI
+          throw { isInputRequest: true, prompt: args[0]??'' };
+        }
+        if(name in BUILTINS){ try{ return BUILTINS[name](args); }catch(e){ throw new MaySonLangError(`In '${name}': ${e.message}`,line); } }
+        if(!(name in fns)) throw new MaySonLangError(`Unknown function: '${name}'`,line);
+        const fn=fns[name];
+        if(args.length!==fn.params.length) throw new MaySonLangError(`'${name}' expects ${fn.params.length} arg(s), got ${args.length}`,line);
+        const fnScope={...fn.closure, ...Object.fromEntries(fn.params.map((p,i)=>[p,args[i]]))};
+        const interp=new Interpreter(fns, fn.callDepth+1);
+        if(interp.callDepth>500) throw new MaySonLangError('Max recursion depth exceeded',line);
+        try{ interp.execute(fn.body, fnScope); }
+        catch(e){ if(e instanceof ReturnSignal) return e.value; throw e; }
+        return null;
+      }
+
+      /* ── INTERPRETER CLASS ── */
+      class Interpreter {
+        constructor(functions={}, callDepth=0){
+          this.functions=functions;
+          this.callDepth=callDepth;
+          this.outputLines=[];
+        }
+
+        run(source){ this.execute(tokenize(source), {}); }
+
+        execute(tokens, scope, start=0, baseIndent=-1){
+          let i=start;
+          while(i<tokens.length){
+            if(baseIndent>=0&&tokens[i].indent<=baseIndent) break;
+            i=this._stmt(tokens[i],tokens,i,scope);
+          }
+        }
+
+        _eval(e,s,l){ return evalExpr(e,s,this.functions,l); }
+        _cond(c,s,l){ return !!this._eval(c,s,l); }
+
+        _block(tokens, start, baseIndent){
+          const block=[]; let i=start;
+          while(i<tokens.length&&tokens[i].indent>baseIndent){ block.push(tokens[i]); i++; }
+          return {block, next:i};
+        }
+
+        display(val){
+          if(val===null||val===undefined) return 'nothing';
+          if(typeof val==='boolean') return val?'true':'false';
+          if(Array.isArray(val)) return '['+val.map(v=>this.display(v)).join(', ')+']';
+          if(typeof val==='number'&&Number.isInteger(val)) return String(val);
+          return String(val);
+        }
+
+        _stmt(tok, tokens, i, scope){
+          const c=tok.content, ln=tok.line;
+
+          // say / show
+          if(c==='say'||c.startsWith('say ')||c==='show'||c.startsWith('show ')){
+            const expr=c.replace(/^(say|show)\s*/,'');
+            const val=expr?this._eval(expr,scope,ln):'';
+            this.outputLines.push({text:this.display(val),type:'normal'});
+            return i+1;
+          }
+
+          // set x to expr  /  set x[idx] to expr
+          let m=c.match(/^set\s+(.+?)\s+to\s+(.+)$/);
+          if(m){
+            const [,target,expr]=m, val=this._eval(expr,scope,ln);
+            const im=indexPattern(target);
+            if(im){ const arr=resolveVar(im[0],scope,ln); arr[this._eval(im[1],scope,ln)]=val; }
+            else scope[target.trim()]=val;
+            return i+1;
+          }
+
+          // increase x by N
+          m=c.match(/^increase\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
+          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)+this._eval(m[2],scope,ln); return i+1; }
+
+          // decrease x by N
+          m=c.match(/^decrease\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
+          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)-this._eval(m[2],scope,ln); return i+1; }
+
+          // multiply x by N
+          m=c.match(/^multiply\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
+          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)*this._eval(m[2],scope,ln); return i+1; }
+
+          // divide x by N
+          m=c.match(/^divide\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
+          if(m){
+            const d=this._eval(m[2],scope,ln);
+            if(d===0) throw new MaySonLangError('Division by zero',ln);
+            scope[m[1]]=resolveVar(m[1],scope,ln)/d; return i+1;
+          }
+
+          // add x to list
+          m=c.match(/^add\s+(.+)\s+to\s+([A-Za-z_][A-Za-z0-9_]*)$/);
+          if(m){
+            const lst=resolveVar(m[2],scope,ln);
+            if(!Array.isArray(lst)) throw new MaySonLangError(`'${m[2]}' is not a list`,ln);
+            lst.push(this._eval(m[1],scope,ln)); return i+1;
+          }
+
+          // remove x from list
+          m=c.match(/^remove\s+(.+)\s+from\s+([A-Za-z_][A-Za-z0-9_]*)$/);
+          if(m){
+            const lst=resolveVar(m[2],scope,ln), v=this._eval(m[1],scope,ln);
+            const idx=lst.indexOf(v); if(idx!==-1) lst.splice(idx,1); return i+1;
+          }
+
+          // make fn(params):
+          m=c.match(/^make\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*:?$/);
+          if(m){
+            const [,fname,paramStr]=m;
+            const params=paramStr.split(',').map(p=>p.trim()).filter(Boolean);
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            this.functions[fname]={params,body:block,closure:{...scope},callDepth:this.callDepth};
+            return next;
+          }
+
+          // call fn(args) statement
+          m=c.match(/^call\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)$/);
+          if(m){
+            const args=argSplit(m[2]).map(a=>this._eval(a,scope,ln));
+            callFn(m[1],args,scope,this.functions,ln);
+            return i+1;
+          }
+
+          // return / break / continue
+          if(c.startsWith('return')){ const expr=c.slice(6).trim(); throw new ReturnSignal(expr?this._eval(expr,scope,ln):null); }
+          if(c==='break') throw new BreakSignal();
+          if(c==='continue') throw new ContinueSignal();
+
+          // if / check  (check kept as alias)
+          m=c.match(/^(?:if|check)\s+(.+?)\s*:?$/);
+          if(m){
+            const {block:then,next:afterThen}=this._block(tokens,i+1,tok.indent);
+            const {block:els,next:afterElse}=this._collectElse(tokens,afterThen,tok.indent,scope);
+            if(this._cond(m[1],scope,ln)) this._runBlock(then,scope);
+            else if(els.length) this._runBlock(els,scope);
+            return afterElse;
+          }
+
+          // else / otherwise top-level stubs (already consumed by if)
+          if(/^(else|otherwise)\s*:?$/.test(c)||/^(else if|else check|otherwise if|otherwise check)\s+/.test(c)){
+            const {next}=this._block(tokens,i+1,tok.indent); return next;
+          }
+
+          // repeat N times  — N re-evaluated each iteration so variable counts work
+          m=c.match(/^repeat\s+(.+?)\s+times?\s*:?$/);
+          if(m){
+            const countExpr=m[1].trim();
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            let iteration=0;
+            while(true){
+              const count=Math.floor(Number(this._eval(countExpr,scope,ln)));
+              if(iteration>=count) break;
+              const ls={...scope,i:iteration};
+              let broke=false;
+              try{ this._runBlock(block,ls); }
+              catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
+              // flush ALL mutations back to outer scope
+              Object.assign(scope,ls);
+              if(broke) break;
+              iteration++;
+            }
+            return next;
+          }
+
+          // repeat for each x in list
+          m=c.match(/^repeat\s+for\s+each\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+(.+?)\s*:?$/);
+          if(m){
+            const [,varName,listExpr]=m;
+            const lst=this._eval(listExpr,scope,ln);
+            if(!Array.isArray(lst)) throw new MaySonLangError(`Expected list`,ln);
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            for(const item of lst){
+              const ls={...scope,[varName]:item};
+              let broke=false;
+              try{ this._runBlock(block,ls); }
+              catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
+              Object.assign(scope,ls);
+              if(broke) break;
+            }
+            return next;
+          }
+
+          // while
+          m=c.match(/^while\s+(.+?)\s*:?$/);
+          if(m){
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            let guard=0;
+            while(this._cond(m[1],scope,ln)){
+              if(++guard>100000) throw new MaySonLangError('Infinite loop (>100k iterations)',ln);
+              const ls={...scope};
+              let broke=false;
+              try{ this._runBlock(block,ls); }
+              catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
+              Object.assign(scope,ls);
+              if(broke) break;
+            }
+            return next;
+          }
+
+          // bare expression
+          try{ this._eval(c,scope,ln); return i+1; }
+          catch(e){ if(e&&e.isInputRequest) throw e; throw new MaySonLangError(e.message||String(e),ln); }
+        }
+
+        _collectElse(tokens, start, baseIndent, scope){
+          if(start>=tokens.length) return {block:[],next:start};
+          const tok=tokens[start]; const c=tok.content;
+          if(tok.indent!==baseIndent) return {block:[],next:start};
+
+          // plain else / otherwise
+          if(/^(else|otherwise)\s*:?$/.test(c)){
+            const {block,next}=this._block(tokens,start+1,tok.indent);
+            return {block,next};
+          }
+          // else if / else check / otherwise if / otherwise check
+          const em=c.match(/^(?:else if|else check|otherwise if|otherwise check)\s+(.+?)\s*:?$/);
+          if(em){
+            const cond=em[1];
+            const {block:then,next:afterThen}=this._block(tokens,start+1,tok.indent);
+            const {block:els,next:afterElse}=this._collectElse(tokens,afterThen,baseIndent,scope);
+            if(this._cond(cond,scope,tok.line)) return {block:then,next:afterElse};
+            return {block:els,next:afterElse};
+          }
+          return {block:[],next:start};
+        }
+
+        _runBlock(block, scope){ this.execute(block,scope,0,-1); }
+      }
+
+      // ══════════════════════════════════════════════════════════════════
+      //  IDE STATE
+      // ══════════════════════════════════════════════════════════════════
+
+      const EXAMPLE = `# ── MaySonLang IDE ────────────────────────
+      # Press Ctrl+Enter (or Run button) to execute
+
+      set name to "World"
+      say "Hello, " + name + "!"
+
+      # Variables & arithmetic
+      set x to 10
+      set y to 3
+      say "x + y = " + (x + y)
+      say "x ^ 2 = " + (x ^ 2)
+
+      # Variable update shorthands
+      increase x by 5
+      say "x after increase by 5: " + x
+      decrease x by 3
+      say "x after decrease by 3: " + x
+      multiply x by 2
+      say "x after multiply by 2: " + x
+      divide x by 4
+      say "x after divide by 4: " + x
+
+      # if / else if / else  (check still works too)
+      set score to 85
+      if score >= 90:
+        say "Grade: A"
+      else if score >= 80:
+        say "Grade: B"
+      else if score >= 70:
+        say "Grade: C"
+      else:
+        say "Grade: F"
+
+      # repeat x times — x mutates each iteration!
+      set count to 5
+      say "Countdown:"
+      repeat count times:
+        say "  " + count
+        decrease count by 1
+
+      # repeat N times — i = loop index
+      say "Squares:"
+      repeat 5 times:
+        say "  " + i + "^2 = " + (i * i)
+
+      # Lists & for-each
+      set fruits to ["apple", "banana", "cherry"]
+      add "mango" to fruits
+      say "Fruits: " + fruits
+      repeat for each fruit in fruits:
+        say "  → " + upper(fruit)
+
+      # Functions
+      make greet(person):
+        return "Hello, " + person + "!"
+
+      make factorial(n):
+        if n <= 1:
+          return 1
+        return n * call factorial(n - 1)
+
+      say call greet("MaySonLang")
+      say "5! = " + call factorial(5)
+      say "10! = " + call factorial(10)
+      `;
+
+      const SNIPPETS = [
+        { kw:'say',           desc:'print output',      code:'say "Hello!"' },
+        { kw:'set x to',      desc:'variable',           code:'set x to 5' },
+        { kw:'increase x by', desc:'x += N',             code:'increase x by 1' },
+        { kw:'decrease x by', desc:'x -= N',             code:'decrease x by 1' },
+        { kw:'multiply x by', desc:'x *= N',             code:'multiply x by 2' },
+        { kw:'divide x by',   desc:'x /= N',             code:'divide x by 2' },
+        { kw:'if:',           desc:'if condition',       code:'' },
+        { kw:'else if:',      desc:'else if',            code:'else if x == 0:\n  say "zero"' },
+        { kw:'else:',         desc:'else',               code:'else:\n  say "nope"' },
+        { kw:'repeat N:',     desc:'for loop (i=index)', code:'repeat 5 times:\n  say i' },
+        { kw:'repeat x:',     desc:'loop with variable', code:'repeat x times:\n  decrease x by 1' },
+        { kw:'for each:',     desc:'list loop',          code:'repeat for each item in myList:\n  say item' },
+        { kw:'while:',        desc:'while loop',         code:'' },
+        { kw:'make fn():',    desc:'define function',    code:'make greet(name):\n  return "Hi " + name\n\nsay call greet("World")' },
+        { kw:'[list]',        desc:'create list',        code:'set nums to [1, 2, 3]\nadd 4 to nums' },
+        { kw:'# comment',     desc:'comment',            code:'# This is a comment' },
+      ];
+
+      let tabs = [];
+      let activeTab = 0;
+      let tabCounter = 0;
+      const savedContent = {};
+
+      // ── FILE MANAGEMENT ────────────────────────────────────────────────
+      function createTab(name, content='', activate=true){
+        const id = ++tabCounter;
+        tabs.push({id, name, content, dirty:false});
+        savedContent[id] = content;
+        renderTabs();
+        renderFileList();
+        if(activate) setActiveTab(id);
+        return id;
+      }
+
+      function setActiveTab(id){
+        if(tabs.length===0) return;
+        // Save current editor content
+        if(tabs[activeTab]) tabs[activeTab].content = editor.value;
+        activeTab = tabs.findIndex(t=>t.id===id);
+        if(activeTab<0) activeTab=0;
+        editor.value = tabs[activeTab]?.content || '';
+        updateGutter();
+        renderTabs();
+        renderFileList();
+        updateStatus();
+      }
+
+      function renderTabs(){
+        const list = document.getElementById('tab-list');
+        list.innerHTML = tabs.map((t,i)=>`
+          <div class="tab ${i===activeTab?'active':''}" onclick="setActiveTab(${t.id})">
+            ${t.dirty?`<span class="tab-dot"></span>`:''}
+            <span>${t.name}</span>
+            <span class="tab-close" onclick="closeTab(event,${t.id})">×</span>
+          </div>
+        `).join('');
+      }
+
+      function renderFileList(){
+        const list = document.getElementById('file-list');
+        list.innerHTML = tabs.map((t,i)=>`
+          <div class="sb-file ${i===activeTab?'active':''}" onclick="setActiveTab(${t.id})">
+            <span class="sb-file-icon">📄</span>
+            <span>${t.name}</span>
+          </div>
+        `).join('');
+      }
+
+      function closeTab(e, id){
+        e.stopPropagation();
+        if(tabs.length===1){ newFile(); }
+        const idx=tabs.findIndex(t=>t.id===id);
+        tabs.splice(idx,1);
+        if(activeTab>=tabs.length) activeTab=tabs.length-1;
+        const newId = tabs[activeTab]?.id;
+        if(newId) setActiveTab(newId);
+        renderTabs(); renderFileList();
+      }
+
+      function newFile(){
+        createTab(`untitled${tabCounter+1}.ms`, '# New file\n');
+      }
+
+      function openFile(){
+        const inp=document.createElement('input');
+        inp.type='file'; inp.accept='.ms,.txt';
+        inp.onchange=e=>{
+          const f=e.target.files[0]; if(!f) return;
+          const r=new FileReader();
+          r.onload=ev=>createTab(f.name, ev.target.result);
+          r.readAsText(f);
+        };
+        inp.click();
+      }
+
+      function saveFile(){
+        const t=tabs[activeTab]; if(!t) return;
+        t.content=editor.value; t.dirty=false;
+        const blob=new Blob([editor.value],{type:'text/plain'});
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);
+        a.download=t.name; a.click();
+        setStatus('Saved: '+t.name);
+        renderTabs();
+      }
+
+      // ── EDITOR ────────────────────────────────────────────────────────
+      const editor = document.getElementById('editor');
+
+      editor.addEventListener('input', ()=>{
+        updateGutter();
+        if(tabs[activeTab]){ tabs[activeTab].dirty=true; renderTabs(); }
+        updateStatus();
+      });
+
+      editor.addEventListener('keydown', e=>{
+        if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){ e.preventDefault(); runCode(); return; }
+        if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); saveFile(); return; }
+        if((e.ctrlKey||e.metaKey)&&e.key==='f'){ e.preventDefault(); openFindBar(); return; }
+        if(e.key==='Tab'){
+          e.preventDefault();
+          const s=editor.selectionStart, end=editor.selectionEnd;
+          editor.value=editor.value.slice(0,s)+'  '+editor.value.slice(end);
+          editor.selectionStart=editor.selectionEnd=s+2;
+          updateGutter();
+        }
+        // Auto-close brackets/quotes
+        const pairs={'(':')','{':'}','[':']','"':'"',"'":"'"};
+        if(pairs[e.key]&&!e.ctrlKey&&!e.metaKey){
+          const s=editor.selectionStart;
+          setTimeout(()=>{
+            const after=editor.value[s+1];
+            if(!after||/\s/.test(after)){
+              const cur=editor.value;
+              editor.value=cur.slice(0,s+1)+pairs[e.key]+cur.slice(s+1);
+              editor.selectionStart=editor.selectionEnd=s+1;
+            }
+          },0);
+        }
+      });
+
+      editor.addEventListener('keyup', updateStatus);
+      editor.addEventListener('click', updateStatus);
+
+      function updateGutter(){
+        const lines=editor.value.split('\n').length;
+        document.getElementById('gutter').textContent=
+          Array.from({length:lines},(_,i)=>i+1).join('\n');
+        document.getElementById('status-lines').textContent=`${lines} lines`;
+      }
+
+      function updateStatus(){
+        const val=editor.value;
+        const before=val.slice(0,editor.selectionStart);
+        const ln=before.split('\n').length;
+        const col=before.slice(before.lastIndexOf('\n')+1).length+1;
+        document.getElementById('status-cursor').textContent=`Ln ${ln}, Col ${col}`;
+      }
+
+      // ── SNIPPETS ──────────────────────────────────────────────────────
+      function renderSnippets(){
+        document.getElementById('snippets-list').innerHTML=SNIPPETS.map(s=>`
+          <div class="snippet-item" onclick="insertSnippet(${JSON.stringify(s.code)})" title="${s.desc}">
+            <span class="snippet-kw">${s.kw}</span>
+            <span class="snippet-desc">${s.desc}</span>
+          </div>
+        `).join('');
+      }
+
+      function insertSnippet(code){
+        const s=editor.selectionStart, end=editor.selectionEnd;
+        const before=editor.value.slice(0,s);
+        const needNL=before.length>0&&!before.endsWith('\n');
+        editor.value=before+(needNL?'\n':'')+code+'\n'+editor.value.slice(end);
+        editor.focus(); updateGutter();
+        if(tabs[activeTab]){ tabs[activeTab].dirty=true; renderTabs(); }
+      }
+
+      // ── RUN ───────────────────────────────────────────────────────────
+      const outputEl  = document.getElementById('output');
+      const outDot    = document.getElementById('out-dot');
+      const execTime  = document.getElementById('exec-time');
+      const inputRow  = document.getElementById('input-row');
+      const inputField= document.getElementById('input-field');
+
+      function clearOutput(){ outputEl.innerHTML=''; execTime.textContent=''; outDot.className='panel-dot dot-idle'; }
+
+      function appendOut(text, type='normal'){
+        const span=document.createElement('span');
+        span.className=`out-line out-${type}`;
+        span.textContent=text;
+        outputEl.appendChild(span);
+        outputEl.appendChild(document.createTextNode('\n'));
+        outputEl.scrollTop=outputEl.scrollHeight;
+      }
+
+      function setStatus(msg, color=''){
+        document.getElementById('status-msg').textContent=msg;
+      }
+
+      function runCode(){
+        clearOutput();
+        const code=editor.value.trim();
+        if(!code){ appendOut('// Nothing to run.','info'); return; }
+
+        outDot.className='panel-dot';
+        outDot.style.background='var(--yellow)';
+        outDot.style.boxShadow='0 0 6px var(--yellow)';
+        setStatus('Running…');
+
+        const t0=performance.now();
+        const interp=new Interpreter();
+
+        try{
+          interp.run(code);
+          interp.outputLines.forEach(l=>appendOut(l.text,l.type));
+          const ms=(performance.now()-t0).toFixed(1);
+          execTime.textContent=`${ms}ms`;
+          outDot.className='panel-dot dot-green';
+          outDot.style='';
+          setStatus(`Done in ${ms}ms`);
+          if(!outputEl.textContent.trim()) appendOut('// (no output)','info');
+        } catch(e){
+          interp.outputLines.forEach(l=>appendOut(l.text,l.type));
+          appendOut('Error: '+e.message,'error');
+          outDot.className='panel-dot dot-red';
+          outDot.style='';
+          setStatus('Error: '+e.message);
+        }
+      }
+
+      function stopExec(){ setStatus('Stopped'); }
+
+      // ── FIND BAR ──────────────────────────────────────────────────────
+      function openFindBar(){ document.getElementById('find-bar').classList.add('visible'); document.getElementById('find-input').focus(); }
+      function closeFindBar(){ document.getElementById('find-bar').classList.remove('visible'); editor.focus(); }
+      function findNext(){
+        const q=document.getElementById('find-input').value; if(!q) return;
+        const text=editor.value; const start=editor.selectionEnd;
+        const idx=text.indexOf(q,start);
+        if(idx!==-1){ editor.setSelectionRange(idx,idx+q.length); }
+        else{ const idx2=text.indexOf(q,0); if(idx2!==-1) editor.setSelectionRange(idx2,idx2+q.length); }
+        editor.focus();
+      }
+      function findPrev(){
+        const q=document.getElementById('find-input').value; if(!q) return;
+        const text=editor.value; const end=editor.selectionStart;
+        const idx=text.lastIndexOf(q,end-1);
+        if(idx!==-1) editor.setSelectionRange(idx,idx+q.length);
+        editor.focus();
+      }
+
+      // ── CONTEXT MENU ──────────────────────────────────────────────────
+      const ctxMenu=document.getElementById('ctx-menu');
+      editor.addEventListener('contextmenu',e=>{ e.preventDefault(); ctxMenu.style.left=e.pageX+'px'; ctxMenu.style.top=e.pageY+'px'; ctxMenu.style.display='block'; });
+      document.addEventListener('click',()=>{ ctxMenu.style.display='none'; });
+      function ctxCut(){ document.execCommand('cut'); }
+      function ctxCopy(){ document.execCommand('copy'); }
+      function ctxPaste(){ document.execCommand('paste'); }
+      function selectAll(){ editor.select(); }
+
+      // ── RESIZE HANDLE ─────────────────────────────────────────────────
+      const handle=document.getElementById('resize-handle');
+      const outPanel=document.getElementById('output-panel');
+      let dragging=false, startX=0, startW=0;
+      handle.addEventListener('mousedown',e=>{ dragging=true; startX=e.clientX; startW=outPanel.offsetWidth; handle.classList.add('dragging'); });
+      document.addEventListener('mousemove',e=>{ if(!dragging) return; const delta=startX-e.clientX; const nw=Math.min(Math.max(startW+delta,200),window.innerWidth*0.7); outPanel.style.width=nw+'px'; });
+      document.addEventListener('mouseup',()=>{ dragging=false; handle.classList.remove('dragging'); });
+
+      // ── MODAL ─────────────────────────────────────────────────────────
+      function closeModal(){ document.getElementById('modal-overlay').classList.remove('visible'); }
+      function modalConfirm(){ closeModal(); }
+
+      // ── MENUS ─────────────────────────────────────────────────────────
+      function menuFile(){
+        const items=[['New','newFile()'],['Open','openFile()'],['Save','saveFile()']];
+        showDropdown(60, 42, items);
+      }
+      function menuEdit(){
+        const items=[['Undo','document.execCommand("undo")'],['Redo','document.execCommand("redo")'],['Find','openFindBar()'],['Select All','editor.select()']];
+        showDropdown(130, 42, items);
+      }
+      function menuView(){
+        const items=[['Toggle Sidebar','toggleSidebar()'],['Clear Output','clearOutput()']];
+        showDropdown(200, 42, items);
+      }
+      function showHelp(){
+        appendOut('═══ MaySonLang IDE QUICK REFERENCE ═══','success');
+        appendOut('say "hello"              → print','info');
+        appendOut('set x to 5              → variable','info');
+        appendOut('increase x by 3         → x += 3','info');
+        appendOut('decrease x by 1         → x -= 1','info');
+        appendOut('multiply x by 2         → x *= 2','info');
+        appendOut('divide x by 4           → x /= 4','info');
+        appendOut('if x > 0:               → if  (check also works)','info');
+        appendOut('else if x == 0:         → else if','info');
+        appendOut('else:                   → else','info');
+        appendOut('repeat 5 times:         → for i in range(5)','info');
+        appendOut('repeat x times:         → x re-read each iteration','info');
+        appendOut('repeat for each v in l: → for each item in list','info');
+        appendOut('while x > 0:            → while loop','info');
+        appendOut('make fn(a, b):          → define function','info');
+        appendOut('  return a + b','info');
+        appendOut('say call fn(1, 2)       → call function','info');
+        appendOut('add x to list           → list.append(x)','info');
+        appendOut('remove x from list      → list.remove(x)','info');
+        appendOut('# comment               → comment','info');
+        appendOut('════════════════════════════════════════','success');
+      }
+
+      let dropdown=null;
+      function showDropdown(x,y,items){
+        if(dropdown) dropdown.remove();
+        dropdown=document.createElement('div');
+        dropdown.style.cssText=`position:fixed;left:${x}px;top:${y}px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:4px;z-index:999;min-width:140px;`;
+        items.forEach(([label,action])=>{
+          const d=document.createElement('div');
+          d.className='ctx-item'; d.textContent=label;
+          d.onclick=()=>{ eval(action); dropdown.remove(); dropdown=null; };
+          dropdown.appendChild(d);
+        });
+        document.body.appendChild(dropdown);
+        setTimeout(()=>document.addEventListener('click',function h(){ dropdown?.remove(); dropdown=null; document.removeEventListener('click',h); }),0);
+      }
+
+      function toggleSidebar(){
+        const sb=document.getElementById('sidebar');
+        sb.style.display=sb.style.display==='none'?'flex':'none';
+      }
+
+      // ── INPUT ──────────────────────────────────────────────────────────
+      function submitInput(){
+        const val=inputField.value;
+        inputField.value='';
+        inputRow.classList.remove('visible');
+        appendOut(val,'prompt');
+        if(inputResolver){ inputResolver(val); inputResolver=null; }
+      }
+      inputField.addEventListener('keydown',e=>{ if(e.key==='Enter') submitInput(); });
+
+      // ── INIT ──────────────────────────────────────────────────────────
+      renderSnippets();
+      createTab('main.ms', EXAMPLE, true);
+      updateGutter();
+      updateStatus();
+      editor.focus();
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown',e=>{
+        if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){ e.preventDefault(); runCode(); }
+        if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); saveFile(); }
+        if((e.ctrlKey||e.metaKey)&&e.key==='f'){ e.preventDefault(); openFindBar(); }
+        if((e.ctrlKey||e.metaKey)&&e.key==='n'){ e.preventDefault(); newFile(); }
+        if(e.key==='Escape'&&document.getElementById('find-bar').classList.contains('visible')) closeFindBar();
+      });
+    </script>
+  </body>
+</html>
