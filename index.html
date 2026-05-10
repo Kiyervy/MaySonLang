@@ -230,6 +230,34 @@
       .num{color:#fb923c}
 
       .confetti-piece{position:fixed;animation:confettiFall var(--dur) ease-in var(--delay) forwards;z-index:101;pointer-events:none}
+      /* multiple-choice buttons */
+      .mc-choices{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+      .mc-btn{padding:13px 28px;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--white);font-family:var(--fb);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+      .mc-btn:hover:not(:disabled){transform:translateY(-3px) scale(1.04);border-color:var(--cyan);box-shadow:0 8px 24px rgba(34,211,238,.25)}
+      .mc-btn.selected{border-color:var(--cyan);background:rgba(34,211,238,.12);color:var(--cyan)}
+      .mc-btn.correct-lock{border-color:var(--green)!important;background:rgba(74,222,128,.15)!important;color:var(--green)!important;pointer-events:none}
+      .mc-btn.wrong-lock{border-color:var(--red)!important;background:rgba(248,113,113,.12)!important;color:var(--red)!important;animation:shake .35s ease;pointer-events:none}
+
+      /* ordering puzzle */
+      .order-board{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+      .order-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+      .order-slot{display:flex;align-items:center;gap:10px;background:var(--bg2);border:2px dashed var(--dim);border-radius:12px;padding:12px 16px;min-height:50px;transition:all .2s;cursor:default}
+      .order-slot.drag-over{border-color:var(--cyan);background:rgba(34,211,238,.08)}
+      .order-slot.filled{border-style:solid;border-color:var(--green);background:rgba(74,222,128,.08)}
+      .order-slot.correct-lock{border-color:var(--green)!important;background:rgba(74,222,128,.15)!important;pointer-events:none}
+      .order-slot.wrong{border-color:var(--red)!important;background:rgba(248,113,113,.12)!important;animation:shake .35s ease}
+      .order-step-num{font-family:var(--fh);font-size:.75rem;font-weight:900;color:var(--dim);min-width:52px;text-transform:uppercase;letter-spacing:.06em}
+      .order-slot.filled .order-step-num{color:var(--green)}
+      .order-slot-text{font-size:.88rem;color:var(--white);font-weight:600;flex:1}
+      .order-slot-rm{margin-left:auto;width:18px;height:18px;background:var(--red);border-radius:50%;font-size:11px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s;flex-shrink:0}
+      .order-slot.filled:hover .order-slot-rm{opacity:1}
+      .order-items{display:flex;flex-direction:column;gap:8px}
+      .order-item{padding:12px 18px;border-radius:10px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:var(--white);font-family:var(--fb);font-size:.88rem;font-weight:600;cursor:grab;user-select:none;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+      .order-item:hover{transform:translateX(4px);border-color:var(--cyan);box-shadow:0 4px 14px rgba(34,211,238,.2)}
+      .order-item:active{cursor:grabbing;transform:scale(.97)}
+      .order-item.used{opacity:.18;pointer-events:none}
+      .order-item.dragging{opacity:.25}
+
       @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
       ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
     </style>
@@ -277,25 +305,23 @@
           <div class="level-desc">Learn the basics of output</div>
           <div class="level-star">★ ★ ★</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.08s">
-          <div class="level-lock">🔒</div>
-          <div class="level-num" style="color:var(--dim)">02</div>
+        <div class="level-card" onclick="startLevel(2)" style="animation-delay:.08s">
+          <div class="level-num">02</div>
           <div class="level-title">Variables</div>
           <div class="level-desc">Store and use data</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+          <div class="level-star">★ ★ ★</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.12s">
-          <div class="level-lock">🔒</div>
-          <div class="level-num" style="color:var(--dim)">03</div>
-          <div class="level-title">User Input</div>
-          <div class="level-desc">Read what users type</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+        <div class="level-card" onclick="startLevel(3)" style="animation-delay:.12s">
+          <div class="level-num">03</div>
+          <div class="level-title">Conditions</div>
+          <div class="level-desc">Make decisions with if</div>
+          <div class="level-star">★ ★ ★</div>
         </div>
         <div class="level-card locked" style="animation-delay:.16s">
           <div class="level-lock">🔒</div>
           <div class="level-num" style="color:var(--dim)">04</div>
-          <div class="level-title">Conditions</div>
-          <div class="level-desc">Make decisions with if</div>
+          <div class="level-title">User Input</div>
+          <div class="level-desc">Read what users type</div>
           <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
         <div class="level-card locked" style="animation-delay:.20s">
@@ -392,7 +418,7 @@
       <div class="lc-card">
         <div class="lc-icon">🎉</div>
         <div class="lc-title">Level Complete!</div>
-        <div class="lc-sub">You've mastered <strong>Writing Code</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:'JetBrains Mono',monospace">say</code>, double quotes, and the difference between a command and a string.</div>
+        <div class="lc-sub" id="lc-sub-msg">You've mastered <strong>Writing Code</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:'JetBrains Mono',monospace">say</code>, double quotes, and the difference between a command and a string.</div>
         <div class="lc-stars">⭐⭐⭐</div>
         <div class="lc-btns">
           <button class="lc-home" onclick="lcHome()">🏠 Menu</button>
@@ -428,8 +454,8 @@
       }
     })();
 
-    /* ─── PUZZLE DATA ────────────────────────────────── */
-    const PAGES = [
+    /* ─── PUZZLE DATA — LEVEL 1 ─────────────────────── */
+    const PAGES_L1 = [
 
       /* PAGE 1 */
       {
@@ -639,10 +665,507 @@
       },
     ];
 
+    /* ─── PUZZLE DATA — LEVEL 2 ─────────────────────── */
+    const PAGES_L2 = [
+
+      /* L2 PAGE 1 */
+      {
+        mascotTitle: "Variables store important info! 🛒",
+        mascotBody:  "Computer programs use <strong>variables</strong> to remember important information, like items in a shopping cart, prices and discounts.<br><br>To create a variable, you just need to give it a <strong>name</strong>.<br>Complete the code to create a variable called <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">item</code>.",
+        demoCode:    `<span class="cmt"># Creating a variable:</span><br><span class="kw">set</span> <span class="str">score</span> <span class="punc">to</span> <span class="num">100</span>`,
+        taskDesc:    'Complete the code below to create a variable called <strong>item</strong>.<br>Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'______', correct:'item' },
+        ],
+        lineHTML: () => `
+          <span class="cf">set</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="item" data-value="" data-cid=""
+              style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+          &nbsp;<span class="cp">to</span>&nbsp;<span class="cs">"bike"</span>
+        `,
+        chips: [
+          { id:'l2p1shop', label:'shop', css:'c-send', val:'shop' },
+          { id:'l2p1item', label:'item', css:'c-say',  val:'item' },
+        ],
+        hint: '💡 <strong>Hint:</strong> We want to name the variable <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">item</code> — that\'s what goes after <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set</code>. "shop" is not the name we\'re using here!',
+        successMsg: 'Great work! <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set item to "bike"</code> creates a variable named <strong>item</strong> and stores the value "bike" in it.',
+        isLast: false,
+      },
+
+      /* L2 PAGE 2 */
+      {
+        mascotTitle: "Storing information in variables! 📦",
+        mascotBody:  "The information that you need to store is added on the <strong>right</strong> side of the equals sign.<br><br>Complete the code to store <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">phone</code> as information in a variable called <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">item</code>.",
+        demoCode:    `<span class="cmt"># Storing a value in a variable:</span><br><span class="kw">set</span> <span class="str">item</span> <span class="punc">to</span> <span class="str">"laptop"</span>`,
+        taskDesc:    'Complete the code to store <strong>phone</strong> as the value in <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">item</code>.<br>Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'________', correct:'PHONE' },
+        ],
+        lineHTML: () => `
+          <span class="cf">set</span>&nbsp;<span class="cs">item</span>&nbsp;<span class="cp">to</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="PHONE" data-value="" data-cid=""
+              style="min-width:100px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">________</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+        `,
+        chips: [
+          { id:'l2p2phone', label:'"phone"', css:'c-quote', val:'PHONE' },
+          { id:'l2p2shoes', label:'"shoes"', css:'c-send',  val:'SHOES' },
+        ],
+        hint: '💡 <strong>Hint:</strong> We want to store <strong>phone</strong> in the variable. In MaySon, text values go inside double quotes — so the correct chip is <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"phone"</code>!',
+        successMsg: '🎉 Excellent! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">set item to "phone"</code> stores the word phone in the variable. Keep going!',
+        isLast: false,
+      },
+
+      /* L2 PAGE 3 */
+      {
+        mascotTitle: "Names, values and the equals sign! ⚖️",
+        mascotBody:  "Variables have a <strong>name</strong> and a <strong>value</strong>. They are connected with the keyword <code style=\"color:#fbbf24;font-family:'JetBrains Mono',monospace\">to</code>.<br><br>Complete the code to store the value <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">watch</code> in a variable named <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">item</code>.",
+        demoCode:    `<span class="cmt"># name to value, connected by to</span><br><span class="kw">set</span> <span class="str">score</span> <span class="punc">to</span> <span class="num">99</span><br><span class="cmt">#       ↑ name   ↑ to      ↑ value</span>`,
+        taskDesc:    'Drag the correct word into the blank to connect the variable name and its value.',
+        zones: [
+          { id:'z0', ph:'__', correct:'EQ' },
+        ],
+        lineHTML: () => `
+          <span class="cf">set</span>&nbsp;<span class="cs">item</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="EQ" data-value="" data-cid=""
+              style="min-width:44px;height:34px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">__</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+          &nbsp;<span class="cs">"watch"</span>
+        `,
+        chips: [
+          { id:'l2p3colon', label:':',  css:'c-colon', val:'COLON' },
+          { id:'l2p3eq',    label:'to',  css:'c-quote', val:'EQ'    },
+        ],
+        hint: '💡 <strong>Hint:</strong> In MaySon, the keyword <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code> connects a variable name to its value. A colon <code style="color:#f87171">:</code> is not used here!',
+        successMsg: 'Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">set item to "watch"</code> — the <strong>to</strong> keyword links the name <em>item</em> to the value <em>"watch"</em>.',
+        isLast: false,
+      },
+
+      /* L2 PAGE 4 */
+      {
+        mascotTitle: "Put it all together! 🌍",
+        mascotBody:  "Let's practise the full <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set</code> statement. You need the keyword, a variable name, and a value.<br><br>Complete the code to store location information in a variable named <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">country</code>.",
+        demoCode:    `<span class="cmt"># Full variable statement:</span><br><span class="kw">set</span> <span class="str">city</span> <span class="punc">to</span> <span class="str">"Tokyo"</span>`,
+        taskDesc:    'Two blanks this time — drag the right blocks to complete the full statement!',
+        zones: [
+          { id:'z0', ph:'___',     correct:'SET'     },
+          { id:'z1', ph:'_______', correct:'COUNTRY' },
+        ],
+        lineHTML: () => `
+          <div class="drop-zone" id="z0" data-correct="SET" data-value="" data-cid=""
+              style="min-width:52px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+          &nbsp;
+          <div class="drop-zone" id="z1" data-correct="COUNTRY" data-value="" data-cid=""
+              style="min-width:86px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+            <span class="zt">_______</span><span class="rm" onclick="rmChip('z1')">×</span>
+          </div>
+          &nbsp;<span class="cp">to</span>&nbsp;<span class="cs">"France"</span>
+        `,
+        chips: [
+          { id:'l2p4set',     label:'set',     css:'c-say',   val:'SET'     },
+          { id:'l2p4country', label:'country', css:'c-send',  val:'COUNTRY' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Remember the pattern: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set</code> comes first as the keyword, then the variable name <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">country</code>!',
+        successMsg: '🎉 You nailed it! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">set country to "France"</code> — you\'ve mastered the full variable statement!',
+        isLast: false,
+      },
+
+      /* L2 PAGE 5 */
+      {
+        mascotTitle: "Three parts, one statement! 📱",
+        mascotBody:  "Every <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set</code> statement has three parts: the keyword <strong>set</strong>, the variable <strong>name</strong>, and the <strong>value</strong> on the right.<br><br>Create a variable that stores the user's device type.",
+        demoCode:    `<span class="cmt"># set  name  to  value</span><br><span class="kw">set</span> <span class="str">brand</span> <span class="punc">to</span> <span class="str">"MaySon"</span>`,
+        taskDesc:    'Fill in all three blanks to complete the variable statement!',
+        zones: [
+          { id:'z0', ph:'___',    correct:'SET'    },
+          { id:'z1', ph:'______', correct:'DEVICE' },
+          { id:'z2', ph:'___',    correct:'EQ'     },
+        ],
+        lineHTML: () => `
+          <div class="drop-zone" id="z0" data-correct="SET" data-value="" data-cid=""
+              style="min-width:52px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+          &nbsp;
+          <div class="drop-zone" id="z1" data-correct="DEVICE" data-value="" data-cid=""
+              style="min-width:76px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+            <span class="zt">______</span><span class="rm" onclick="rmChip('z1')">×</span>
+          </div>
+          &nbsp;
+          <div class="drop-zone" id="z2" data-correct="EQ" data-value="" data-cid=""
+              style="min-width:44px;height:34px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z2')">
+            <span class="zt">___</span><span class="rm" onclick="rmChip('z2')">×</span>
+          </div>
+          &nbsp;<span class="cs">"ipad"</span>
+        `,
+        chips: [
+          { id:'l2p5device', label:'device', css:'c-send',  val:'DEVICE' },
+          { id:'l2p5eq',     label:'to',     css:'c-quote', val:'EQ'     },
+          { id:'l2p5set',    label:'set',    css:'c-say',   val:'SET'    },
+        ],
+        hint: '💡 <strong>Hint:</strong> Pattern is <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set</code> → variable name → <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code>. The variable name is <strong>device</strong>!',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">set device to "ipad"</code> stores the device type. Three parts, one statement!',
+        isLast: false,
+      },
+
+      /* L2 PAGE 6 — multiple choice */
+      {
+        mascotTitle: "Good variable names matter! 🏷️",
+        mascotBody:  "Humans use code to give instructions to computers, but the code will also be read by other humans (and <strong>future you!</strong>)<br><br>A good variable name clearly describes what it stores.",
+        demoCode:    `<span class="cmt"># Clear name — anyone can understand:</span><br><span class="kw">set</span> <span class="str">balance</span> <span class="punc">to</span> <span class="num">250</span><br><span class="cmt"># Unclear name — what does this store?</span><br><span class="kw">set</span> <span class="str">x</span> <span class="punc">to</span> <span class="num">250</span>`,
+        taskDesc:    'What would you name a variable that stores a <strong>user\'s account balance</strong>? Choose the best option.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['city', 'balance'],
+        mcCorrect: 'balance',
+        hint: '💡 <strong>Hint:</strong> Pick the name that best describes <em>what the variable stores</em>. "city" doesn\'t relate to money at all!',
+        successMsg: '✅ Exactly! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">balance</code> clearly describes what\'s stored. Good names make code readable for everyone!',
+        isLast: false,
+      },
+
+      /* L2 PAGE 7 — two drop zones side by side (name and value labels) */
+      {
+        mascotTitle: "Identify the parts! 🔍",
+        mascotBody:  "The line of code below tells the computer to store information in memory.<br><br><code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">set message to \"Level Up\"</code><br><br>Can you identify the <strong>variable name</strong> and the <strong>variable value</strong>?",
+        demoCode:    `<span class="kw">set</span> <span class="str">message</span> <span class="punc">to</span> <span class="str">"Level Up"</span>`,
+        taskDesc:    'Drag the correct blocks to identify each element of the variable.',
+        zones: [
+          { id:'z0', ph:'______', correct:'NAME'  },
+          { id:'z1', ph:'________', correct:'VALUE' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="font-size:.8rem;font-weight:800;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;min-width:110px">Variable name:</span>
+              <div class="drop-zone" id="z0" data-correct="NAME" data-value="" data-cid=""
+                  style="min-width:100px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="font-size:.8rem;font-weight:800;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;min-width:110px">Variable value:</span>
+              <div class="drop-zone" id="z1" data-correct="VALUE" data-value="" data-cid=""
+                  style="min-width:110px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">________</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l2p7val',  label:'"Level Up"', css:'c-quote', val:'VALUE' },
+          { id:'l2p7name', label:'message',    css:'c-say',   val:'NAME'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> The <strong>name</strong> is what you call the variable — it\'s the word before <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code>. The <strong>value</strong> is what\'s stored — it\'s on the right side in quotes!',
+        successMsg: 'Brilliant! <strong>message</strong> is the variable name and <strong>"Level Up"</strong> is the value stored in it.',
+        isLast: false,
+      },
+
+      /* L2 PAGE 8 — multiple choice, last page */
+      {
+        mascotTitle: "What have you learned? 🎓",
+        mascotBody:  "Computer programs can store information like the user\'s progress in a videogame, their name, score, or device — all using the same concept you\'ve been practising!",
+        demoCode:    `<span class="kw">set</span> <span class="str">score</span> <span class="punc">to</span> <span class="num">0</span><br><span class="kw">set</span> <span class="str">level</span> <span class="punc">to</span> <span class="num">1</span><br><span class="kw">set</span> <span class="str">player</span> <span class="punc">to</span> <span class="str">"Alex"</span>`,
+        taskDesc:    'Computer programs store information like user progress in a videogame with…',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['adaptors', 'variables'],
+        mcCorrect: 'variables',
+        hint: '💡 <strong>Hint:</strong> Think about what you\'ve been doing the whole level — creating <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set</code> statements to remember information!',
+        successMsg: '🏅 <strong>Variables!</strong> That\'s exactly right. You\'ve completed Level 2 — you know how to create variables, name them well, and store values in them!',
+        isLast: false,
+      },
+
+      /* L2 PAGE 9 — ordering / sequence puzzle */
+      {
+        mascotTitle: "Read the code, understand the order! 🎬",
+        mascotBody:  "Code runs <strong>line by line</strong>, from top to bottom. Reading code carefully tells you exactly what the computer does — and in what order!",
+        demoCode:    `<span class="kw">set</span> <span class="str">movie</span> <span class="punc">to</span> <span class="str">"Titanic"</span><br><span class="kw">say</span> <span class="str">movie</span><br><span class="kw">set</span> <span class="str">year</span> <span class="punc">to</span> <span class="num">1997</span>`,
+        taskDesc:    'Drag the descriptions into the correct order to match what the code above does, line by line.',
+        zones: [
+          { id:'oz0', ph:'Step 1', correct:'A' },
+          { id:'oz1', ph:'Step 2', correct:'B' },
+          { id:'oz2', ph:'Step 3', correct:'C' },
+        ],
+        lineHTML: ()=>'',
+        chips: [],
+        isOrder: true,
+        orderItems: [
+          { id:'oi-a', label:'A variable named movie is declared',       val:'A' },
+          { id:'oi-b', label:'The value in the movie variable is outputted', val:'B' },
+          { id:'oi-c', label:'A variable named year is declared',         val:'C' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Code runs top to bottom. Line 1 is <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set movie</code>, line 2 is <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say movie</code>, line 3 is <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set year</code>.',
+        successMsg: 'Spot on! Code runs line by line — <strong>declare movie → output movie → declare year</strong>. You can read code like a pro!',
+        isLast: false,
+      },
+
+      /* L2 PAGE 10 — mini IDE, final challenge */
+      {
+        mascotTitle: "Time to write real code! ⌨️",
+        mascotBody:  "You\'ve learned how to create variables with <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set</code> and print values with <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">say</code>.<br><br>Now combine both! Store <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">\"Finish Level\"</code> in a variable named <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">goal</code>, then print the variable.",
+        demoCode:    `<span class="cmt"># Reminder — set a variable then say it:</span><br><span class="kw">set</span> <span class="str">name</span> <span class="punc">to</span> <span class="str">"Alex"</span><br><span class="kw">say</span> <span class="str">name</span>  <span class="cmt">← prints: Alex</span>`,
+        taskDesc:    'Write two lines: first create a variable <strong>goal</strong> storing <strong>"Finish Level"</strong>, then print the variable <strong>goal</strong>. The output must be exactly <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">Finish Level</code>.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideExpected: 'Finish Level',
+        ideWinMsg: 'You wrote it! set goal to "Finish Level" then say goal — variables in action. Level 2 complete!',
+        hint: '💡 <strong>Hint:</strong> Line 1 — use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set goal to "Finish Level"</code><br>Line 2 — use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say goal</code> (no quotes — you\'re printing the variable, not the word "goal"!)',
+        successMsg: '🎉 You wrote real variable code! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">set goal to "Finish Level"</code> then <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">say goal</code> — Level 2 complete. You\'re a coder!',
+        isLast: true,
+      },
+    ];
+
+    /* ─── PUZZLE DATA — LEVEL 3 ─────────────────────── */
+    const PAGES_L3 = [
+
+      /* L3 PAGE 1 — if statement drag & drop */
+      {
+        mascotTitle: "Make decisions with if! 🤔",
+        mascotBody:  "The <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code> statement is one of the most frequently used conditional statements. If the if statement's condition is true, the block of code inside the if statement is executed.<br><br><strong>Syntax:</strong><br><code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if condition:<br>&nbsp;&nbsp;//some code</code>",
+        demoCode:    `<span class="cmt"># if the condition is true, the code runs:</span><br><span class="kw">if</span> <span class="str">time</span> <span class="punc">&lt;</span> <span class="num">20</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Open"</span>`,
+        taskDesc:    'Drag &amp; drop to output <strong>"Open"</strong> if the time value is less than 20.',
+        zones: [
+          { id:'z0', ph:'___', correct:'IF'   },
+          { id:'z1', ph:'____', correct:'TIME' },
+          { id:'z2', ph:'___',  correct:'SAY'  },
+          { id:'z3', ph:'_______', correct:'OPEN' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:8px;width:100%;font-family:var(--fc);font-size:.95rem">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="IF" data-value="" data-cid=""
+                  style="min-width:44px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              &nbsp;
+              <div class="drop-zone" id="z1" data-correct="TIME" data-value="" data-cid=""
+                  style="min-width:58px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              &nbsp;<span class="cp">&lt; 20:</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z2" data-correct="SAY" data-value="" data-cid=""
+                  style="min-width:52px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z2')">
+                <span class="zt">___</span><span class="rm" onclick="rmChip('z2')">×</span>
+              </div>
+              &nbsp;
+              <div class="drop-zone" id="z3" data-correct="OPEN" data-value="" data-cid=""
+                  style="min-width:80px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z3')">
+                <span class="zt">_______</span><span class="rm" onclick="rmChip('z3')">×</span>
+              </div>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l3p1when', label:'when', css:'c-display', val:'WHEN'  },
+          { id:'l3p1if',   label:'if',   css:'c-say',     val:'IF'    },
+          { id:'l3p1say',  label:'say',  css:'c-say',     val:'SAY'   },
+          { id:'l3p1set',  label:'set',  css:'c-send',    val:'SET'   },
+          { id:'l3p1num',  label:'20',   css:'c-colon',   val:'NUM20' },
+          { id:'l3p1time', label:'time', css:'c-quote',   val:'TIME'  },
+          { id:'l3p1else', label:'else', css:'c-colon',   val:'ELSE'  },
+          { id:'l3p1open', label:'"Open"', css:'c-quote', val:'OPEN'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> The structure is <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if time &lt; 20:</code> then indent and use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say "Open"</code>. Drag <strong>if</strong>, <strong>time</strong>, <strong>say</strong>, and <strong>"Open"</strong>!',
+        successMsg: 'Excellent! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">if time &lt; 20: say "Open"</code> — if the condition is true, the code block runs!',
+        isLast: false,
+      },
+
+      /* L3 PAGE 2 — multiple choice: equality operator */
+      {
+        mascotTitle: "Testing for equality! ⚖️",
+        mascotBody:  "In MaySon (and most programming languages), you use a special operator to <strong>test if two values are equal</strong>. This is different from the assignment operator used to store values!",
+        demoCode:    `<span class="cmt"># Testing equality — is x equal to 10?</span><br><span class="kw">if</span> <span class="str">x</span> <span class="punc">==</span> <span class="num">10</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Yes!"</span>`,
+        taskDesc:    'Which of the following operators is used to <strong>test for equality</strong>?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['=', '!', '==', '--'],
+        mcCorrect: '==',
+        hint: '💡 <strong>Hint:</strong> A single <code style="color:#fbbf24">= </code> assigns a value. Two equals signs <code style="color:#4ade80">==</code> test if values are equal!',
+        successMsg: '✅ Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">==</code> is the equality operator. It asks "are these two things the same?" rather than setting a value!',
+        isLast: false,
+      },
+
+      /* L3 PAGE 3 — fill in the blanks: if/else greater of two */
+      {
+        mascotTitle: "if and else together! 🔀",
+        mascotBody:  "The <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else</code> block runs when the <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code> condition is <strong>false</strong>. Together they cover both paths!",
+        demoCode:    `<span class="kw">set</span> <span class="str">x</span> <span class="punc">to</span> <span class="num">10</span><br><span class="kw">set</span> <span class="str">y</span> <span class="punc">to</span> <span class="num">5</span><br><span class="kw">if</span> <span class="str">x</span> <span class="punc">&gt;</span> <span class="str">y</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">x</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">y</span>`,
+        taskDesc:    'Fill in the blanks to output the <strong>greater</strong> of the two variables.',
+        zones: [
+          { id:'z0', ph:'__', correct:'IF'   },
+          { id:'z1', ph:'__', correct:'VARX' },
+          { id:'z2', ph:'____', correct:'ELSE' },
+          { id:'z3', ph:'__', correct:'VARY' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.93rem;line-height:2">
+            <div><span class="kw">set</span> <span class="cs">x</span> <span class="cp">to</span> <span class="num">10</span></div>
+            <div><span class="kw">set</span> <span class="cs">y</span> <span class="cp">to</span> <span class="num">5</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="IF" data-value="" data-cid=""
+                  style="min-width:44px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">__</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              &nbsp;<span class="cs">x</span> <span class="cp">&gt;</span> <span class="cs">y</span><span class="cp">:</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <span class="kw">say</span>&nbsp;
+              <div class="drop-zone" id="z1" data-correct="VARX" data-value="" data-cid=""
+                  style="min-width:44px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">__</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z2" data-correct="ELSE" data-value="" data-cid=""
+                  style="min-width:58px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z2')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z2')">×</span>
+              </div>
+              <span class="cp">:</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <span class="kw">say</span>&nbsp;
+              <div class="drop-zone" id="z3" data-correct="VARY" data-value="" data-cid=""
+                  style="min-width:44px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z3')">
+                <span class="zt">__</span><span class="rm" onclick="rmChip('z3')">×</span>
+              </div>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l3p3if',   label:'if',   css:'c-say',   val:'IF'   },
+          { id:'l3p3x',    label:'x',    css:'c-quote', val:'VARX' },
+          { id:'l3p3else', label:'else', css:'c-colon', val:'ELSE' },
+          { id:'l3p3y',    label:'y',    css:'c-quote', val:'VARY' },
+        ],
+        hint: '💡 <strong>Hint:</strong> First blank is <code style="color:#22d3ee">if</code>, second is <code style="color:#4ade80">x</code> (the bigger one), third is <code style="color:#22d3ee">else</code>, last is <code style="color:#4ade80">y</code>.',
+        successMsg: '🎉 Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">if x &gt; y: say x else: say y</code> — the greater value is always displayed!',
+        isLast: false,
+      },
+
+      /* L3 PAGE 4 — drag & drop: alphabet letter from number */
+      {
+        mascotTitle: "Letters from numbers! 🔤",
+        mascotBody:  "We can chain conditions using <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else if</code> to check multiple possibilities. Each branch is checked in order — only the first true one runs!",
+        demoCode:    `<span class="kw">set</span> <span class="str">num</span> <span class="punc">to</span> <span class="num">2</span><br><span class="kw">if</span> <span class="str">num</span> <span class="punc">==</span> <span class="num">1</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"A"</span><br><span class="kw">else if</span> <span class="str">num</span> <span class="punc">==</span> <span class="num">2</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"B"</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Something Else"</span>`,
+        taskDesc:    'Fill in the blanks to output the letter from the English alphabet that corresponds to the number.',
+        zones: [
+          { id:'z0', ph:'__',   correct:'IF'    },
+          { id:'z1', ph:'____', correct:'ELSE'  },
+          { id:'z2', ph:'___',  correct:'NUM'   },
+          { id:'z3', ph:'_',    correct:'TWO'   },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:5px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="kw">set</span> <span class="cs">num</span> <span class="cp">to</span> <span class="num">2</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="IF" data-value="" data-cid=""
+                  style="min-width:40px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">__</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">num</span>&nbsp;<span class="cp">==</span>&nbsp;<span class="num">1</span><span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">say</span>&nbsp;<span class="str">"A"</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z1" data-correct="ELSE" data-value="" data-cid=""
+                  style="min-width:52px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              &nbsp;<span class="kw">if</span>&nbsp;
+              <div class="drop-zone" id="z2" data-correct="NUM" data-value="" data-cid=""
+                  style="min-width:48px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z2')">
+                <span class="zt">___</span><span class="rm" onclick="rmChip('z2')">×</span>
+              </div>
+              &nbsp;<span class="cp">==</span>&nbsp;
+              <div class="drop-zone" id="z3" data-correct="TWO" data-value="" data-cid=""
+                  style="min-width:32px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z3')">
+                <span class="zt">_</span><span class="rm" onclick="rmChip('z3')">×</span>
+              </div>
+              <span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">say</span>&nbsp;<span class="str">"B"</span></div>
+            <div><span class="kw">else</span><span class="cp">:</span></div>
+            <div style="padding-left:28px"><span class="kw">say</span>&nbsp;<span class="str">"Something Else"</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l3p4if',   label:'if',   css:'c-say',     val:'IF'   },
+          { id:'l3p4else', label:'else', css:'c-colon',   val:'ELSE' },
+          { id:'l3p4num',  label:'num',  css:'c-quote',   val:'NUM'  },
+          { id:'l3p4two',  label:'2',    css:'c-display', val:'TWO'  },
+          { id:'l3p4when', label:'when', css:'c-send',    val:'WHEN' },
+          { id:'l3p4one',  label:'1',    css:'c-send',    val:'ONE'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> The first blank is <code style="color:#22d3ee">if</code>. The second is <code style="color:#22d3ee">else</code> (starting the else-if chain). The third is the variable <code style="color:#4ade80">num</code>, and the fourth is the number <code style="color:#fb923c">2</code>.',
+        successMsg: '🎉 Spot on! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">else if num == 2:</code> chains conditions — since num is 2, it outputs <strong>"B"</strong>!',
+        isLast: false,
+      },
+
+      /* L3 PAGE 5 — mini IDE: if/else with variable */
+      {
+        mascotTitle: "Time to write conditions! ⌨️",
+        mascotBody:  "You've learned <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code>, <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else</code>, and comparison operators. Now write a full conditional program yourself!<br><br>Use <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set x to 2</code>, then check if <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">x &gt; 10</code>.",
+        demoCode:    `<span class="cmt"># Reminder — if/else structure:</span><br><span class="kw">set</span> <span class="str">n</span> <span class="punc">to</span> <span class="num">5</span><br><span class="kw">if</span> <span class="str">n</span> <span class="punc">&gt;</span> <span class="num">3</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Big"</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Small"</span>`,
+        taskDesc:    'Write code that sets <strong>x to 2</strong>, then outputs <strong>"True"</strong> if x is more than 10, or <strong>"False"</strong> if not. The output must be exactly <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">False</code>.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideRequireCondition: true,
+        ideExpected: 'False',
+        ideWinMsg: 'You did it! Since x is 2 (not more than 10), the else branch runs and outputs "False". Level 3 complete!',
+        hint: '💡 <strong>Hint:</strong> Line 1: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set x to 2</code><br>Line 2: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if x > 10:</code><br>Line 3: &nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say "True"</code><br>Line 4: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>Line 5: &nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say "False"</code>',
+        successMsg: '🏅 Excellent! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">x = 2</code>, which is <em>not</em> greater than 10, so the else branch fires and prints <strong>"False"</strong>. Level 3 complete!',
+        isLast: true,
+      },
+    ];
+
+    /* ─── LEVEL CONFIG ───────────────────────────────── */
+    const LEVEL_CONFIG = {
+      1: {
+        pages: PAGES_L1,
+        breadcrumb: 'Level 01 › Writing Code',
+        badge: 'Level 01',
+        title: 'Writing Code',
+        completeSub: 'You\'ve mastered <strong>Writing Code</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code>, double quotes, and the difference between a command and a string.',
+      },
+      2: {
+        pages: PAGES_L2,
+        breadcrumb: 'Level 02 › Variables',
+        badge: 'Level 02',
+        title: 'Variables',
+        completeSub: 'You\'ve mastered <strong>Variables</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set</code> to create variables and store values in them using the <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code> keyword.',
+      },
+      3: {
+        pages: PAGES_L3,
+        breadcrumb: 'Level 03 › Conditions',
+        badge: 'Level 03',
+        title: 'Conditions',
+        completeSub: 'You\'ve mastered <strong>Conditions</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code> and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else</code> to make decisions in your code.',
+      },
+    };
+
     /* ─── STATE ──────────────────────────────────────── */
     let curPage   = 0;
-    let dragCid   = null;   // chip id being dragged
-    let done      = false;  // page answered
+    let curLevel  = 1;
+    let PAGES     = PAGES_L1;
+    let dragCid   = null;
+    let done      = false;
 
     /* ─── SCREENS ────────────────────────────────────── */
     function showScreen(id){
@@ -660,7 +1183,18 @@
       t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),3800);
     }
     function startLevel(n){
-      if(n===1){ curPage=0; renderPage(0); showScreen('puzzlescreen'); }
+      const cfg = LEVEL_CONFIG[n];
+      if(!cfg) return;
+      curLevel = n;
+      PAGES = cfg.pages;
+      // Update topbar breadcrumb
+      document.querySelector('.puzzle-breadcrumb').innerHTML = `${cfg.badge} › <span>${cfg.title}</span>`;
+      document.querySelector('.puzzle-badge').textContent = cfg.badge;
+      document.querySelector('.puzzle-level-title').textContent = cfg.title;
+      // Update progress dots count
+      const dotsEl = document.querySelector('.progress-dots');
+      dotsEl.innerHTML = cfg.pages.map((_,i)=>`<div class="pdot" id="pd${i+1}"></div>`).join('');
+      curPage=0; renderPage(0); showScreen('puzzlescreen');
     }
 
     /* ─── PAGE RENDERER ──────────────────────────────── */
@@ -669,14 +1203,16 @@
       const p=PAGES[idx];
 
       // Progress dots
-      for(let d=1;d<=8;d++){
+      const total=PAGES.length;
+      for(let d=1;d<=total;d++){
         const el=document.getElementById('pd'+d);
+        if(!el) continue;
         el.className='pdot';
         if(d-1<idx) el.classList.add('done');
         else if(d-1===idx) el.classList.add('active');
       }
-      document.getElementById('page-ctr').textContent=`Page ${idx+1}/8`;
-      document.getElementById('page-tag').textContent=`Page ${idx+1} of 8`;
+      document.getElementById('page-ctr').textContent=`Page ${idx+1}/${total}`;
+      document.getElementById('page-tag').textContent=`Page ${idx+1} of ${total}`;
 
       // Chips HTML — shuffle on pages with multiple same-looking chips so order isn't a giveaway
       const chipsToRender = [...p.chips];
@@ -696,13 +1232,21 @@
         <div class="code-demo">${p.demoCode}</div>
         <div class="task-label"><span>🎯</span> Your Task</div>
         <p class="task-desc">${p.taskDesc}</p>
-        ${p.isIDE ? renderIDE() : renderDragDrop(p, chipsHTML)}
+        ${p.isIDE ? renderIDE() : p.isMC ? renderMC(p) : p.isOrder ? renderOrder(p) : renderDragDrop(p, chipsHTML)}
         <div class="hint-box" id="hint-box">${p.hint}</div>
         <div class="feedback" id="feedback">
           <span class="fb-icon" id="fb-icon"></span>
           <span class="fb-text" id="fb-text"></span>
         </div>
-        ${p.isIDE ? '' : `
+        ${p.isIDE ? '' : p.isMC ? `
+        <div class="puzzle-actions">
+          <button class="hint-btn" onclick="toggleHint()">💡 Hint</button>
+        </div>` : p.isOrder ? `
+        <div class="puzzle-actions">
+          <button class="check-btn" id="check-btn" onclick="checkAns()">✓ Check Order</button>
+          <button class="hint-btn" onclick="toggleHint()">💡 Hint</button>
+          <button class="reset-btn" onclick="resetPage()">↺ Reset</button>
+        </div>` : `
         <div class="puzzle-actions">
           <button class="check-btn" id="check-btn" onclick="checkAns()">✓ Check Answer</button>
           <button class="hint-btn" onclick="toggleHint()">💡 Hint</button>
@@ -721,6 +1265,37 @@
           <div class="chips">${chipsHTML}</div>
         </div>
         `;
+    }
+
+    function renderMC(p){
+      return `
+        <div class="mc-choices">
+          ${p.mcChoices.map((c,i)=>`
+            <button class="mc-btn" id="mc-choice-${i}" data-val="${c.replace(/"/g,'&quot;')}" onclick="pickMC(this.dataset.val)">${c}</button>
+          `).join('')}
+        </div>`;
+    }
+
+    function renderOrder(p){
+      const slots = p.zones.map((z,i)=>`
+        <div class="order-slot" id="${z.id}" data-correct="${z.correct}" data-value="" data-iid=""
+            ondragover="orderOver(event)" ondragleave="orderLeave(event)" ondrop="orderDrop(event,'${z.id}')">
+          <span class="order-step-num">Step ${i+1}</span>
+          <span class="order-slot-text" id="${z.id}-txt" style="color:var(--dim);font-style:italic">Drag a step here…</span>
+          <span class="order-slot-rm" onclick="rmOrderItem('${z.id}')">×</span>
+        </div>`).join('');
+      const items = p.orderItems.map(it=>`
+        <div class="order-item" id="${it.id}" data-val="${it.val}"
+            draggable="true" ondragstart="orderDragStart(event,'${it.id}')">
+          ${it.label}
+        </div>`).join('');
+      return `
+        <div class="order-board">
+          <div class="chips-label" style="margin-bottom:4px">📋 Drop into the correct order:</div>
+          <div class="order-slots">${slots}</div>
+          <div class="chips-label" style="margin-bottom:8px">📦 Steps to place:</div>
+          <div class="order-items">${items}</div>
+        </div>`;
     }
 
   function renderIDE(){
@@ -762,32 +1337,163 @@
 
   /* ─── MINI MaySonLang INTERPRETER ────────────────── */
   function runMaySonLang(src){
-    const lines = src.split('\n');
+    const rawLines = src.split('\n');
     const out = [];
+    const vars = {};
     let err = null;
-    for(let i=0;i<lines.length;i++){
-      const raw = lines[i];
-      const line = raw.trim();
-      if(!line || line.startsWith('#')) continue;
 
-      // say statement
+    // Helper: resolve a value token (string literal, number, or variable)
+    function resolve(tok, lineNum){
+      const t = tok.trim();
+      if(t.startsWith('"') && t.endsWith('"') && t.length >= 2) return { val: t.slice(1,-1), ok: true };
+      if(!isNaN(t) && t !== '') return { val: Number(t), ok: true };
+      if(/^[A-Za-z_][A-Za-z0-9_]*$/.test(t)){
+        if(t in vars) return { val: vars[t], ok: true };
+        return { val: null, ok: false, err: `Line ${lineNum}: Variable "${t}" has not been set yet — use set ${t} to "..." first` };
+      }
+      return { val: null, ok: false, err: `Line ${lineNum}: Unknown value "${t}"` };
+    }
+
+    // Helper: evaluate a condition string like "x > 10" or "num == 2"
+    function evalCond(condStr, lineNum){
+      const ops = ['==','!=','>=','<=','>','<'];
+      for(const op of ops){
+        const idx = condStr.indexOf(op);
+        if(idx !== -1){
+          const lhs = condStr.slice(0, idx).trim();
+          const rhs = condStr.slice(idx + op.length).trim();
+          const L = resolve(lhs, lineNum);
+          const R = resolve(rhs, lineNum);
+          if(!L.ok) return { result: false, err: L.err };
+          if(!R.ok) return { result: false, err: R.err };
+          // Compare as numbers if both numeric, otherwise as strings
+          const lv = L.val, rv = R.val;
+          const ln = Number(lv), rn = Number(rv);
+          const bothNum = !isNaN(ln) && !isNaN(rn);
+          const a = bothNum ? ln : String(lv);
+          const b = bothNum ? rn : String(rv);
+          let result;
+          if(op === '==') result = a == b;
+          else if(op === '!=') result = a != b;
+          else if(op === '>=') result = a >= b;
+          else if(op === '<=') result = a <= b;
+          else if(op === '>') result = a > b;
+          else if(op === '<') result = a < b;
+          return { result, err: null };
+        }
+      }
+      return { result: false, err: `Line ${lineNum}: Invalid condition "${condStr}"` };
+    }
+
+    // Build a list of {indent, line, lineNum} structs
+    const stmts = rawLines.map((raw, i) => {
+      const indent = raw.match(/^(\s*)/)[1].length;
+      return { raw, line: raw.trim(), indent, lineNum: i+1 };
+    }).filter(s => s.line && !s.line.startsWith('#'));
+
+    // Execute statements, tracking index
+    let si = 0;
+    while(si < stmts.length && !err){
+      const { line, indent, lineNum } = stmts[si];
+
+      // --- set statement ---
+      const setMatch = line.match(/^set\s+([A-Za-z_][A-Za-z0-9_]*)\s+to\s+([\s\S]+)$/) ||
+                       line.match(/^set\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
+      if(setMatch){
+        const varName = setMatch[1];
+        const rhs = setMatch[2].trim();
+        const r = resolve(rhs, lineNum);
+        if(!r.ok){ err = r.err; break; }
+        vars[varName] = r.val;
+        si++; continue;
+      }
+
+      // --- say statement ---
       const sayMatch = line.match(/^say\s+([\s\S]+)$/);
       if(sayMatch){
-        const arg = sayMatch[1].trim();
-        // String literal
-        if(arg.startsWith('"') && arg.endsWith('"') && arg.length >= 2){
-          out.push(arg.slice(1,-1));
-          continue;
-        }
-        // Number literal
-        if(!isNaN(arg) && arg!==''){
-          out.push(arg);
-          continue;
-        }
-        err = `Line ${i+1}: Missing quotes around text — did you mean say "${arg}"?`;
-        break;
+        const r = resolve(sayMatch[1].trim(), lineNum);
+        if(!r.ok){ err = r.err; break; }
+        out.push(String(r.val));
+        si++; continue;
       }
-      err = `Line ${i+1}: Unknown instruction — "${line.split(' ')[0]}"`;
+
+      // --- if / else if / else block ---
+      const ifMatch = line.match(/^if\s+([\s\S]+):$/);
+      if(ifMatch){
+        // Collect entire if / else-if / else chain at this indent level
+        const chainIndent = indent;
+        const chain = []; // [{cond: string|null, bodyStart, bodyEnd}]
+
+        let j = si;
+        while(j < stmts.length){
+          const s2 = stmts[j];
+          if(s2.indent !== chainIndent) { j++; continue; }
+          const ifM  = s2.line.match(/^if\s+([\s\S]+):$/);
+          const elifM= s2.line.match(/^else\s+if\s+([\s\S]+):$/);
+          const elseM= s2.line.match(/^else:?$/);
+          if(ifM && j === si){
+            // Start collecting body
+            const bodyStart = j+1;
+            let k = j+1;
+            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
+            chain.push({ cond: ifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+            j = k; continue;
+          }
+          if(elifM){
+            const bodyStart = j+1;
+            let k = j+1;
+            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
+            chain.push({ cond: elifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+            j = k; continue;
+          }
+          if(elseM){
+            const bodyStart = j+1;
+            let k = j+1;
+            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
+            chain.push({ cond: null, bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+            j = k; break;
+          }
+          // Hit something else at same indent — end of chain
+          break;
+        }
+
+        // Evaluate chain
+        let ran = false;
+        for(const branch of chain){
+          if(branch.cond === null){
+            // else
+            if(!ran){
+              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
+              const res = runMaySonLang(bodyStmts.map(s=>s.raw).join('\n'));
+              if(res.err){ err = res.err; break; }
+              res.out.forEach(l => out.push(l));
+              ran = true;
+            }
+          } else {
+            const ev = evalCond(branch.cond, branch.lineNum);
+            if(ev.err){ err = ev.err; break; }
+            if(ev.result && !ran){
+              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
+              const res = runMaySonLang(bodyStmts.map(s=>s.raw).join('\n'));
+              if(res.err){ err = res.err; break; }
+              res.out.forEach(l => out.push(l));
+              ran = true;
+            }
+          }
+        }
+        // Advance si past the entire chain
+        const lastBranch = chain[chain.length-1];
+        si = lastBranch ? lastBranch.bodyEnd : si+1;
+        continue;
+      }
+
+      // --- else / else if at top level (shouldn't appear without preceding if) ---
+      if(line.match(/^else/) || line.match(/^else\s+if/)){
+        // Skip — handled above as part of chain
+        si++; continue;
+      }
+
+      err = `Line ${lineNum}: Unknown instruction — "${line.split(' ')[0]}"`;
       break;
     }
     return { out, err };
@@ -814,14 +1520,35 @@
     const outputText = out.join('\n');
     outputEl.innerHTML = out.map(l=>`<span class="ide-line">${escHtml(l)}</span>`).join('');
 
-    // Check win condition
-    if(outputText.trim() === 'Hello World'){
+    // Check win condition — use page's ideExpected if set, else fall back to 'Hello World'
+    const p = PAGES[curPage];
+    const expected = (p && p.ideExpected) ? p.ideExpected : 'Hello World';
+    const winMsg   = (p && p.ideWinMsg)   ? p.ideWinMsg   : `Output matches! ${expected} — you did it!`;
+
+    // Extra validation: L3P5 requires an if statement and x variable
+    if(p && p.ideRequireCondition){
+      const codeLC = code.toLowerCase();
+      if(!codeLC.includes('if ') && !codeLC.includes('if\t')){
+        showFB('wrong','❌','Your code must use an <strong>if</strong> statement to check the condition!');
+        return;
+      }
+      if(!codeLC.includes('else')){
+        showFB('wrong','❌','Your code must also use an <strong>else</strong> branch for when the condition is false!');
+        return;
+      }
+      if(!codeLC.includes('set x')){
+        showFB('wrong','❌','Make sure to <strong>set x to 2</strong> before the if statement!');
+        return;
+      }
+    }
+
+    if(outputText.trim() === expected){
       done=true;
       outputEl.innerHTML += '<span class="ide-success-tag">✓ Correct output!</span>';
-      showFB('correct','🎉','Output matches! Hello World — you did it!');
-      setTimeout(()=>showSuccessCard(PAGES[curPage]), 1000);
+      showFB('correct','🎉', winMsg);
+      setTimeout(()=>showSuccessCard(p), 1000);
     } else {
-      showFB('wrong','❌',`Output was "${outputText.trim()}" — expected exactly "Hello World"`);
+      showFB('wrong','❌',`Output was "${outputText.trim()}" — expected exactly "${expected}"`);
     }
   }
 
@@ -892,11 +1619,119 @@
     hideFB();
   }
 
+  /* ─── MULTIPLE CHOICE ───────────────────────────── */
+  function pickMC(choice){
+    if(done) return;
+    const p=PAGES[curPage];
+    // visually select using data-val attribute
+    document.querySelectorAll('.mc-btn').forEach(btn=>{
+      btn.classList.toggle('selected', btn.dataset.val===choice);
+    });
+    hideFB();
+    if(choice===p.mcCorrect){
+      done=true;
+      document.querySelectorAll('.mc-btn').forEach(btn=>{
+        if(btn.dataset.val===choice) btn.classList.replace('selected','correct-lock');
+      });
+      showFB('correct','🎉', p.successMsg);
+      setTimeout(()=>showSuccessCard(p), 1100);
+    } else {
+      document.querySelectorAll('.mc-btn').forEach(btn=>{
+        if(btn.dataset.val===choice) btn.classList.add('wrong-lock');
+      });
+      setTimeout(()=>{
+        document.querySelectorAll('.mc-btn').forEach(btn=>{
+          if(btn.dataset.val===choice) btn.classList.remove('wrong-lock','selected');
+        });
+      }, 600);
+      showFB('wrong','❌','Not quite — try another option!');
+    }
+  }
+
+  /* ─── ORDER DRAG & DROP ─────────────────────────── */
+  let orderDragId = null;
+  function orderDragStart(e, iid){
+    orderDragId = iid;
+    e.dataTransfer.effectAllowed = 'copy';
+    setTimeout(()=>document.getElementById(iid)?.classList.add('dragging'), 0);
+  }
+  function orderOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+  function orderLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+  function orderDrop(e, slotId){
+    e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+    if(!orderDragId || done) return;
+    document.querySelectorAll('.order-item').forEach(i=>i.classList.remove('dragging'));
+    placeOrderItem(slotId, orderDragId);
+    orderDragId = null;
+  }
+  function placeOrderItem(slotId, iid){
+    const slot = document.getElementById(slotId);
+    const item = document.getElementById(iid);
+    if(!slot || !item) return;
+    // Release previous item in this slot
+    const prevIid = slot.dataset.iid;
+    if(prevIid){
+      const prevItem = document.getElementById(prevIid);
+      const stillUsed = Array.from(document.querySelectorAll('.order-slot'))
+        .some(s => s.id !== slotId && s.dataset.iid === prevIid);
+      if(prevItem && !stillUsed) prevItem.classList.remove('used');
+    }
+    const p = PAGES[curPage];
+    const itDef = p.orderItems.find(it => it.id === iid);
+    slot.dataset.value = itDef ? itDef.val : '';
+    slot.dataset.iid = iid;
+    slot.classList.add('filled'); slot.classList.remove('wrong','drag-over');
+    document.getElementById(slotId+'-txt').textContent = item.textContent.trim();
+    document.getElementById(slotId+'-txt').style.cssText = 'color:var(--green);font-style:normal';
+    item.classList.add('used');
+    hideFB();
+  }
+  function rmOrderItem(slotId){
+    if(done) return;
+    const slot = document.getElementById(slotId);
+    const iid = slot.dataset.iid;
+    slot.dataset.value = ''; slot.dataset.iid = '';
+    slot.classList.remove('filled','wrong');
+    const txt = document.getElementById(slotId+'-txt');
+    if(txt){ txt.textContent = 'Drag a step here…'; txt.style.cssText = 'color:var(--dim);font-style:italic'; }
+    if(iid){
+      const stillUsed = Array.from(document.querySelectorAll('.order-slot'))
+        .some(s => s.id !== slotId && s.dataset.iid === iid);
+      if(!stillUsed) document.getElementById(iid)?.classList.remove('used');
+    }
+    hideFB();
+  }
+
     /* ─── CHECK ──────────────────────────────────────── */
     function checkAns(){
       if(done) return;
       const p=PAGES[curPage];
       if(p.isIDE){ runIDE(); return; }
+      if(p.isOrder){
+        const allFilled = p.zones.every(z=>{
+          const el=document.getElementById(z.id); return el&&el.dataset.value;
+        });
+        if(!allFilled){ showFB('wrong','❗','Place all three steps before checking!'); return; }
+        let allOk=true;
+        p.zones.forEach(z=>{
+          const el=document.getElementById(z.id);
+          if(el.dataset.value!==z.correct){
+            allOk=false;
+            el.classList.add('wrong');
+            setTimeout(()=>el.classList.remove('wrong'),550);
+          }
+        });
+        if(allOk){
+          done=true;
+          p.zones.forEach(z=>document.getElementById(z.id)?.classList.add('correct-lock'));
+          document.getElementById('check-btn').disabled=true;
+          showFB('correct','🎉','Correct order!');
+          setTimeout(()=>showSuccessCard(p), 1100);
+        } else {
+          showFB('wrong','❌','The order isn\'t quite right — check the highlighted steps!');
+        }
+        return;
+      }
       const allFilled=p.zones.every(z=>{
         const el=document.getElementById(z.id); return el&&el.dataset.value;
       });
@@ -943,6 +1778,31 @@
         const cb=document.getElementById('check-btn'); if(cb) cb.disabled=false;
         return;
       }
+      if(p.isMC){
+        p.mcChoices.forEach(c=>{
+          const btn=document.getElementById('mc-'+c);
+          if(btn) btn.className='mc-btn';
+        });
+        hideFB();
+        document.getElementById('hint-box')?.classList.remove('show');
+        return;
+      }
+      if(p.isOrder){
+        p.zones.forEach(z=>{
+          const slot=document.getElementById(z.id);
+          if(slot){
+            slot.dataset.value=''; slot.dataset.iid='';
+            slot.classList.remove('filled','wrong','correct-lock');
+            const txt=document.getElementById(z.id+'-txt');
+            if(txt){ txt.textContent='Drag a step here…'; txt.style.cssText='color:var(--dim);font-style:italic'; }
+          }
+        });
+        p.orderItems.forEach(it=>document.getElementById(it.id)?.classList.remove('used','dragging'));
+        hideFB();
+        document.getElementById('hint-box')?.classList.remove('show');
+        const cb=document.getElementById('check-btn'); if(cb) cb.disabled=false;
+        return;
+      }
       p.zones.forEach(z=>{
         const el=document.getElementById(z.id);
         if(el){
@@ -972,6 +1832,8 @@
       document.getElementById('success-overlay').classList.remove('show');
       clearConf();
       if(PAGES[curPage].isLast){
+        const cfg=LEVEL_CONFIG[curLevel];
+        if(cfg) document.getElementById('lc-sub-msg').innerHTML=cfg.completeSub;
         setTimeout(()=>{ document.getElementById('level-complete').classList.add('show'); spawnConfetti(); },200);
       } else {
         curPage++; renderPage(curPage);
@@ -1007,7 +1869,7 @@
     /* ─── TOUCH DRAG (mobile) ────────────────────────── */
     let tC=null,tCl=null;
     document.addEventListener('touchstart',e=>{
-      const chip=e.target.closest('.chip');
+      const chip=e.target.closest('.chip,.order-item');
       if(!chip||done) return;
       tC=chip;
       const r=chip.getBoundingClientRect();
@@ -1020,7 +1882,7 @@
       const t=e.touches[0];
       tCl.style.left=(t.clientX-tCl.offsetWidth/2)+'px';
       tCl.style.top=(t.clientY-tCl.offsetHeight/2)+'px';
-      document.querySelectorAll('.drop-zone').forEach(dz=>{
+      document.querySelectorAll('.drop-zone,.order-slot').forEach(dz=>{
         const r=dz.getBoundingClientRect();
         dz.classList.toggle('drag-over',t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom);
       });
@@ -1029,12 +1891,22 @@
     document.addEventListener('touchend',e=>{
       if(!tCl||!tC) return;
       const t=e.changedTouches[0];
-      document.querySelectorAll('.drop-zone').forEach(dz=>{
-        dz.classList.remove('drag-over');
-        const r=dz.getBoundingClientRect();
-        if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)
-          placeInZone(dz.id, tC.dataset.cid);
-      });
+      const isOrderItem = tC.classList.contains('order-item');
+      if(isOrderItem){
+        document.querySelectorAll('.order-slot').forEach(dz=>{
+          dz.classList.remove('drag-over');
+          const r=dz.getBoundingClientRect();
+          if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)
+            placeOrderItem(dz.id, tC.id);
+        });
+      } else {
+        document.querySelectorAll('.drop-zone').forEach(dz=>{
+          dz.classList.remove('drag-over');
+          const r=dz.getBoundingClientRect();
+          if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom)
+            placeInZone(dz.id, tC.dataset.cid);
+        });
+      }
       tCl.remove(); tCl=null; tC=null;
     });
     </script>
