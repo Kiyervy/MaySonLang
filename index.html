@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaySon · Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="titleLogo.png">
+    <style>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      :root{
+        --bg:#080c18;--bg2:#0d1428;--card:#141d35;--border:#1e2d52;
+        --blue:#3b82f6;--cyan:#22d3ee;--green:#4ade80;--yellow:#fbbf24;
+        --orange:#fb923c;--pink:#f472b6;--purple:#a78bfa;--red:#f87171;
+        --white:#e8eeff;--dim:#4a5a8a;
+        --fh:'Orbitron',sans-serif;--fb:'Nunito',sans-serif;--fc:'JetBrains Mono',monospace;
+      }
+      html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--fb);overflow:hidden}
+
+      #stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+        background:radial-gradient(ellipse at 20% 50%,rgba(59,130,246,.06) 0%,transparent 60%),
+                  radial-gradient(ellipse at 80% 20%,rgba(168,139,250,.06) 0%,transparent 60%),var(--bg)}
+      .star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) ease-in-out infinite var(--delay)}
+      @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.9;transform:scale(1.3)}}
+
+      .screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+      @keyframes floatIn{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes popIn{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
+      @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+      @keyframes pulseDot{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+      @keyframes spin{to{transform:rotate(360deg)}}
+
+      .auth-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(59,130,246,.08) 0%,transparent 70%)}
+
+      .logo-wrap{text-align:center;margin-bottom:32px;animation:floatIn .8s cubic-bezier(.34,1.56,.64,1) both}
+      .logo-badge{display:inline-flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(59,130,246,.12));border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:12px 24px;margin-bottom:14px}
+      .logo-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:22px;font-weight:900;color:#fff;box-shadow:0 0 24px rgba(34,211,238,.5)}
+      .logo-name{font-family:var(--fh);font-size:2.2rem;font-weight:900;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+      .logo-tagline{font-size:.93rem;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+
+      .auth-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px 30px 26px;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:floatIn .9s cubic-bezier(.34,1.56,.64,1) .08s both}
+      .auth-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:22px}
+      .auth-tab{flex:1;padding:10px 0;text-align:center;font-family:var(--fb);font-size:.85rem;font-weight:800;color:var(--dim);background:transparent;border:none;border-radius:9px;cursor:pointer;transition:all .2s}
+      .auth-tab.active{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35)}
+
+      .auth-heading{font-family:var(--fh);font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:4px}
+      .auth-subheading{font-size:.82rem;color:var(--dim);margin-bottom:22px;line-height:1.5}
+
+      .field{margin-bottom:16px;position:relative}
+      .field label{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+      .field input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:11px;padding:13px 44px 13px 16px;color:var(--white);font-family:var(--fb);font-size:.92rem;font-weight:600;outline:none;transition:border-color .2s,box-shadow .2s}
+      .field input::placeholder{color:var(--dim);font-weight:600}
+      .field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+      .field input.wrong{border-color:var(--red);animation:shake .35s}
+      .field-icon{position:absolute;right:14px;top:38px;font-size:1.05rem;opacity:.6;pointer-events:none}
+      .toggle-pass{position:absolute;right:14px;top:38px;font-size:1.05rem;cursor:pointer;opacity:.6;background:none;border:none;color:var(--dim);padding:0;line-height:1}
+      .toggle-pass:hover{opacity:1}
+
+      .auth-error{display:none;align-items:center;gap:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35);color:var(--red);font-size:.8rem;font-weight:700;border-radius:10px;padding:10px 14px;margin-bottom:16px;animation:popIn .25s ease both}
+      .auth-error.show{display:flex}
+
+      .remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+      .remember-check{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);cursor:pointer;user-select:none}
+      .remember-check input{accent-color:var(--cyan);width:14px;height:14px;cursor:pointer}
+      .forgot-link{font-size:.8rem;color:var(--cyan);text-decoration:none;font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--fb)}
+      .forgot-link:hover{text-decoration:underline}
+
+      .auth-btn{position:relative;width:100%;padding:15px 20px;border:none;border-radius:13px;cursor:pointer;font-family:var(--fb);font-size:.95rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 6px 28px rgba(59,130,246,.35);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:10px;overflow:hidden}
+      .auth-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);transition:transform .4s}
+      .auth-btn:hover::before{transform:translateX(100%)}
+      .auth-btn:hover{transform:translateY(-2px);box-shadow:0 10px 38px rgba(59,130,246,.5)}
+      .auth-btn:active{transform:scale(.98)}
+      .auth-btn:disabled{opacity:.7;cursor:wait;transform:none}
+      .spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+      .auth-btn.loading .spinner{display:inline-block}
+      .auth-btn.loading .btn-text{opacity:.85}
+
+      .auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0 16px;color:var(--dim);font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+      .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+      .demo-hint{text-align:center;font-size:.74rem;color:var(--dim);background:var(--bg2);border:1px dashed var(--border);border-radius:10px;padding:9px 12px}
+      .demo-hint b{color:var(--cyan);font-family:var(--fc)}
+
+      .version-tag{margin-top:26px;font-size:.7rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;animation:floatIn 1s ease .3s both}
+
+      /* SUCCESS OVERLAY */
+      .success-overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(8,12,24,.88);backdrop-filter:blur(4px)}
+      .success-overlay.show{display:flex}
+      .success-box{text-align:center;animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both}
+      .success-check{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#4ade80);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 18px;box-shadow:0 0 40px rgba(74,222,128,.5)}
+      .success-title{font-family:var(--fh);font-size:1.1rem;font-weight:800;color:var(--green);margin-bottom:6px}
+      .success-sub{font-size:.85rem;color:var(--dim)}
+
+      @media (max-width:420px){
+        .auth-card{padding:24px 20px 22px}
+        .logo-name{font-size:1.8rem}
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stars"></div>
+
+    <div class="screen">
+      <div class="auth-glow"></div>
+
+      <div class="logo-wrap">
+        <div class="logo-badge">
+          <div class="logo-icon">MS</div>
+          <div class="logo-name">MaySon</div>
+        </div>
+        <div class="logo-tagline">Learn · Code · Create</div>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+          <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <div class="auth-heading" id="auth-heading">Welcome back</div>
+        <div class="auth-subheading" id="auth-subheading">Sign in to continue your MaySon journey.</div>
+
+        <div class="auth-error" id="auth-error">⚠️ <span id="auth-error-text">Something went wrong.</span></div>
+
+        <form id="auth-form" onsubmit="handleSubmit(event)">
+          <div class="field">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="e.g. codemaster" autocomplete="username" required>
+            <span class="field-icon">👤</span>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+            <button type="button" class="toggle-pass" onclick="togglePass()" id="toggle-pass-btn">👁️</button>
+          </div>
+
+          <div class="field" id="confirm-field" style="display:none">
+            <label for="confirm">Confirm Password</label>
+            <input type="password" id="confirm" placeholder="Re-enter your password" autocomplete="new-password">
+          </div>
+
+          <div class="remember-row" id="remember-row">
+            <label class="remember-check">
+              <input type="checkbox" id="remember"> Remember me
+            </label>
+            <button type="button" class="forgot-link" onclick="forgotPass()">Forgot password?</button>
+          </div>
+
+          <button type="submit" class="auth-btn" id="submit-btn">
+            <span class="spinner"></span>
+            <span class="btn-text" id="submit-btn-text">🚀 Sign In</span>
+          </button>
+        </form>
+
+        <div class="auth-divider">or</div>
+        <div class="demo-hint">Demo account — user: <b>demo</b> · pass: <b>demo123</b></div>
+      </div>
+
+      <div class="version-tag">MaySon beta · MaySon Language Edition</div>
+    </div>
+
+    <div class="success-overlay" id="success-overlay">
+      <div class="success-box">
+        <div class="success-check">✓</div>
+        <div class="success-title" id="success-title">Welcome back!</div>
+        <div class="success-sub">Taking you to MaySon…</div>
+      </div>
+    </div>
+
+    <script>
+    'use strict';
+
+    /* ─── STARS ─────────────────────────────────────── */
+    (()=>{
+      const c=document.getElementById('stars');
+      for(let i=0;i<120;i++){
+        const s=document.createElement('div'); s.className='star';
+        const sz=Math.random()*2.5+0.5;
+        s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${-Math.random()*4}s;opacity:${.1+Math.random()*.4}`;
+        c.appendChild(s);
+      }
+    })();
+
+    /* ─── SIMPLE LOCAL AUTH STORE ─────────────────────
+       Accounts are saved permanently in this browser's
+       localStorage — they survive closing the tab, closing
+       the browser, and restarting the computer. They are
+       only lost if the user clears their browser's site
+       data for this page, or opens the site in a different
+       browser/device (localStorage doesn't sync across
+       browsers). Swap getUsers()/saveUsers() for real API
+       calls if you add a backend/database later.
+       ────────────────────────────────────────────────── */
+    const STORE_KEY = 'mayson_users';
+
+    async function hashPassword(pw){
+      try{
+        const enc = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+      }catch(e){
+        return pw; // fallback for very old browsers without SubtleCrypto
+      }
+    }
+
+    function getUsers(){
+      try{
+        const raw = localStorage.getItem(STORE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      }catch(e){ return {}; }
+    }
+    function saveUsers(users){
+      try{
+        localStorage.setItem(STORE_KEY, JSON.stringify(users));
+        return true;
+      }catch(e){
+        showError('Could not save your account — your browser storage may be full or disabled.');
+        return false;
+      }
+    }
+
+    // Seed the demo account once, permanently, without ever overwriting a real user.
+    (async ()=>{
+      const users = getUsers();
+      if(!users.demo){
+        users.demo = { hash: await hashPassword('demo123'), createdAt: Date.now() };
+        saveUsers(users);
+      }
+    })();
+
+    let mode = 'login'; // 'login' | 'signup'
+
+    function switchTab(next){
+      mode = next;
+      document.getElementById('tab-login').classList.toggle('active', next==='login');
+      document.getElementById('tab-signup').classList.toggle('active', next==='signup');
+      document.getElementById('confirm-field').style.display = next==='signup' ? 'block' : 'none';
+      document.getElementById('remember-row').style.display = next==='signup' ? 'none' : 'flex';
+      document.getElementById('auth-heading').textContent = next==='login' ? 'Welcome back' : 'Create your account';
+      document.getElementById('auth-subheading').textContent = next==='login'
+        ? 'Sign in to continue your MaySon journey.'
+        : 'Join MaySon and start learning to code.';
+      document.getElementById('submit-btn-text').textContent = next==='login' ? '🚀 Sign In' : '✨ Create Account';
+      hideError();
+      document.getElementById('password').setAttribute('autocomplete', next==='login' ? 'current-password' : 'new-password');
+    }
+
+    function showError(msg){
+      const box = document.getElementById('auth-error');
+      document.getElementById('auth-error-text').textContent = msg;
+      box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
+      document.getElementById('password').classList.add('wrong');
+      setTimeout(()=>document.getElementById('password').classList.remove('wrong'), 400);
+    }
+    function hideError(){
+      document.getElementById('auth-error').classList.remove('show');
+    }
+
+    function togglePass(){
+      const p = document.getElementById('password');
+      const btn = document.getElementById('toggle-pass-btn');
+      const isPass = p.type === 'password';
+      p.type = isPass ? 'text' : 'password';
+      btn.textContent = isPass ? '🙈' : '👁️';
+    }
+
+    function forgotPass(){
+      showError('Password reset isn\'t available in this demo. Try user "demo" / pass "demo123".');
+    }
+
+    async function handleSubmit(e){
+      e.preventDefault();
+      hideError();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+
+      if(username.length < 3){
+        showError('Username must be at least 3 characters.');
+        return;
+      }
+      if(password.length < 4){
+        showError('Password must be at least 4 characters.');
+        return;
+      }
+
+      const users = getUsers();
+
+      if(mode === 'signup'){
+        if(password !== confirm){
+          showError('Passwords don\'t match.');
+          return;
+        }
+        if(users[username]){
+          showError('That username is already taken.');
+          return;
+        }
+        setLoading(true);
+        const hash = await hashPassword(password);
+        users[username] = { hash, createdAt: Date.now() };
+        const saved = saveUsers(users);
+        setLoading(false);
+        if(!saved) return; // saveUsers already showed the error
+        localStorage.setItem('mayson_current_user', username);
+        runSuccess('Account created!');
+        return;
+      }
+
+      // login
+      setLoading(true);
+      const hash = await hashPassword(password);
+      const record = users[username];
+      const storedHash = typeof record === 'string' ? record : record?.hash; // supports old plaintext records too
+      if(!record || storedHash !== hash){
+        setLoading(false);
+        showError('Incorrect username or password.');
+        return;
+      }
+      localStorage.setItem('mayson_current_user', username);
+      if(document.getElementById('remember').checked){
+        localStorage.setItem('mayson_remember', '1');
+      }
+      setLoading(false);
+      runSuccess('Welcome back!');
+    }
+
+    function setLoading(isLoading){
+      const btn = document.getElementById('submit-btn');
+      btn.classList.toggle('loading', isLoading);
+      btn.disabled = isLoading;
+    }
+
+    function runSuccess(title){
+      document.getElementById('success-title').textContent = title;
+      document.getElementById('success-overlay').classList.add('show');
+      setTimeout(()=>{ window.location.href = 'menu.html'; }, 1100);
+    }
+    </script>
+  </body>
+</html>
