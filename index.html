@@ -6,6 +6,7 @@
     <title>MaySon · Sign In</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="titleLogo.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
       :root{
@@ -58,6 +59,8 @@
 
       .auth-error{display:none;align-items:center;gap:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35);color:var(--red);font-size:.8rem;font-weight:700;border-radius:10px;padding:10px 14px;margin-bottom:16px;animation:popIn .25s ease both}
       .auth-error.show{display:flex}
+      .auth-info{display:none;align-items:center;gap:8px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.35);color:var(--green);font-size:.8rem;font-weight:700;border-radius:10px;padding:10px 14px;margin-bottom:16px;animation:popIn .25s ease both;line-height:1.5}
+      .auth-info.show{display:flex}
 
       .remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
       .remember-check{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--dim);cursor:pointer;user-select:none}
@@ -121,12 +124,13 @@
         <div class="auth-subheading" id="auth-subheading">Sign in to continue your MaySon journey.</div>
 
         <div class="auth-error" id="auth-error">⚠️ <span id="auth-error-text">Something went wrong.</span></div>
+        <div class="auth-info" id="auth-info">📧 <span id="auth-info-text"></span></div>
 
         <form id="auth-form" onsubmit="handleSubmit(event)">
           <div class="field">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="e.g. codemaster" autocomplete="username" required>
-            <span class="field-icon">👤</span>
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+            <span class="field-icon">✉️</span>
           </div>
 
           <div class="field">
@@ -142,7 +146,7 @@
 
           <div class="remember-row" id="remember-row">
             <label class="remember-check">
-              <input type="checkbox" id="remember"> Remember me
+              <input type="checkbox" id="remember" checked> Remember me
             </label>
             <button type="button" class="forgot-link" onclick="forgotPass()">Forgot password?</button>
           </div>
@@ -154,7 +158,7 @@
         </form>
 
         <div class="auth-divider">or</div>
-        <div class="demo-hint">Demo account — user: <b>demo</b> · pass: <b>demo123</b></div>
+        <div class="demo-hint">Powered by Supabase — your account is stored securely and works on any device.</div>
       </div>
 
       <div class="version-tag">MaySon beta · MaySon Language Edition</div>
@@ -182,51 +186,19 @@
       }
     })();
 
-    /* ─── SIMPLE LOCAL AUTH STORE ─────────────────────
-       Accounts are saved permanently in this browser's
-       localStorage — they survive closing the tab, closing
-       the browser, and restarting the computer. They are
-       only lost if the user clears their browser's site
-       data for this page, or opens the site in a different
-       browser/device (localStorage doesn't sync across
-       browsers). Swap getUsers()/saveUsers() for real API
-       calls if you add a backend/database later.
+    /* ─── SUPABASE AUTH ────────────────────────────────
+       Real accounts, stored in your Supabase project's
+       Postgres database. Works across any browser/device —
+       not just the one that created the account.
        ────────────────────────────────────────────────── */
-    const STORE_KEY = 'mayson_users';
+    const SUPABASE_URL = 'https://tsvfgaepjeflmvdywngn.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_KX6baG7DnrCznWldtVTOwA_UvwHnKuD';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function hashPassword(pw){
-      try{
-        const enc = new TextEncoder().encode(pw);
-        const buf = await crypto.subtle.digest('SHA-256', enc);
-        return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-      }catch(e){
-        return pw; // fallback for very old browsers without SubtleCrypto
-      }
-    }
-
-    function getUsers(){
-      try{
-        const raw = localStorage.getItem(STORE_KEY);
-        return raw ? JSON.parse(raw) : {};
-      }catch(e){ return {}; }
-    }
-    function saveUsers(users){
-      try{
-        localStorage.setItem(STORE_KEY, JSON.stringify(users));
-        return true;
-      }catch(e){
-        showError('Could not save your account — your browser storage may be full or disabled.');
-        return false;
-      }
-    }
-
-    // Seed the demo account once, permanently, without ever overwriting a real user.
+    // If a session already exists (e.g. "Remember me" from a previous visit), skip straight in.
     (async ()=>{
-      const users = getUsers();
-      if(!users.demo){
-        users.demo = { hash: await hashPassword('demo123'), createdAt: Date.now() };
-        saveUsers(users);
-      }
+      const { data } = await supabase.auth.getSession();
+      if(data?.session){ window.location.href = 'menu.html'; }
     })();
 
     let mode = 'login'; // 'login' | 'signup'
@@ -242,11 +214,12 @@
         ? 'Sign in to continue your MaySon journey.'
         : 'Join MaySon and start learning to code.';
       document.getElementById('submit-btn-text').textContent = next==='login' ? '🚀 Sign In' : '✨ Create Account';
-      hideError();
+      hideError(); hideInfo();
       document.getElementById('password').setAttribute('autocomplete', next==='login' ? 'current-password' : 'new-password');
     }
 
     function showError(msg){
+      hideInfo();
       const box = document.getElementById('auth-error');
       document.getElementById('auth-error-text').textContent = msg;
       box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
@@ -255,6 +228,15 @@
     }
     function hideError(){
       document.getElementById('auth-error').classList.remove('show');
+    }
+    function showInfo(msg){
+      hideError();
+      const box = document.getElementById('auth-info');
+      document.getElementById('auth-info-text').textContent = msg;
+      box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
+    }
+    function hideInfo(){
+      document.getElementById('auth-info').classList.remove('show');
     }
 
     function togglePass(){
@@ -265,63 +247,59 @@
       btn.textContent = isPass ? '🙈' : '👁️';
     }
 
-    function forgotPass(){
-      showError('Password reset isn\'t available in this demo. Try user "demo" / pass "demo123".');
+    async function forgotPass(){
+      const email = document.getElementById('email').value.trim();
+      if(!email){
+        showError('Enter your email above first, then click "Forgot password?"');
+        return;
+      }
+      setLoading(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      setLoading(false);
+      if(error){ showError(error.message); return; }
+      showInfo('Password reset link sent — check your inbox.');
     }
 
     async function handleSubmit(e){
       e.preventDefault();
-      hideError();
-      const username = document.getElementById('username').value.trim();
+      hideError(); hideInfo();
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const confirm = document.getElementById('confirm').value;
 
-      if(username.length < 3){
-        showError('Username must be at least 3 characters.');
+      if(!/^\S+@\S+\.\S+$/.test(email)){
+        showError('Enter a valid email address.');
         return;
       }
-      if(password.length < 4){
-        showError('Password must be at least 4 characters.');
+      if(password.length < 6){
+        showError('Password must be at least 6 characters.');
         return;
       }
-
-      const users = getUsers();
 
       if(mode === 'signup'){
         if(password !== confirm){
           showError('Passwords don\'t match.');
           return;
         }
-        if(users[username]){
-          showError('That username is already taken.');
-          return;
-        }
         setLoading(true);
-        const hash = await hashPassword(password);
-        users[username] = { hash, createdAt: Date.now() };
-        const saved = saveUsers(users);
+        const { data, error } = await supabase.auth.signUp({ email, password });
         setLoading(false);
-        if(!saved) return; // saveUsers already showed the error
-        localStorage.setItem('mayson_current_user', username);
-        runSuccess('Account created!');
+        if(error){ showError(error.message); return; }
+        if(data.session){
+          runSuccess('Account created!');
+        } else {
+          // Email confirmation is enabled on this Supabase project.
+          showInfo('Account created! Check your email to confirm it, then sign in.');
+          switchTab('login');
+        }
         return;
       }
 
       // login
       setLoading(true);
-      const hash = await hashPassword(password);
-      const record = users[username];
-      const storedHash = typeof record === 'string' ? record : record?.hash; // supports old plaintext records too
-      if(!record || storedHash !== hash){
-        setLoading(false);
-        showError('Incorrect username or password.');
-        return;
-      }
-      localStorage.setItem('mayson_current_user', username);
-      if(document.getElementById('remember').checked){
-        localStorage.setItem('mayson_remember', '1');
-      }
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
+      if(error){ showError(error.message); return; }
       runSuccess('Welcome back!');
     }
 
