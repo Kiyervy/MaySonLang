@@ -192,12 +192,12 @@
        not just the one that created the account.
        ────────────────────────────────────────────────── */
     const SUPABASE_URL = 'https://tsvfgaepjeflmvdywngn.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_KX6baG7DnrCznWldtVTOwA_UvwHnKuD';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // If a session already exists (e.g. "Remember me" from a previous visit), skip straight in.
     (async ()=>{
-      const { data } = await supabase.auth.getSession();
+      const { data } = await supabaseClient.auth.getSession();
       if(data?.session){ window.location.href = 'menu.html'; }
     })();
 
@@ -254,7 +254,7 @@
         return;
       }
       setLoading(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
       setLoading(false);
       if(error){ showError(error.message); return; }
       showInfo('Password reset link sent — check your inbox.');
@@ -282,7 +282,7 @@
           return;
         }
         setLoading(true);
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
         setLoading(false);
         if(error){ showError(error.message); return; }
         if(data.session){
@@ -297,7 +297,7 @@
 
       // login
       setLoading(true);
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       setLoading(false);
       if(error){ showError(error.message); return; }
       runSuccess('Welcome back!');

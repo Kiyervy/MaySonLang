@@ -1895,12 +1895,12 @@
 
     /* ─── SUPABASE SESSION ───────────────────────────── */
     const SUPABASE_URL = 'https://tsvfgaepjeflmvdywngn.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_KX6baG7DnrCznWldtVTOwA_UvwHnKuD';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Bounce to login if nobody is signed in.
     (async ()=>{
-      const { data } = await supabase.auth.getSession();
+      const { data } = await supabaseClient.auth.getSession();
       if(!data?.session){ window.location.href = 'index.html'; }
     })();
 
@@ -1908,7 +1908,7 @@
     function showLogoutConfirm(){ document.getElementById('logout-overlay').classList.add('show'); }
     function closeLogoutConfirm(){ document.getElementById('logout-overlay').classList.remove('show'); }
     async function confirmLogout(){
-      try{ await supabase.auth.signOut(); }catch(e){}
+      try{ await supabaseClient.auth.signOut(); }catch(e){}
       window.location.href = 'index.html';
     }
 
