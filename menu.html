@@ -146,6 +146,12 @@
       .c-quote:hover{box-shadow:0 5px 18px rgba(74,222,128,.3)}
       .c-colon  {background:rgba(248,113,113,.12);color:var(--red);border-color:rgba(248,113,113,.3)}
       .c-colon:hover{box-shadow:0 5px 18px rgba(248,113,113,.3)}
+      .c-print  {background:rgba(59,130,246,.14);color:var(--blue);border-color:rgba(59,130,246,.3)}
+      .c-print:hover{box-shadow:0 5px 18px rgba(59,130,246,.3)}
+      .c-eq     {background:rgba(251,146,60,.14);color:var(--orange);border-color:rgba(251,146,60,.3)}
+      .c-eq:hover{box-shadow:0 5px 18px rgba(251,146,60,.3)}
+      .c-elif   {background:rgba(244,114,182,.14);color:var(--pink);border-color:rgba(244,114,182,.3)}
+      .c-elif:hover{box-shadow:0 5px 18px rgba(244,114,182,.3)}
 
       /* hint */
       .hint-box{display:none;background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.28);border-radius:10px;padding:12px 16px;margin-top:10px;font-size:.86rem;color:var(--yellow);line-height:1.6}
@@ -269,7 +275,11 @@
       .order-item.dragging{opacity:.25}
 
       @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
-      ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+      ::-webkit-scrollbar{width:9px}
+      ::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+      ::-webkit-scrollbar-thumb{background:#2e4380;border-radius:5px;border:2px solid transparent;background-clip:padding-box}
+      ::-webkit-scrollbar-thumb:hover{background:var(--cyan);background-clip:padding-box}
+      *{scrollbar-width:thin;scrollbar-color:#2e4380 rgba(255,255,255,.03)}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
@@ -314,30 +324,32 @@
     <div class="screen hidden" id="levelscreen">
       <div class="level-header"><h1>🗺 Choose Your Level</h1><p>Complete puzzles to unlock new lessons</p></div>
       <div class="levels-grid">
-        <div class="level-card" onclick="startLevel(1)" style="animation-delay:.04s">
+        <div class="level-card" id="level-card-1" onclick="startLevel(1)" style="animation-delay:.04s">
           <div class="level-num">01</div>
           <div class="level-title">Writing Code</div>
           <div class="level-desc">Learn the basics of output</div>
-          <div class="level-star">★ ★ ★</div>
+          <div class="level-star" id="level-star-1">☆ ☆ ☆</div>
         </div>
-        <div class="level-card" onclick="startLevel(2)" style="animation-delay:.08s">
-          <div class="level-num">02</div>
-          <div class="level-title">Variables</div>
-          <div class="level-desc">Store and use data</div>
-          <div class="level-star">★ ★ ★</div>
+        <div class="level-card locked" id="level-card-2" style="animation-delay:.08s">
+          <div class="level-lock" id="level-lock-2">🔒</div>
+          <div class="level-num" id="level-num-2" style="color:var(--dim)">02</div>
+          <div class="level-title" id="level-title-2" style="color:var(--dim)">Variables</div>
+          <div class="level-desc" id="level-desc-2">🔒 Complete Level 01 to unlock</div>
+          <div class="level-star" id="level-star-2" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
-        <div class="level-card" onclick="startLevel(3)" style="animation-delay:.12s">
-          <div class="level-num">03</div>
-          <div class="level-title">Conditions</div>
-          <div class="level-desc">Make decisions with if</div>
-          <div class="level-star">★ ★ ★</div>
+        <div class="level-card locked" id="level-card-3" style="animation-delay:.12s">
+          <div class="level-lock" id="level-lock-3">🔒</div>
+          <div class="level-num" id="level-num-3" style="color:var(--dim)">03</div>
+          <div class="level-title" id="level-title-3" style="color:var(--dim)">Conditions</div>
+          <div class="level-desc" id="level-desc-3">🔒 Complete Level 02 to unlock</div>
+          <div class="level-star" id="level-star-3" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.16s">
-          <div class="level-lock">🔒</div>
+        <div class="level-card locked" id="level-card-4" style="animation-delay:.16s">
+          <div class="level-lock" id="level-lock-4">🔒</div>
           <div class="level-num" style="color:var(--dim)">04</div>
-          <div class="level-title">User Input</div>
-          <div class="level-desc">Read what users type</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+          <div class="level-title">🐍 Python Bridge</div>
+          <div class="level-desc" id="level-desc-4">Earn 9★ in Levels 1–3 to unlock</div>
+          <div class="level-star" id="level-star-4" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
         <div class="level-card locked" style="animation-delay:.20s">
           <div class="level-lock">🔒</div>
@@ -434,10 +446,11 @@
         <div class="lc-icon">🎉</div>
         <div class="lc-title">Level Complete!</div>
         <div class="lc-sub" id="lc-sub-msg">You've mastered <strong>Writing Code</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:'JetBrains Mono',monospace">say</code>, double quotes, and the difference between a command and a string.</div>
-        <div class="lc-stars">⭐⭐⭐</div>
+        <div class="lc-stars" id="lc-stars-display">⭐⭐⭐</div>
+        <div class="lc-stars-note" id="lc-stars-note" style="font-size:.78rem;color:var(--dim);margin:-14px 0 22px"></div>
         <div class="lc-btns">
           <button class="lc-home" onclick="lcHome()">🏠 Menu</button>
-          <button class="lc-play" onclick="lcPlay()">🎮 Play Again</button>
+          <button class="lc-play" id="lc-play-btn" onclick="lcPlay()">🎮 Play Again</button>
         </div>
       </div>
     </div>
@@ -1162,6 +1175,199 @@
       },
     ];
 
+    /* ─── PUZZLE DATA — LEVEL 4 (MaySon → Python) ────── */
+    const PAGES_L4 = [
+
+      /* L4 PAGE 1 — say → print (string) */
+      {
+        mascotTitle: "Meet Py, your Python guide! 🐍",
+        mascotBody:  "You've mastered <strong>MaySon</strong> — awesome work! Now let's translate what you know into <strong>Python</strong>, one of the most popular languages in the real world. A lot of what you already know carries over directly!",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">say</span> <span class="str">"Hello!"</span><br><br><span class="cmt"># Python:</span><br><span class="kw">print</span><span class="punc">(</span><span class="str">"Hello!"</span><span class="punc">)</span>`,
+        taskDesc:    'Translate the MaySon line into Python. Python\'s printing command is called <strong>print</strong>, and it wraps its message in <strong>parentheses ( )</strong>.<br>Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'______', correct:'PRINT' }
+        ],
+        lineHTML: () => `
+          <div class="drop-zone" id="z0" data-correct="PRINT" data-value="" data-cid=""
+              ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div><span class="cp">(</span><span class="cs">"Hello!"</span><span class="cp">)</span>
+        `,
+        chips: [
+          { id:'l4p1say',   label:'say',   css:'c-say',   val:'SAY'   },
+          { id:'l4p1print', label:'print', css:'c-print', val:'PRINT' },
+        ],
+        hint: '💡 <strong>Hint:</strong> MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code> becomes Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>. The parentheses are already there for you!',
+        successMsg: 'You got it! In Python, <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print(...)</code> outputs text — just remember the parentheses.',
+      },
+
+      /* L4 PAGE 2 — say → print (number) */
+      {
+        mascotTitle: "Numbers translate the same way 🔢",
+        mascotBody:  "Just like in MaySon, Python doesn't need quotes around numbers — only real text (called a <strong>string</strong>) needs quotes.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">say</span> <span class="num">42</span><br><br><span class="cmt"># Python:</span><br><span class="kw">print</span><span class="punc">(</span><span class="num">42</span><span class="punc">)</span>`,
+        taskDesc:    'Translate this MaySon line into Python. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'______', correct:'PRINT' }
+        ],
+        lineHTML: () => `
+          <div class="drop-zone" id="z0" data-correct="PRINT" data-value="" data-cid=""
+              ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div><span class="cp">(</span><span class="num">42</span><span class="cp">)</span>
+        `,
+        chips: [
+          { id:'l4p2output', label:'output', css:'c-display', val:'OUTPUT' },
+          { id:'l4p2print',  label:'print',  css:'c-print',   val:'PRINT'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> It\'s the same word every time — <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>. Numbers still don\'t need quotes, just like in MaySon.',
+        successMsg: 'Nailed it! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code> works for numbers too, with no quotes needed.',
+      },
+
+      /* L4 PAGE 3 — set...to → = (string) */
+      {
+        mascotTitle: "Storing data, Python style 📦",
+        mascotBody:  "MaySon uses <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set name to value</code> to create a variable. Python drops the extra words — it just uses a single <strong>equals sign</strong> <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">set</span> <span class="str">name</span> <span class="punc">to</span> <span class="str">"Max"</span><br><br><span class="cmt"># Python:</span><br><span class="cs">name</span> <span class="cp">=</span> <span class="cs">"Max"</span>`,
+        taskDesc:    'Translate the assignment into Python. Drag the correct symbol into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'EQ' }
+        ],
+        lineHTML: () => `
+          <span class="cs">name</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="EQ" data-value="" data-cid=""
+              style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="cs">"Max"</span>
+        `,
+        chips: [
+          { id:'l4p3to',    label:'to', css:'c-colon', val:'TO' },
+          { id:'l4p3colon', label:':',  css:'c-colon', val:'COLON' },
+          { id:'l4p3eq',    label:'=',  css:'c-eq',    val:'EQ' },
+        ],
+        hint: '💡 <strong>Hint:</strong> MaySon\'s <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code> becomes a single <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code> sign in Python — no other words needed.',
+        successMsg: 'Perfect! <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">name = "Max"</code> — that\'s how Python creates a variable.',
+      },
+
+      /* L4 PAGE 4 — set...to → = (number) */
+      {
+        mascotTitle: "Same trick with numbers 🎯",
+        mascotBody:  "The <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code> sign works for numbers too. Just watch out — later on you'll see <code style=\"color:#f87171;font-family:'JetBrains Mono',monospace\">==</code> (two equals signs), which means something completely different!",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">set</span> <span class="str">age</span> <span class="punc">to</span> <span class="num">10</span><br><br><span class="cmt"># Python:</span><br><span class="cs">age</span> <span class="cp">=</span> <span class="num">10</span>`,
+        taskDesc:    'Translate the assignment into Python. Drag the correct symbol into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'EQ' }
+        ],
+        lineHTML: () => `
+          <span class="cs">age</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="EQ" data-value="" data-cid=""
+              style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="num">10</span>
+        `,
+        chips: [
+          { id:'l4p4eqeq', label:'==', css:'c-colon', val:'EQEQ' },
+          { id:'l4p4to',   label:'to', css:'c-colon', val:'TO'   },
+          { id:'l4p4eq',   label:'=',  css:'c-eq',    val:'EQ'   },
+        ],
+        hint: '💡 <strong>Hint:</strong> A single <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code> stores a value. <code style="color:#f87171;font-family:\'JetBrains Mono\',monospace">==</code> is for comparing — that\'s not what we want here!',
+        successMsg: 'Exactly right! <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">age = 10</code> stores the number 10 in age.',
+      },
+
+      /* L4 PAGE 5 — else if → elif */
+      {
+        mascotTitle: "Chaining conditions — elif 🔀",
+        mascotBody:  "MaySon chains conditions with <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else if</code> (two words). Python squashes this into a single word: <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code>.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">if</span> <span class="str">score</span> <span class="punc">==</span> <span class="num">1</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"A"</span><br><span class="kw">else if</span> <span class="str">score</span> <span class="punc">==</span> <span class="num">2</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"B"</span><br><br><span class="cmt"># Python:</span><br><span class="kw">if</span> <span class="cs">score</span> <span class="cp">==</span> <span class="num">1</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="cp">(</span><span class="cs">"A"</span><span class="cp">)</span><br><span class="kw">elif</span> <span class="cs">score</span> <span class="cp">==</span> <span class="num">2</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="cp">(</span><span class="cs">"B"</span><span class="cp">)</span>`,
+        taskDesc:    'Translate the <strong>else-if</strong> branch into Python. Drag the correct keyword into the blank!',
+        zones: [
+          { id:'z0', ph:'____', correct:'ELIF' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.92rem;line-height:2">
+            <div><span class="kw">if</span> <span class="cs">score</span> <span class="cp">==</span> <span class="num">1</span><span class="cp">:</span></div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"A"</span><span class="cp">)</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="ELIF" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">score</span>&nbsp;<span class="cp">==</span>&nbsp;<span class="num">2</span><span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"B"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l4p5elseif', label:'else if', css:'c-colon', val:'ELSEIF' },
+          { id:'l4p5else',   label:'else',    css:'c-colon', val:'ELSE'   },
+          { id:'l4p5elif',   label:'elif',    css:'c-elif',  val:'ELIF'   },
+        ],
+        hint: '💡 <strong>Hint:</strong> Python squashes MaySon\'s two words <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code> into one word: <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
+        successMsg: '🎉 Perfect! <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> chains a condition, just like <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code> did in MaySon.',
+      },
+
+      /* L4 PAGE 6 — full capstone translation */
+      {
+        mascotTitle: "Final translation — put it all together! 🏆",
+        mascotBody:  "You've learned all the pieces: <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">print</code>, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>, and <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code>. Now translate a full MaySon program into Python!",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">set</span> <span class="str">score</span> <span class="punc">to</span> <span class="num">7</span><br><span class="kw">if</span> <span class="str">score</span> <span class="punc">==</span> <span class="num">10</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Perfect"</span><br><span class="kw">else if</span> <span class="str">score</span> <span class="punc">==</span> <span class="num">7</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Good"</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Try Again"</span>`,
+        taskDesc:    'Translate the whole program into Python. Fill in <strong>all four</strong> blanks!',
+        zones: [
+          { id:'z0', ph:' ? ',  correct:'EQ'   },
+          { id:'z1', ph:'____', correct:'PRINT' },
+          { id:'z2', ph:'____', correct:'ELIF'  },
+          { id:'z3', ph:'____', correct:'PRINT' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="cs">score</span>
+              <div class="drop-zone" id="z0" data-correct="EQ" data-value="" data-cid=""
+                  style="min-width:38px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="num">7</span>
+            </div>
+            <div><span class="kw">if</span> <span class="cs">score</span> <span class="cp">==</span> <span class="num">10</span><span class="cp">:</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z1" data-correct="PRINT" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">"Perfect"</span><span class="cp">)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z2" data-correct="ELIF" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z2')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z2')">×</span>
+              </div>
+              <span class="cs">score</span>&nbsp;<span class="cp">==</span>&nbsp;<span class="num">7</span><span class="cp">:</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z3" data-correct="PRINT" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z3')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z3')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">"Good"</span><span class="cp">)</span>
+            </div>
+            <div><span class="kw">else</span><span class="cp">:</span></div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"Try Again"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l4p6eq',     label:'=',     css:'c-eq',    val:'EQ'    },
+          { id:'l4p6print1', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l4p6elif',   label:'elif',  css:'c-elif',  val:'ELIF'  },
+          { id:'l4p6print2', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l4p6to',     label:'to',    css:'c-colon', val:'TO'    },
+          { id:'l4p6say',    label:'say',   css:'c-say',   val:'SAY'   },
+        ],
+        hint: '💡 <strong>Hint:</strong> Blank 1 is <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code>, blanks 2 &amp; 4 are <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>, and blank 3 is <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
+        successMsg: '🏅 Amazing! Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">score = 7</code>, the <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> branch fires and prints <strong>"Good"</strong>. You can now read and write real Python — Level 4 complete!',
+        isLast: true,
+      },
+    ];
+
     /* ─── LEVEL CONFIG ───────────────────────────────── */
     const LEVEL_CONFIG = {
       1: {
@@ -1185,6 +1391,13 @@
         title: 'Conditions',
         completeSub: 'You\'ve mastered <strong>Conditions</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code> and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else</code> to make decisions in your code.',
       },
+      4: {
+        pages: PAGES_L4,
+        breadcrumb: 'Level 04 › Python Bridge',
+        badge: 'Level 04',
+        title: '🐍 Python Bridge',
+        completeSub: 'You\'ve completed the <strong>Python Bridge</strong>!<br>You now know how MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code>, <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set ... to ...</code>, and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code> map to Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print()</code>, <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code>, and <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
+      },
     };
 
     /* ─── STATE ──────────────────────────────────────── */
@@ -1194,12 +1407,147 @@
     let dragCid   = null;
     let done      = false;
 
+    /* ─── STARS & PROGRESSION ────────────────────────── */
+    const STAR_KEY = 'mayson_level_stars_v1';
+    const STARS_TO_UNLOCK_L4 = 9;
+    const PROGRESS_TABLE = 'level_progress';   // table in Supabase — see SQL setup notes
+    let levelStars    = {};   // best stars ever earned per level, e.g. {1:3,2:2,3:0}
+    let curHints      = 0;    // hints opened during the current playthrough
+    let curErrors     = 0;    // wrong checks during the current playthrough
+    let currentUserId = null; // set once the Supabase session resolves
+
+    function loadLocalCache(){
+      try{ levelStars = JSON.parse(localStorage.getItem(STAR_KEY)) || {}; }
+      catch(e){ levelStars = {}; }
+    }
+    function saveLocalCache(){
+      try{ localStorage.setItem(STAR_KEY, JSON.stringify(levelStars)); }catch(e){}
+    }
+    /* Writes the current levelStars to Supabase (falls back to local-only if offline/no user yet). */
+    async function saveStars(){
+      saveLocalCache();
+      if(!currentUserId) return;
+      try{
+        await supabaseClient.from(PROGRESS_TABLE).upsert({
+          user_id: currentUserId,
+          level_stars: levelStars,
+          updated_at: new Date().toISOString(),
+        });
+      }catch(e){ console.error('Could not sync progress to the database:', e); }
+    }
+    /* Authoritative load — runs once the Supabase session is known.
+       New users get a fresh row (start at Level 1); returning users resume where they left off. */
+    async function loadProgressFromDB(){
+      try{
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const user = sessionData?.session?.user;
+        if(!user) return;
+        currentUserId = user.id;
+
+        const { data, error } = await supabaseClient
+          .from(PROGRESS_TABLE)
+          .select('level_stars')
+          .eq('user_id', currentUserId)
+          .maybeSingle();
+
+        if(error){ console.error('Could not load progress from the database:', error); return; }
+
+        if(data){
+          levelStars = data.level_stars || {};           // returning user
+        } else {
+          levelStars = {};                                // brand-new user → Level 1 start
+          await supabaseClient.from(PROGRESS_TABLE).insert({ user_id: currentUserId, level_stars: {} });
+        }
+        saveLocalCache();
+        refreshLevelScreen();
+      }catch(e){ console.error('Progress sync failed, using local cache instead:', e); }
+    }
+    function starsFor(n){ return levelStars[n]||0; }
+    function totalCoreStars(){ return [1,2,3].reduce((s,n)=>s+starsFor(n),0); }
+    function isLevel4Unlocked(){ return totalCoreStars() >= STARS_TO_UNLOCK_L4; }
+    function isLevelUnlocked(n){
+      if(n===1) return true;
+      if(n===4) return isLevel4Unlocked();
+      return starsFor(n-1) >= 1;   // previous level must be completed (1+ star)
+    }
+    function computeEarnedStars(){
+      if(curHints>0) return 1;
+      if(curErrors>0) return 2;
+      return 3;
+    }
+    function starString(n){ return '★ '.repeat(n) + '☆ '.repeat(3-n); }
+    function recordStars(level, earned){
+      const prevTotal = totalCoreStars();
+      const prevBest = starsFor(level);
+      if(earned>prevBest){ levelStars[level]=earned; saveStars(); }
+      refreshLevelScreen();
+      if(!isLevel4WasUnlocked(prevTotal) && isLevel4Unlocked()){
+        setTimeout(()=>toast('🔓 Python Bridge (Level 04) unlocked!'), 400);
+      }
+    }
+    function isLevel4WasUnlocked(prevTotal){ return prevTotal >= STARS_TO_UNLOCK_L4; }
+
+    const LEVEL_META = {
+      2: { num:'02', title:'Variables',  desc:'Store and use data',      lockDesc:'🔒 Complete Level 01 to unlock' },
+      3: { num:'03', title:'Conditions', desc:'Make decisions with if',  lockDesc:'🔒 Complete Level 02 to unlock' },
+    };
+    function refreshLevelScreen(){
+      [1,2,3].forEach(n=>{
+        const starEl=document.getElementById('level-star-'+n);
+        if(starEl) starEl.textContent = starString(starsFor(n));
+      });
+      [2,3].forEach(n=>{
+        const meta = LEVEL_META[n];
+        const card  = document.getElementById('level-card-'+n);
+        const lock  = document.getElementById('level-lock-'+n);
+        const numEl = document.getElementById('level-num-'+n);
+        const titleEl = document.getElementById('level-title-'+n);
+        const descEl  = document.getElementById('level-desc-'+n);
+        const starEl  = document.getElementById('level-star-'+n);
+        if(!card) return;
+        if(isLevelUnlocked(n)){
+          card.classList.remove('locked');
+          card.onclick = ()=>startLevel(n);
+          if(lock) lock.remove();
+          if(numEl) numEl.style.color='';
+          if(titleEl) titleEl.style.color='';
+          if(descEl) descEl.textContent = meta.desc;
+          if(starEl) starEl.style.color='';
+        } else {
+          card.classList.add('locked');
+          card.onclick = null;
+          if(numEl) numEl.style.color='var(--dim)';
+          if(titleEl) titleEl.style.color='var(--dim)';
+          if(descEl) descEl.textContent = meta.lockDesc;
+          if(starEl) starEl.style.color='var(--dim)';
+        }
+      });
+      const card4  = document.getElementById('level-card-4');
+      const star4  = document.getElementById('level-star-4');
+      const desc4  = document.getElementById('level-desc-4');
+      const lock4  = document.getElementById('level-lock-4');
+      if(!card4) return;
+      if(isLevel4Unlocked()){
+        card4.classList.remove('locked');
+        card4.onclick = ()=>startLevel(4);
+        if(lock4) lock4.remove();
+        if(desc4) desc4.textContent = 'Translate MaySon into Python';
+        if(star4){ star4.style.color=''; star4.textContent=starString(starsFor(4)); }
+      } else {
+        card4.classList.add('locked');
+        card4.onclick = null;
+        if(desc4) desc4.textContent = `🔒 ${totalCoreStars()}/${STARS_TO_UNLOCK_L4}★ from Levels 1–3`;
+        if(star4){ star4.style.color='var(--dim)'; star4.textContent='☆ ☆ ☆'; }
+      }
+    }
+    loadLocalCache();   // instant fallback so the UI has something before Supabase responds
+
     /* ─── SCREENS ────────────────────────────────────── */
     function showScreen(id){
       document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
     }
-    function showLevels(){ showScreen('levelscreen'); }
+    function showLevels(){ refreshLevelScreen(); showScreen('levelscreen'); }
     function openIDE(){
       if(!window.open('MaySonLang_ide.html','_blank'))
         toast('💻 Keep MaySonLang_ide.html in the same folder!');
@@ -1212,8 +1560,17 @@
     function startLevel(n){
       const cfg = LEVEL_CONFIG[n];
       if(!cfg) return;
+      if(!isLevelUnlocked(n)){
+        if(n===4){
+          toast(`🔒 Earn ${STARS_TO_UNLOCK_L4}★ across Levels 1–3 to unlock Python Bridge (${totalCoreStars()}/${STARS_TO_UNLOCK_L4} so far)`);
+        } else {
+          toast(`🔒 Complete Level 0${n-1} first to unlock this level!`);
+        }
+        return;
+      }
       curLevel = n;
       PAGES = cfg.pages;
+      curHints = 0; curErrors = 0;
       // Update topbar breadcrumb
       document.querySelector('.puzzle-breadcrumb').innerHTML = `${cfg.badge} › <span>${cfg.title}</span>`;
       document.querySelector('.puzzle-badge').textContent = cfg.badge;
@@ -1539,6 +1896,7 @@
     const { out, err } = runMaySonLang(code);
 
     if(err){
+      curErrors++;
       outputEl.innerHTML = `<span class="ide-error">❌ ${err}</span>`;
       showFB('wrong','❌', err);
       return;
@@ -1556,14 +1914,17 @@
     if(p && p.ideRequireCondition){
       const codeLC = code.toLowerCase();
       if(!codeLC.includes('if ') && !codeLC.includes('if\t')){
+        curErrors++;
         showFB('wrong','❌','Your code must use an <strong>if</strong> statement to check the condition!');
         return;
       }
       if(!codeLC.includes('else')){
+        curErrors++;
         showFB('wrong','❌','Your code must also use an <strong>else</strong> branch for when the condition is false!');
         return;
       }
       if(!codeLC.includes('set x')){
+        curErrors++;
         showFB('wrong','❌','Make sure to <strong>set x to 2</strong> before the if statement!');
         return;
       }
@@ -1575,6 +1936,7 @@
       showFB('correct','🎉', winMsg);
       setTimeout(()=>showSuccessCard(p), 1000);
     } else {
+      curErrors++;
       showFB('wrong','❌',`Output was "${outputText.trim()}" — expected exactly "${expected}"`);
     }
   }
@@ -1663,6 +2025,7 @@
       showFB('correct','🎉', p.successMsg);
       setTimeout(()=>showSuccessCard(p), 1100);
     } else {
+      curErrors++;
       document.querySelectorAll('.mc-btn').forEach(btn=>{
         if(btn.dataset.val===choice) btn.classList.add('wrong-lock');
       });
@@ -1755,6 +2118,7 @@
           showFB('correct','🎉','Correct order!');
           setTimeout(()=>showSuccessCard(p), 1100);
         } else {
+          curErrors++;
           showFB('wrong','❌','The order isn\'t quite right — check the highlighted steps!');
         }
         return;
@@ -1781,6 +2145,7 @@
         showFB('correct','🎉',p.isLast?'Amazing! You completed all pages!':'Perfect! Moving to next page...');
         setTimeout(()=>showSuccessCard(p), 1100);
       } else {
+        curErrors++;
         showFB('wrong','❌','Not quite — check the highlighted blanks!');
       }
     }
@@ -1794,7 +2159,13 @@
       document.getElementById('fb-text').textContent=text;
     }
     function hideFB(){ const fb=document.getElementById('feedback'); if(fb) fb.className='feedback'; }
-    function toggleHint(){ document.getElementById('hint-box')?.classList.toggle('show'); }
+    function toggleHint(){
+      const hb=document.getElementById('hint-box');
+      if(!hb) return;
+      const opening = !hb.classList.contains('show');
+      hb.classList.toggle('show');
+      if(opening) curHints++;
+    }
 
     /* ─── RESET ──────────────────────────────────────── */
     function resetPage(){
@@ -1860,14 +2231,40 @@
       clearConf();
       if(PAGES[curPage].isLast){
         const cfg=LEVEL_CONFIG[curLevel];
+        const earned = computeEarnedStars();
         if(cfg) document.getElementById('lc-sub-msg').innerHTML=cfg.completeSub;
+        const starsEl=document.getElementById('lc-stars-display');
+        const noteEl=document.getElementById('lc-stars-note');
+        if(starsEl) starsEl.textContent = '⭐'.repeat(earned) + '☆'.repeat(3-earned);
+        if(noteEl){
+          const best = Math.max(earned, starsFor(curLevel));
+          noteEl.textContent = earned<best
+            ? `This run: ${earned}★ · Best so far: ${best}★`
+            : `Best score for this level: ${best}★`;
+        }
+        recordStars(curLevel, earned);
+
+        // Decide whether a next level is ready — show "Next Level" instead of "Play Again"
+        const nextLevel = curLevel + 1;
+        const nextBtn = document.getElementById('lc-play-btn');
+        if(nextBtn){
+          if(LEVEL_CONFIG[nextLevel] && isLevelUnlocked(nextLevel)){
+            nextBtn.textContent = '▶ Next Level';
+            nextBtn.onclick = ()=>lcNext(nextLevel);
+          } else {
+            nextBtn.textContent = '🎮 Play Again';
+            nextBtn.onclick = lcPlay;
+          }
+        }
+
         setTimeout(()=>{ document.getElementById('level-complete').classList.add('show'); spawnConfetti(); },200);
       } else {
         curPage++; renderPage(curPage);
       }
     }
     function lcHome(){ document.getElementById('level-complete').classList.remove('show'); clearConf(); showScreen('home'); }
-    function lcPlay(){ document.getElementById('level-complete').classList.remove('show'); clearConf(); curPage=0; renderPage(0); }
+    function lcPlay(){ document.getElementById('level-complete').classList.remove('show'); clearConf(); curPage=0; curHints=0; curErrors=0; renderPage(0); }
+    function lcNext(n){ document.getElementById('level-complete').classList.remove('show'); clearConf(); startLevel(n); }
 
     /* ─── CONFETTI ───────────────────────────────────── */
     const CC=['#4ade80','#22d3ee','#fbbf24','#f472b6','#a78bfa','#fb923c','#3b82f6'];
@@ -1898,10 +2295,11 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Bounce to login if nobody is signed in.
+    // Bounce to login if nobody is signed in; otherwise load their saved progress.
     (async ()=>{
       const { data } = await supabaseClient.auth.getSession();
-      if(!data?.session){ window.location.href = 'index.html'; }
+      if(!data?.session){ window.location.href = 'index.html'; return; }
+      loadProgressFromDB();
     })();
 
     /* ─── LOGOUT ─────────────────────────────────────── */
@@ -1909,6 +2307,8 @@
     function closeLogoutConfirm(){ document.getElementById('logout-overlay').classList.remove('show'); }
     async function confirmLogout(){
       try{ await supabaseClient.auth.signOut(); }catch(e){}
+      currentUserId = null;
+      localStorage.removeItem(STAR_KEY);   // avoid showing a stale user's progress if someone else logs in
       window.location.href = 'index.html';
     }
 
