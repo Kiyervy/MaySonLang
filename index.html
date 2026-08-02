@@ -127,6 +127,12 @@
         <div class="auth-info" id="auth-info">📧 <span id="auth-info-text"></span></div>
 
         <form id="auth-form" onsubmit="handleSubmit(event)">
+          <div class="field" id="username-field" style="display:none">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Pick a username" autocomplete="username" minlength="3" maxlength="24">
+            <span class="field-icon">🧑‍🚀</span>
+          </div>
+
           <div class="field">
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
@@ -195,10 +201,16 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // If a session already exists (e.g. "Remember me" from a previous visit), skip straight in.
+    // If a session already exists (e.g. "Remember me" from a previous visit), skip straight in —
+    // unless an admin has blocked the account since the last visit.
     (async ()=>{
       const { data } = await supabaseClient.auth.getSession();
-      if(data?.session){ window.location.href = 'menu.html'; }
+      if(!data?.session) return;
+      if(await isAccountBlocked(data.session.user.id)){
+        await supabaseClient.auth.signOut();
+        return;
+      }
+      window.location.href = 'menu.html';
     })();
 
     let mode = 'login'; // 'login' | 'signup'
@@ -208,6 +220,7 @@
       document.getElementById('tab-login').classList.toggle('active', next==='login');
       document.getElementById('tab-signup').classList.toggle('active', next==='signup');
       document.getElementById('confirm-field').style.display = next==='signup' ? 'block' : 'none';
+      document.getElementById('username-field').style.display = next==='signup' ? 'block' : 'none';
       document.getElementById('remember-row').style.display = next==='signup' ? 'none' : 'flex';
       document.getElementById('auth-heading').textContent = next==='login' ? 'Welcome back' : 'Create your account';
       document.getElementById('auth-subheading').textContent = next==='login'
@@ -277,12 +290,23 @@
       }
 
       if(mode === 'signup'){
+        const username = document.getElementById('username').value.trim();
+        if(username.length < 3){
+          showError('Username must be at least 3 characters.');
+          return;
+        }
         if(password !== confirm){
           showError('Passwords don\'t match.');
           return;
         }
         setLoading(true);
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        const { data, error } = await supabaseClient.auth.signUp({
+          email, password,
+          options: {
+            data: { username },
+            emailRedirectTo: window.location.origin + window.location.pathname,
+          }
+        });
         setLoading(false);
         if(error){ showError(error.message); return; }
         if(data.session){
@@ -298,9 +322,29 @@
       // login
       setLoading(true);
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if(error){ setLoading(false); showError(error.message); return; }
+
+      // Blocked accounts are stopped here, before they ever reach the menu.
+      const blocked = await isAccountBlocked(data.user.id);
       setLoading(false);
-      if(error){ showError(error.message); return; }
+      if(blocked){
+        await supabaseClient.auth.signOut();
+        showError('This account has been blocked. Contact support if you think this is a mistake.');
+        return;
+      }
       runSuccess('Welcome back!');
+    }
+
+    /* Looks up the signed-in user's profile row and reports whether an admin has blocked them.
+       Fails open (false) if the profiles table/row isn't reachable, so a lookup hiccup never
+       locks out a legitimate user. */
+    async function isAccountBlocked(userId){
+      try{
+        const { data, error } = await supabaseClient
+          .from('profiles').select('is_blocked').eq('id', userId).maybeSingle();
+        if(error) return false;
+        return !!data?.is_blocked;
+      }catch(e){ return false; }
     }
 
     function setLoading(isLoading){

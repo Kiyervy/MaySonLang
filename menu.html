@@ -81,6 +81,9 @@
       .logout-btn:hover{border-color:var(--red);color:var(--red);background:rgba(248,113,113,.08);transform:translateY(-2px)}
       .logout-btn .lo-icon{font-size:.95rem}
       @media (max-width:480px){.logout-btn{top:12px;right:12px;padding:8px 12px;font-size:.72rem}.logout-btn .lo-label{display:none}}
+      #admin-link-btn{right:150px}
+      #admin-link-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.08)}
+      @media (max-width:480px){#admin-link-btn{right:100px}}
 
       /* PUZZLE SCREEN */
       #puzzlescreen{justify-content:flex-start;overflow-y:auto;padding:16px 16px 32px;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(59,130,246,.05) 0%,transparent 60%)}
@@ -286,6 +289,9 @@
   <body>
     <div id="stars"></div>
 
+    <button class="logout-btn" id="admin-link-btn" style="display:none" onclick="window.location.href='admin.html'">
+      <span class="lo-icon">⚙️</span><span class="lo-label">Admin</span>
+    </button>
     <button class="logout-btn" onclick="showLogoutConfirm()">
       <span class="lo-icon">🚪</span><span class="lo-label">Log Out</span>
     </button>
@@ -2299,6 +2305,21 @@
     (async ()=>{
       const { data } = await supabaseClient.auth.getSession();
       if(!data?.session){ window.location.href = 'index.html'; return; }
+
+      const { data: profile } = await supabaseClient
+        .from('profiles').select('is_blocked,is_admin').eq('id', data.session.user.id).maybeSingle();
+
+      // An admin may have blocked this account since it was last signed in — stop it here too.
+      if(profile?.is_blocked){
+        await supabaseClient.auth.signOut();
+        window.location.href = 'index.html';
+        return;
+      }
+      if(profile?.is_admin){
+        const adminBtn = document.getElementById('admin-link-btn');
+        if(adminBtn) adminBtn.style.display = 'flex';
+      }
+
       loadProgressFromDB();
     })();
 

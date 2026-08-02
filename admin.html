@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaySon · Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="titleLogo.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      :root{
+        --bg:#080c18;--bg2:#0d1428;--card:#141d35;--border:#1e2d52;
+        --blue:#3b82f6;--cyan:#22d3ee;--green:#4ade80;--yellow:#fbbf24;
+        --orange:#fb923c;--pink:#f472b6;--purple:#a78bfa;--red:#f87171;
+        --white:#e8eeff;--dim:#4a5a8a;
+        --fh:'Orbitron',sans-serif;--fb:'Nunito',sans-serif;--fc:'JetBrains Mono',monospace;
+      }
+      html,body{min-height:100%;background:var(--bg);color:var(--white);font-family:var(--fb)}
+      body{background:radial-gradient(ellipse at 20% 0%,rgba(59,130,246,.07) 0%,transparent 55%),
+                    radial-gradient(ellipse at 80% 100%,rgba(168,139,250,.06) 0%,transparent 55%),var(--bg);
+           padding:28px 20px 60px}
+      @keyframes floatIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+      @keyframes spin{to{transform:rotate(360deg)}}
+
+      .wrap{max-width:1080px;margin:0 auto}
+
+      /* HEADER */
+      .admin-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px;animation:floatIn .5s ease both;flex-wrap:wrap}
+      .admin-title-row{display:flex;align-items:center;gap:14px}
+      .admin-icon{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 0 22px rgba(167,139,250,.4)}
+      .admin-title{font-family:var(--fh);font-size:1.3rem;font-weight:800;color:var(--white)}
+      .admin-sub{font-size:.78rem;color:var(--dim);margin-top:2px}
+      .back-link{padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--dim);font-family:var(--fb);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+      .back-link:hover{border-color:var(--cyan);color:var(--cyan)}
+
+      /* STATS STRIP */
+      .stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px;animation:floatIn .55s ease .05s both}
+      .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+      .stat-num{font-family:var(--fh);font-size:1.5rem;font-weight:800;color:var(--cyan)}
+      .stat-label{font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-top:2px}
+
+      /* TOOLBAR */
+      .toolbar{display:flex;gap:10px;margin-bottom:16px;animation:floatIn .6s ease .08s both;flex-wrap:wrap}
+      .search-box{flex:1;min-width:200px;position:relative}
+      .search-box input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:11px;padding:11px 16px 11px 38px;color:var(--white);font-family:var(--fb);font-size:.86rem;font-weight:600;outline:none;transition:border-color .2s}
+      .search-box input:focus{border-color:var(--cyan)}
+      .search-box::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.5;font-size:.85rem}
+      .refresh-btn{padding:11px 18px;background:var(--card);border:1px solid var(--border);border-radius:11px;color:var(--dim);font-family:var(--fb);font-size:.83rem;font-weight:700;cursor:pointer;transition:all .18s}
+      .refresh-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+      /* TABLE */
+      .table-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:floatIn .65s ease .1s both;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+      table{width:100%;border-collapse:collapse}
+      thead th{text-align:left;font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);background:var(--bg2);padding:13px 18px;border-bottom:1px solid var(--border)}
+      tbody td{padding:14px 18px;border-bottom:1px solid var(--border);font-size:.85rem;vertical-align:middle}
+      tbody tr:last-child td{border-bottom:none}
+      tbody tr{transition:background .15s}
+      tbody tr:hover{background:rgba(255,255,255,.02)}
+      tbody tr.is-blocked{opacity:.55}
+
+      .user-cell{display:flex;flex-direction:column;gap:2px}
+      .user-name{font-weight:800;color:var(--white)}
+      .user-email{font-size:.74rem;color:var(--dim);font-family:var(--fc)}
+
+      .level-progress{display:flex;flex-direction:column;gap:3px}
+      .lvl-row{display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--dim)}
+      .lvl-tag{font-family:var(--fc);font-weight:700;color:var(--cyan);width:24px;flex-shrink:0}
+      .lvl-stars{color:var(--yellow);letter-spacing:1px}
+      .lvl-locked{color:var(--dim);font-size:.7rem}
+
+      .status-chip{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:800;padding:5px 11px;border-radius:20px;letter-spacing:.03em}
+      .status-active{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.3)}
+      .status-blocked{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+      .status-admin{background:rgba(167,139,250,.14);color:var(--purple);border:1px solid rgba(167,139,250,.3);margin-left:6px}
+
+      .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+      .act-btn{padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--dim);font-family:var(--fb);font-size:.74rem;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap}
+      .act-block:hover{border-color:var(--yellow);color:var(--yellow)}
+      .act-unblock:hover{border-color:var(--green);color:var(--green)}
+      .act-delete:hover{border-color:var(--red);color:var(--red)}
+      .act-btn:disabled{opacity:.5;cursor:wait}
+
+      .empty-state{padding:50px 20px;text-align:center;color:var(--dim);font-size:.86rem}
+      .loading-state{padding:50px 20px;text-align:center;color:var(--dim);font-size:.86rem;display:flex;flex-direction:column;align-items:center;gap:14px}
+      .spinner{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite}
+
+      /* GATE / ACCESS DENIED */
+      .gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;flex-direction:column;gap:14px;text-align:center;padding:20px}
+      .gate.hidden{display:none}
+      .gate-icon{font-size:2.4rem}
+      .gate-title{font-family:var(--fh);font-size:1.15rem;font-weight:800;color:var(--white)}
+      .gate-sub{font-size:.86rem;color:var(--dim);max-width:360px;line-height:1.5}
+
+      /* CONFIRM MODAL */
+      .modal-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(8,12,24,.82);backdrop-filter:blur(3px);padding:20px}
+      .modal-overlay.show{display:flex}
+      .modal-box{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px 24px;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both}
+      .modal-icon{font-size:2rem;margin-bottom:10px}
+      .modal-title{font-family:var(--fh);font-size:1.02rem;font-weight:800;color:var(--white);margin-bottom:8px}
+      .modal-body{font-size:.85rem;color:var(--dim);line-height:1.55;margin-bottom:20px}
+      .modal-body b{color:var(--white)}
+      .modal-actions{display:flex;gap:10px}
+      .modal-btn{flex:1;padding:11px;border-radius:10px;border:none;cursor:pointer;font-family:var(--fb);font-size:.84rem;font-weight:800;transition:transform .15s}
+      .modal-btn:hover{transform:translateY(-1px)}
+      .modal-cancel{background:var(--bg2);color:var(--dim);border:1px solid var(--border)}
+      .modal-confirm-delete{background:linear-gradient(135deg,#991b1b,#f87171);color:#fff}
+      .modal-confirm-block{background:linear-gradient(135deg,#b45309,#fbbf24);color:#1a1200}
+
+      .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:.83rem;font-weight:700;color:var(--white);box-shadow:0 12px 30px rgba(0,0,0,.4);opacity:0;transition:all .3s;z-index:300;pointer-events:none}
+      .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+      @media (max-width:640px){
+        thead{display:none}
+        table,tbody,tr,td{display:block;width:100%}
+        tbody tr{padding:14px 16px;border-bottom:1px solid var(--border)}
+        tbody td{border:none;padding:6px 0}
+        .row-actions{margin-top:8px}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gate" id="gate">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="wrap" id="admin-app" style="display:none">
+      <div class="admin-header">
+        <div class="admin-title-row">
+          <div class="admin-icon">🛡️</div>
+          <div>
+            <div class="admin-title">Admin Panel</div>
+            <div class="admin-sub">Manage MaySon accounts and progress</div>
+          </div>
+        </div>
+        <a class="back-link" href="menu.html">← Back to Menu</a>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-card"><div class="stat-num" id="stat-total">–</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-active">–</div><div class="stat-label">Active</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-blocked">–</div><div class="stat-label">Blocked</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-admins">–</div><div class="stat-label">Admins</div></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box"><input id="search-input" placeholder="Search by username or email…" oninput="renderRows()"></div>
+        <button class="refresh-btn" onclick="loadUsers()">↻ Refresh</button>
+      </div>
+
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Level Progress</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="user-tbody">
+            <tr><td colspan="4">
+              <div class="loading-state"><div class="spinner"></div>Loading users…</div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONFIRM MODAL -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-icon" id="modal-icon">⚠️</div>
+        <div class="modal-title" id="modal-title">Are you sure?</div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-cancel" onclick="closeModal()">Cancel</button>
+          <button class="modal-btn" id="modal-confirm-btn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    'use strict';
+
+    const SUPABASE_URL = 'https://tsvfgaepjeflmvdywngn.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let users = [];       // merged profiles + level progress
+    let currentAdminId = null;
+
+    /* ─── GATE: only signed-in admins get past this screen ────────── */
+    (async ()=>{
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const user = sessionData?.session?.user;
+      if(!user){ window.location.href = 'index.html'; return; }
+      currentAdminId = user.id;
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles').select('is_admin').eq('id', user.id).maybeSingle();
+
+      if(error || !profile?.is_admin){
+        renderGateDenied();
+        return;
+      }
+
+      document.getElementById('gate').classList.add('hidden');
+      document.getElementById('admin-app').style.display = 'block';
+      loadUsers();
+    })();
+
+    function renderGateDenied(){
+      const gate = document.getElementById('gate');
+      gate.innerHTML = `
+        <div class="gate-icon">🔒</div>
+        <div class="gate-title">Admins only</div>
+        <div class="gate-sub">Your account doesn't have admin access. If you think this is a mistake, ask an existing admin to grant it.</div>
+        <a class="back-link" href="menu.html" style="margin-top:6px">← Back to Menu</a>
+      `;
+    }
+
+    /* ─── LOAD ──────────────────────────────────────────────────────── */
+    async function loadUsers(){
+      const tbody = document.getElementById('user-tbody');
+      tbody.innerHTML = `<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading users…</div></td></tr>`;
+
+      const [{ data: profiles, error: pErr }, { data: progress, error: prErr }] = await Promise.all([
+        supabaseClient.from('profiles').select('id,email,username,is_admin,is_blocked,created_at').order('created_at', { ascending: false }),
+        supabaseClient.from('level_progress').select('user_id,level_stars'),
+      ]);
+
+      if(pErr){
+        tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">Couldn't load users: ${escapeHtml(pErr.message)}</div></td></tr>`;
+        return;
+      }
+
+      const progressByUser = {};
+      (progress||[]).forEach(p=>{ progressByUser[p.user_id] = p.level_stars || {}; });
+
+      users = (profiles||[]).map(p=>({ ...p, level_stars: progressByUser[p.id] || {} }));
+      renderStats();
+      renderRows();
+    }
+
+    function renderStats(){
+      document.getElementById('stat-total').textContent = users.length;
+      document.getElementById('stat-active').textContent = users.filter(u=>!u.is_blocked).length;
+      document.getElementById('stat-blocked').textContent = users.filter(u=>u.is_blocked).length;
+      document.getElementById('stat-admins').textContent = users.filter(u=>u.is_admin).length;
+    }
+
+    function renderRows(){
+      const q = document.getElementById('search-input').value.trim().toLowerCase();
+      const tbody = document.getElementById('user-tbody');
+      const filtered = users.filter(u =>
+        !q || (u.username||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q)
+      );
+
+      if(filtered.length === 0){
+        tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">No users match "${escapeHtml(q)}".</div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(u => rowHtml(u)).join('');
+    }
+
+    function rowHtml(u){
+      const isSelf = u.id === currentAdminId;
+      return `
+        <tr class="${u.is_blocked ? 'is-blocked' : ''}">
+          <td>
+            <div class="user-cell">
+              <span class="user-name">${escapeHtml(u.username || '(no username)')}</span>
+              <span class="user-email">${escapeHtml(u.email || '')}</span>
+            </div>
+          </td>
+          <td>${levelProgressHtml(u.level_stars)}</td>
+          <td>
+            <span class="status-chip ${u.is_blocked ? 'status-blocked' : 'status-active'}">
+              ${u.is_blocked ? '⛔ Blocked' : '✅ Active'}
+            </span>
+            ${u.is_admin ? '<span class="status-chip status-admin">🛡️ Admin</span>' : ''}
+          </td>
+          <td>
+            <div class="row-actions">
+              ${u.is_blocked
+                ? `<button class="act-btn act-unblock" onclick="toggleBlock('${u.id}', false)">Unblock</button>`
+                : `<button class="act-btn act-block" onclick="toggleBlock('${u.id}', true)" ${isSelf?'disabled title="You can\'t block yourself"':''}>Block</button>`
+              }
+              <button class="act-btn act-delete" onclick="confirmDelete('${u.id}','${escapeAttr(u.username||u.email||'this user')}')" ${isSelf?'disabled title="You can\'t delete your own account here"':''}>Delete</button>
+            </div>
+          </td>
+        </tr>`;
+    }
+
+    function levelProgressHtml(levelStars){
+      levelStars = levelStars || {};
+      const total123 = [1,2,3].reduce((s,n)=> s + (levelStars[n]||0), 0);
+      const l4Unlocked = total123 >= 9;
+      const rows = [1,2,3].map(n=>{
+        const s = levelStars[n] || 0;
+        return `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-stars">${starStr(s)}</span></div>`;
+      });
+      rows.push(l4Unlocked
+        ? `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-stars">${starStr(levelStars[4]||0)}</span></div>`
+        : `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-locked">🔒 locked</span></div>`
+      );
+      return `<div class="level-progress">${rows.join('')}</div>`;
+    }
+    function starStr(n){ return '★'.repeat(n) + '☆'.repeat(Math.max(0,3-n)); }
+
+    /* ─── BLOCK / UNBLOCK ───────────────────────────────────────────── */
+    async function toggleBlock(userId, block){
+      if(block){
+        const u = users.find(x=>x.id===userId);
+        openModal({
+          icon: '⛔',
+          title: 'Block this user?',
+          body: `<b>${escapeHtml(u?.username||u?.email||'This user')}</b> will be signed out and won't be able to sign back in to MaySon until an admin unblocks them.`,
+          confirmLabel: 'Block user',
+          confirmClass: 'modal-confirm-block',
+          onConfirm: ()=>doToggleBlock(userId, true)
+        });
+      } else {
+        doToggleBlock(userId, false);
+      }
+    }
+    async function doToggleBlock(userId, block){
+      const { error } = await supabaseClient.from('profiles').update({ is_blocked: block }).eq('id', userId);
+      closeModal();
+      if(error){ showToast('Failed: ' + error.message); return; }
+      const u = users.find(x=>x.id===userId);
+      if(u) u.is_blocked = block;
+      renderStats(); renderRows();
+      showToast(block ? 'User blocked.' : 'User unblocked.');
+    }
+
+    /* ─── DELETE ────────────────────────────────────────────────────── */
+    function confirmDelete(userId, label){
+      openModal({
+        icon: '🗑️',
+        title: 'Delete this account?',
+        body: `This permanently deletes <b>${escapeHtml(label)}</b>'s login and all saved progress. This can't be undone.`,
+        confirmLabel: 'Delete permanently',
+        confirmClass: 'modal-confirm-delete',
+        onConfirm: ()=>doDelete(userId)
+      });
+    }
+    async function doDelete(userId){
+      const btn = document.getElementById('modal-confirm-btn');
+      btn.disabled = true; btn.textContent = 'Deleting…';
+      try{
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const { data, error } = await supabaseClient.functions.invoke('admin-delete-user', {
+          body: { target_id: userId },
+        });
+        if(error) throw error;
+        if(data?.error) throw new Error(data.error);
+        users = users.filter(u=>u.id!==userId);
+        renderStats(); renderRows();
+        closeModal();
+        showToast('User deleted.');
+      }catch(e){
+        closeModal();
+        showToast('Delete failed: ' + (e.message||e) + ' — is the admin-delete-user Edge Function deployed?');
+      }
+    }
+
+    /* ─── MODAL ─────────────────────────────────────────────────────── */
+    let modalConfirmHandler = null;
+    function openModal({icon,title,body,confirmLabel,confirmClass,onConfirm}){
+      document.getElementById('modal-icon').textContent = icon;
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').innerHTML = body;
+      const btn = document.getElementById('modal-confirm-btn');
+      btn.className = 'modal-btn ' + confirmClass;
+      btn.textContent = confirmLabel;
+      btn.disabled = false;
+      modalConfirmHandler = onConfirm;
+      btn.onclick = ()=> modalConfirmHandler && modalConfirmHandler();
+      document.getElementById('modal-overlay').classList.add('show');
+    }
+    function closeModal(){
+      document.getElementById('modal-overlay').classList.remove('show');
+    }
+
+    /* ─── TOAST ─────────────────────────────────────────────────────── */
+    let toastTimer = null;
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+    }
+
+    /* ─── HELPERS ───────────────────────────────────────────────────── */
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function escapeAttr(s){ return escapeHtml(s).replace(/'/g,'&#39;'); }
+    </script>
+  </body>
+</html>
