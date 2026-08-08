@@ -1187,7 +1187,7 @@
       /* L4 PAGE 1 — say → print (string) */
       {
         mascotTitle: "Meet Py, your Python guide! 🐍",
-        mascotBody:  "You've mastered <strong>MaySon</strong> — awesome work! Now let's translate what you know into <strong>Python</strong>, one of the most popular languages in the real world. A lot of what you already know carries over directly!",
+        mascotBody:  "You've mastered <strong>MaySon</strong> across Levels 1–3 — awesome work! Now let's translate everything you know — <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">say</code>, <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set ... to ...</code>, and <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if / else if / else</code> — into <strong>Python</strong>, one of the most popular languages in the real world. A lot of what you already know carries over directly!",
         demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">say</span> <span class="str">"Hello!"</span><br><br><span class="cmt"># Python:</span><br><span class="kw">print</span><span class="punc">(</span><span class="str">"Hello!"</span><span class="punc">)</span>`,
         taskDesc:    'Translate the MaySon line into Python. Python\'s printing command is called <strong>print</strong>, and it wraps its message in <strong>parentheses ( )</strong>.<br>Drag the correct block into the blank!',
         zones: [
@@ -1230,10 +1230,26 @@
         successMsg: 'Nailed it! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code> works for numbers too, with no quotes needed.',
       },
 
-      /* L4 PAGE 3 — set...to → = (string) */
+      /* L4 PAGE 3 — quotes rule still applies (multiple choice) */
+      {
+        mascotTitle: "Quotes still matter! 📖",
+        mascotBody:  "Back in Level 1 you learned that <strong>text</strong> needs double quotes, but <strong>numbers</strong> don't. That exact same rule carries over into Python — nothing new to learn here!",
+        demoCode:    `<span class="cmt"># Text needs quotes:</span><br><span class="kw">print</span><span class="punc">(</span><span class="str">"Score"</span><span class="punc">)</span><br><span class="cmt"># Numbers don't:</span><br><span class="kw">print</span><span class="punc">(</span><span class="num">42</span><span class="punc">)</span>`,
+        taskDesc:    'Which line correctly prints the <strong>number</strong> 42 in Python?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['print("42")', 'print(42)', 'print(fourty-two)'],
+        mcCorrect: 'print(42)',
+        hint: '💡 <strong>Hint:</strong> Just like in MaySon, a real number never goes inside quotes. Quotes are only for text (strings)!',
+        successMsg: '✅ Exactly! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print(42)</code> — no quotes needed for a real number.',
+      },
+
+      /* L4 PAGE 4 — set...to → = (string) */
       {
         mascotTitle: "Storing data, Python style 📦",
-        mascotBody:  "MaySon uses <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set name to value</code> to create a variable. Python drops the extra words — it just uses a single <strong>equals sign</strong> <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>.",
+        mascotBody:  "In Level 2 you learned MaySon uses <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set name to value</code> to create a variable. Python drops the extra words — it just uses a single <strong>equals sign</strong> <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>.",
         demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">set</span> <span class="str">name</span> <span class="punc">to</span> <span class="str">"Max"</span><br><br><span class="cmt"># Python:</span><br><span class="cs">name</span> <span class="cp">=</span> <span class="cs">"Max"</span>`,
         taskDesc:    'Translate the assignment into Python. Drag the correct symbol into the blank!',
         zones: [
@@ -1247,15 +1263,15 @@
           </div>&nbsp;<span class="cs">"Max"</span>
         `,
         chips: [
-          { id:'l4p3to',    label:'to', css:'c-colon', val:'TO' },
-          { id:'l4p3colon', label:':',  css:'c-colon', val:'COLON' },
-          { id:'l4p3eq',    label:'=',  css:'c-eq',    val:'EQ' },
+          { id:'l4p4to',    label:'to', css:'c-colon', val:'TO' },
+          { id:'l4p4colon', label:':',  css:'c-colon', val:'COLON' },
+          { id:'l4p4eq',    label:'=',  css:'c-eq',    val:'EQ' },
         ],
         hint: '💡 <strong>Hint:</strong> MaySon\'s <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code> becomes a single <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code> sign in Python — no other words needed.',
         successMsg: 'Perfect! <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">name = "Max"</code> — that\'s how Python creates a variable.',
       },
 
-      /* L4 PAGE 4 — set...to → = (number) */
+      /* L4 PAGE 5 — set...to → = (number) */
       {
         mascotTitle: "Same trick with numbers 🎯",
         mascotBody:  "The <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code> sign works for numbers too. Just watch out — later on you'll see <code style=\"color:#f87171;font-family:'JetBrains Mono',monospace\">==</code> (two equals signs), which means something completely different!",
@@ -1272,15 +1288,89 @@
           </div>&nbsp;<span class="num">10</span>
         `,
         chips: [
-          { id:'l4p4eqeq', label:'==', css:'c-colon', val:'EQEQ' },
-          { id:'l4p4to',   label:'to', css:'c-colon', val:'TO'   },
-          { id:'l4p4eq',   label:'=',  css:'c-eq',    val:'EQ'   },
+          { id:'l4p5eqeq', label:'==', css:'c-colon', val:'EQEQ' },
+          { id:'l4p5to',   label:'to', css:'c-colon', val:'TO'   },
+          { id:'l4p5eq',   label:'=',  css:'c-eq',    val:'EQ'   },
         ],
         hint: '💡 <strong>Hint:</strong> A single <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code> stores a value. <code style="color:#f87171;font-family:\'JetBrains Mono\',monospace">==</code> is for comparing — that\'s not what we want here!',
         successMsg: 'Exactly right! <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">age = 10</code> stores the number 10 in age.',
       },
 
-      /* L4 PAGE 5 — else if → elif */
+      /* L4 PAGE 6 — printing a variable (no quotes around the name) */
+      {
+        mascotTitle: "Variables inside print() 📦➡️🖨️",
+        mascotBody:  "Remember from Level 2: once a variable is set, MaySon's <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">say name</code> prints its <strong>value</strong> — no quotes around the variable name. Python works exactly the same way!",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">set</span> <span class="str">name</span> <span class="punc">to</span> <span class="str">"Max"</span><br><span class="kw">say</span> <span class="str">name</span><br><br><span class="cmt"># Python:</span><br><span class="cs">name</span> <span class="cp">=</span> <span class="cs">"Max"</span><br><span class="kw">print</span><span class="punc">(</span><span class="cs">name</span><span class="punc">)</span>`,
+        taskDesc:    'The variable <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">name</code> is already set to <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Max"</code> above. Translate <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say name</code> into Python. Drag the correct block into the blank inside <strong>print( )</strong>!',
+        zones: [
+          { id:'z0', ph:'______', correct:'NAME' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:8px;width:100%;font-family:var(--fc);font-size:.95rem">
+            <div><span class="cs">name</span> <span class="cp">=</span> <span class="cs">"Max"</span></div>
+            <div>
+              <span class="kw" style="color:#3b82f6">print</span><span class="cp">(</span>
+              <div class="drop-zone" id="z0" data-correct="NAME" data-value="" data-cid=""
+                  style="display:inline-flex;min-width:80px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div><span class="cp">)</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l4p6quoted', label:'"name"', css:'c-quote', val:'QNAME' },
+          { id:'l4p6bare',   label:'name',   css:'c-say',   val:'NAME'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> You want to print the <strong>value stored</strong> in the variable, not the word "name" itself — so leave off the quotes, just like MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say name</code>.',
+        successMsg: 'Perfect! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print(name)</code> outputs <strong>Max</strong> — the value stored in the variable, not the word "name".',
+      },
+
+      /* L4 PAGE 7 — if statement barely changes at all */
+      {
+        mascotTitle: "Good news — if barely changes! 🤩",
+        mascotBody:  "In Level 3 you learned <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if condition:</code>. Python uses the <strong>exact same structure</strong> — the condition and colon stay identical. You only need to swap the command inside!",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">if</span> <span class="str">age</span> <span class="punc">&gt;</span> <span class="num">18</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Adult"</span><br><br><span class="cmt"># Python:</span><br><span class="kw">if</span> <span class="cs">age</span> <span class="cp">&gt;</span> <span class="num">18</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Adult"</span><span class="punc">)</span>`,
+        taskDesc:    'The <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if age &gt; 18:</code> line needs <strong>no changes at all</strong>. Just translate the line inside the block — drag the correct command into the blank!',
+        zones: [
+          { id:'z0', ph:'_____', correct:'PRINT' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.93rem;line-height:2">
+            <div><span class="kw">if</span> <span class="cs">age</span> <span class="cp">&gt;</span> <span class="num">18</span><span class="cp">:</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z0" data-correct="PRINT" data-value="" data-cid=""
+                  style="min-width:60px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">"Adult"</span><span class="cp">)</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l4p7say',   label:'say',   css:'c-say',   val:'SAY'   },
+          { id:'l4p7print', label:'print', css:'c-print', val:'PRINT' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The condition <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">age &gt; 18:</code> is identical in both languages. Only <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code> needs to become <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>.',
+        successMsg: 'Exactly! Conditions transfer over unchanged — you only had to swap <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code> for <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>.',
+      },
+
+      /* L4 PAGE 8 — comparison operators are identical (multiple choice) */
+      {
+        mascotTitle: "Comparisons don't change either! ⚖️",
+        mascotBody:  "Back in Level 3 you learned MaySon's comparison operators: <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">==</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&gt;</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&lt;</code>. Python uses the exact same symbols!",
+        demoCode:    `<span class="cmt"># Testing equality — works the same in both languages:</span><br><span class="kw">if</span> <span class="cs">score</span> <span class="cp">==</span> <span class="num">10</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Yes!"</span><span class="punc">)</span>`,
+        taskDesc:    'Which operator tests if two values are <strong>equal</strong> in Python? (Same as MaySon!)',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['=', '==', '!='],
+        mcCorrect: '==',
+        hint: '💡 <strong>Hint:</strong> A single <code style="color:#fb923c">=</code> assigns a value. Two equals signs <code style="color:#4ade80">==</code> test if values are equal — in Python, just like in MaySon!',
+        successMsg: '✅ Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">==</code> tests for equality in Python too. Every comparison operator you learned in Level 3 carries over exactly.',
+      },
+
+      /* L4 PAGE 9 — else if → elif */
       {
         mascotTitle: "Chaining conditions — elif 🔀",
         mascotBody:  "MaySon chains conditions with <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else if</code> (two words). Python squashes this into a single word: <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code>.",
@@ -1304,18 +1394,34 @@
           </div>
         `,
         chips: [
-          { id:'l4p5elseif', label:'else if', css:'c-colon', val:'ELSEIF' },
-          { id:'l4p5else',   label:'else',    css:'c-colon', val:'ELSE'   },
-          { id:'l4p5elif',   label:'elif',    css:'c-elif',  val:'ELIF'   },
+          { id:'l4p9elseif', label:'else if', css:'c-colon', val:'ELSEIF' },
+          { id:'l4p9else',   label:'else',    css:'c-colon', val:'ELSE'   },
+          { id:'l4p9elif',   label:'elif',    css:'c-elif',  val:'ELIF'   },
         ],
         hint: '💡 <strong>Hint:</strong> Python squashes MaySon\'s two words <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code> into one word: <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
         successMsg: '🎉 Perfect! <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> chains a condition, just like <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code> did in MaySon.',
       },
 
-      /* L4 PAGE 6 — full capstone translation */
+      /* L4 PAGE 10 — else stays else: (multiple choice) */
       {
-        mascotTitle: "Final translation — put it all together! 🏆",
-        mascotBody:  "You've learned all the pieces: <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">print</code>, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>, and <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code>. Now translate a full MaySon program into Python!",
+        mascotTitle: "else needs zero changes! ✅",
+        mascotBody:  "In Level 3, MaySon's final catch-all branch was already written <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else:</code> — with a colon. Python uses the exact same word and the exact same colon.",
+        demoCode:    `<span class="kw">if</span> <span class="cs">score</span> <span class="cp">&gt;</span> <span class="num">50</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Pass"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Fail"</span><span class="punc">)</span>`,
+        taskDesc:    'How do you write a catch-all <strong>else</strong> block in Python?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['otherwise:', 'else', 'else:'],
+        mcCorrect: 'else:',
+        hint: '💡 <strong>Hint:</strong> MaySon already writes it as <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code> with a colon. Python keeps it exactly the same — nothing to translate here!',
+        successMsg: '✅ Correct! <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code> is identical in both languages. You now know every piece needed for the final challenges!',
+      },
+
+      /* L4 PAGE 11 — full capstone translation (guided) */
+      {
+        mascotTitle: "Guided translation — put it all together! 🏆",
+        mascotBody:  "You've learned every piece: <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">print</code>, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>, and <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code>. Now translate a full MaySon program into Python, one blank at a time!",
         demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">set</span> <span class="str">score</span> <span class="punc">to</span> <span class="num">7</span><br><span class="kw">if</span> <span class="str">score</span> <span class="punc">==</span> <span class="num">10</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Perfect"</span><br><span class="kw">else if</span> <span class="str">score</span> <span class="punc">==</span> <span class="num">7</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Good"</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Try Again"</span>`,
         taskDesc:    'Translate the whole program into Python. Fill in <strong>all four</strong> blanks!',
         zones: [
@@ -1361,15 +1467,41 @@
           </div>
         `,
         chips: [
-          { id:'l4p6eq',     label:'=',     css:'c-eq',    val:'EQ'    },
-          { id:'l4p6print1', label:'print', css:'c-print', val:'PRINT' },
-          { id:'l4p6elif',   label:'elif',  css:'c-elif',  val:'ELIF'  },
-          { id:'l4p6print2', label:'print', css:'c-print', val:'PRINT' },
-          { id:'l4p6to',     label:'to',    css:'c-colon', val:'TO'    },
-          { id:'l4p6say',    label:'say',   css:'c-say',   val:'SAY'   },
+          { id:'l4p11eq',     label:'=',     css:'c-eq',    val:'EQ'    },
+          { id:'l4p11print1', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l4p11elif',   label:'elif',  css:'c-elif',  val:'ELIF'  },
+          { id:'l4p11print2', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l4p11to',     label:'to',    css:'c-colon', val:'TO'    },
+          { id:'l4p11say',    label:'say',   css:'c-say',   val:'SAY'   },
         ],
         hint: '💡 <strong>Hint:</strong> Blank 1 is <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code>, blanks 2 &amp; 4 are <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>, and blank 3 is <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
-        successMsg: '🏅 Amazing! Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">score = 7</code>, the <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> branch fires and prints <strong>"Good"</strong>. You can now read and write real Python — Level 4 complete!',
+        successMsg: '🏅 Amazing! Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">score = 7</code>, the <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> branch fires and prints <strong>"Good"</strong>. One challenge left — writing Python all by yourself!',
+      },
+
+      /* L4 PAGE 12 — final challenge: write real Python yourself */
+      {
+        mascotTitle: "Your final challenge — write real Python! ⌨️🐍",
+        mascotBody:  "This is it — no chips, no blanks. Combine everything from Levels 1–3: <strong>variables</strong> (<code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>), <strong>printing</strong> (<code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">print</code>), and <strong>conditions</strong> (<code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code> / <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code> / <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else</code>) — and type real Python code to complete Level 4!",
+        demoCode:    `<span class="cmt"># Reminder — full if / elif / else structure:</span><br><span class="cs">n</span> <span class="cp">=</span> <span class="num">5</span><br><span class="kw">if</span> <span class="cs">n</span> <span class="cp">&gt;</span> <span class="num">8</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Big"</span><span class="punc">)</span><br><span class="kw">elif</span> <span class="cs">n</span> <span class="cp">&gt;</span> <span class="num">2</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Medium"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Small"</span><span class="punc">)</span>`,
+        taskDesc:    'Write a program that: sets <strong>temp</strong> to <strong>15</strong>, then prints <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Hot"</code> if temp is above 30, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Warm"</code> if temp is above 10, or <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Cold"</code> otherwise. The output must be exactly <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">Warm</code>.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideLang: 'python',
+        ideLabel: 'Python Editor',
+        idePlaceholder: '# Type your Python code here...',
+        ideRequiredKeywords: ['if ', 'elif', 'else', 'print('],
+        ideRequiredMsgs: [
+          'Your code must use an <strong>if</strong> statement!',
+          'Your code must use <strong>elif</strong> to check the second condition!',
+          'Your code must include an <strong>else</strong> branch for every other case!',
+          'Your code must use <strong>print(...)</strong> to output something!',
+        ],
+        ideExpected: 'Warm',
+        ideWinMsg: 'You wrote real Python from scratch! Since temp = 15 isn\'t above 30 but is above 10, the elif branch fires and prints "Warm". Level 4 complete — MaySon to Python: mastered! 🐍🏆',
+        hint: '💡 <strong>Hint:</strong> Line 1: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">temp = 15</code><br>Line 2: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if temp &gt; 30:</code><br>Line 3: &nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Hot")</code><br>Line 4: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">elif temp &gt; 10:</code><br>Line 5: &nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Warm")</code><br>Line 6: <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>Line 7: &nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Cold")</code>',
+        successMsg: '🏅🐍 Incredible! You wrote a complete Python program by hand — variables, conditions, and print all combined. Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">temp = 15</code>, the <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> branch fires and prints <strong>"Warm"</strong>. Level 4 complete!',
         isLast: true,
       },
     ];
@@ -1402,7 +1534,7 @@
         breadcrumb: 'Level 04 › Python Bridge',
         badge: 'Level 04',
         title: '🐍 Python Bridge',
-        completeSub: 'You\'ve completed the <strong>Python Bridge</strong>!<br>You now know how MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code>, <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set ... to ...</code>, and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code> map to Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print()</code>, <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code>, and <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
+        completeSub: 'You\'ve completed the <strong>Python Bridge</strong>!<br>You now know how MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code>, <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set ... to ...</code>, and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if / else if / else</code> map to Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print()</code>, <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code>, and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code> / <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> / <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else</code> — and you wrote a real Python program yourself!',
       },
     };
 
@@ -1622,7 +1754,7 @@
         <div class="code-demo">${p.demoCode}</div>
         <div class="task-label"><span>🎯</span> Your Task</div>
         <p class="task-desc">${p.taskDesc}</p>
-        ${p.isIDE ? renderIDE() : p.isMC ? renderMC(p) : p.isOrder ? renderOrder(p) : renderDragDrop(p, chipsHTML)}
+        ${p.isIDE ? renderIDE(p) : p.isMC ? renderMC(p) : p.isOrder ? renderOrder(p) : renderDragDrop(p, chipsHTML)}
         <div class="hint-box" id="hint-box">${p.hint}</div>
         <div class="feedback" id="feedback">
           <span class="fb-icon" id="fb-icon"></span>
@@ -1688,17 +1820,19 @@
         </div>`;
     }
 
-  function renderIDE(){
+  function renderIDE(p){
+    const label = (p && p.ideLabel) || 'MaySon Editor';
+    const placeholder = (p && p.idePlaceholder) || '# Type your code here...';
     return `
       <div class="mini-ide">
         <div class="ide-topbar">
           <span class="ide-dot" style="background:#f87171"></span>
           <span class="ide-dot" style="background:#fbbf24"></span>
           <span class="ide-dot" style="background:#4ade80"></span>
-          <span class="ide-label">MaySon Editor</span>
+          <span class="ide-label">${label}</span>
         </div>
         <textarea class="ide-editor" id="ide-code" spellcheck="false" autocorrect="off" autocapitalize="off"
-          placeholder="# Type your code here..."></textarea>
+          placeholder="${placeholder}"></textarea>
         <div class="ide-actions">
           <button class="ide-run-btn" onclick="runIDE()">▶ Run Code</button>
           <button class="ide-clear-btn" onclick="clearIDE()">✕ Clear</button>
@@ -1889,6 +2023,162 @@
     return { out, err };
   }
 
+  /* ─── LEVEL 4: TINY PYTHON INTERPRETER ───────────────
+     Mirrors runMaySonLang's structure but understands real Python
+     syntax: print(...), var = value, and if / elif / else blocks. */
+  function runPythonLite(src){
+    const rawLines = src.split('\n');
+    const out = [];
+    const vars = {};
+    let err = null;
+
+    // Helper: resolve a value token (string literal, number, or variable)
+    function resolve(tok, lineNum){
+      const t = tok.trim();
+      if(t.startsWith('"') && t.endsWith('"') && t.length >= 2) return { val: t.slice(1,-1), ok: true };
+      if(t.startsWith("'") && t.endsWith("'") && t.length >= 2) return { val: t.slice(1,-1), ok: true };
+      if(!isNaN(t) && t !== '') return { val: Number(t), ok: true };
+      if(/^[A-Za-z_][A-Za-z0-9_]*$/.test(t)){
+        if(t in vars) return { val: vars[t], ok: true };
+        return { val: null, ok: false, err: `Line ${lineNum}: Variable "${t}" has not been set yet — use ${t} = ... first` };
+      }
+      return { val: null, ok: false, err: `Line ${lineNum}: Unknown value "${t}"` };
+    }
+
+    // Helper: evaluate a condition string like "x > 10" or "num == 2"
+    function evalCond(condStr, lineNum){
+      const ops = ['==','!=','>=','<=','>','<'];
+      for(const op of ops){
+        const idx = condStr.indexOf(op);
+        if(idx !== -1){
+          const lhs = condStr.slice(0, idx).trim();
+          const rhs = condStr.slice(idx + op.length).trim();
+          const L = resolve(lhs, lineNum);
+          const R = resolve(rhs, lineNum);
+          if(!L.ok) return { result: false, err: L.err };
+          if(!R.ok) return { result: false, err: R.err };
+          const lv = L.val, rv = R.val;
+          const ln = Number(lv), rn = Number(rv);
+          const bothNum = !isNaN(ln) && !isNaN(rn);
+          const a = bothNum ? ln : String(lv);
+          const b = bothNum ? rn : String(rv);
+          let result;
+          if(op === '==') result = a == b;
+          else if(op === '!=') result = a != b;
+          else if(op === '>=') result = a >= b;
+          else if(op === '<=') result = a <= b;
+          else if(op === '>') result = a > b;
+          else if(op === '<') result = a < b;
+          return { result, err: null };
+        }
+      }
+      return { result: false, err: `Line ${lineNum}: Invalid condition "${condStr}"` };
+    }
+
+    const stmts = rawLines.map((raw, i) => {
+      const indent = raw.match(/^(\s*)/)[1].length;
+      return { raw, line: raw.trim(), indent, lineNum: i+1 };
+    }).filter(s => s.line && !s.line.startsWith('#'));
+
+    let si = 0;
+    while(si < stmts.length && !err){
+      const { line, indent, lineNum } = stmts[si];
+
+      // --- assignment: varName = value ---
+      const assignMatch = !line.includes('==') && line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
+      if(assignMatch){
+        const varName = assignMatch[1];
+        const rhs = assignMatch[2].trim();
+        const r = resolve(rhs, lineNum);
+        if(!r.ok){ err = r.err; break; }
+        vars[varName] = r.val;
+        si++; continue;
+      }
+
+      // --- print statement ---
+      const printMatch = line.match(/^print\s*\(([\s\S]+)\)$/);
+      if(printMatch){
+        const r = resolve(printMatch[1].trim(), lineNum);
+        if(!r.ok){ err = r.err; break; }
+        out.push(String(r.val));
+        si++; continue;
+      }
+
+      // --- if / elif / else block ---
+      const ifMatch = line.match(/^if\s+([\s\S]+):$/);
+      if(ifMatch){
+        const chainIndent = indent;
+        const chain = [];
+
+        let j = si;
+        while(j < stmts.length){
+          const s2 = stmts[j];
+          if(s2.indent !== chainIndent) { j++; continue; }
+          const ifM   = s2.line.match(/^if\s+([\s\S]+):$/);
+          const elifM = s2.line.match(/^elif\s+([\s\S]+):$/);
+          const elseM = s2.line.match(/^else:?$/);
+          if(ifM && j === si){
+            const bodyStart = j+1;
+            let k = j+1;
+            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
+            chain.push({ cond: ifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+            j = k; continue;
+          }
+          if(elifM){
+            const bodyStart = j+1;
+            let k = j+1;
+            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
+            chain.push({ cond: elifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+            j = k; continue;
+          }
+          if(elseM){
+            const bodyStart = j+1;
+            let k = j+1;
+            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
+            chain.push({ cond: null, bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+            j = k; break;
+          }
+          break;
+        }
+
+        let ran = false;
+        for(const branch of chain){
+          if(branch.cond === null){
+            if(!ran){
+              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
+              const res = runPythonLite(bodyStmts.map(s=>s.raw).join('\n'));
+              if(res.err){ err = res.err; break; }
+              res.out.forEach(l => out.push(l));
+              ran = true;
+            }
+          } else {
+            const ev = evalCond(branch.cond, branch.lineNum);
+            if(ev.err){ err = ev.err; break; }
+            if(ev.result && !ran){
+              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
+              const res = runPythonLite(bodyStmts.map(s=>s.raw).join('\n'));
+              if(res.err){ err = res.err; break; }
+              res.out.forEach(l => out.push(l));
+              ran = true;
+            }
+          }
+        }
+        const lastBranch = chain[chain.length-1];
+        si = lastBranch ? lastBranch.bodyEnd : si+1;
+        continue;
+      }
+
+      // --- elif / else at top level (shouldn't appear without preceding if) ---
+      if(line.match(/^elif/) || line.match(/^else/)){
+        si++; continue;
+      }
+
+      err = `Line ${lineNum}: Unknown instruction — "${line.split(' ')[0]}"`;
+      break;
+    }
+    return { out, err };
+  }
+
   function runIDE(){
     const code = document.getElementById('ide-code')?.value || '';
     const outputEl = document.getElementById('ide-output');
@@ -1899,7 +2189,10 @@
       return;
     }
 
-    const { out, err } = runMaySonLang(code);
+    // Pick the interpreter — Level 4's final page writes real Python, everything else is MaySon
+    const p = PAGES[curPage];
+    const interpret = (p && p.ideLang === 'python') ? runPythonLite : runMaySonLang;
+    const { out, err } = interpret(code);
 
     if(err){
       curErrors++;
@@ -1912,7 +2205,6 @@
     outputEl.innerHTML = out.map(l=>`<span class="ide-line">${escHtml(l)}</span>`).join('');
 
     // Check win condition — use page's ideExpected if set, else fall back to 'Hello World'
-    const p = PAGES[curPage];
     const expected = (p && p.ideExpected) ? p.ideExpected : 'Hello World';
     const winMsg   = (p && p.ideWinMsg)   ? p.ideWinMsg   : `Output matches! ${expected} — you did it!`;
 
@@ -1933,6 +2225,19 @@
         curErrors++;
         showFB('wrong','❌','Make sure to <strong>set x to 2</strong> before the if statement!');
         return;
+      }
+    }
+
+    // Generalized validation — any page can require a list of substrings (e.g. L4's Python capstone)
+    if(p && p.ideRequiredKeywords){
+      const codeLC = code.toLowerCase();
+      for(let i=0;i<p.ideRequiredKeywords.length;i++){
+        if(!codeLC.includes(p.ideRequiredKeywords[i].toLowerCase())){
+          curErrors++;
+          const msg = (p.ideRequiredMsgs && p.ideRequiredMsgs[i]) || `Your code is missing <strong>${p.ideRequiredKeywords[i]}</strong>!`;
+          showFB('wrong','❌', msg);
+          return;
+        }
       }
     }
 
