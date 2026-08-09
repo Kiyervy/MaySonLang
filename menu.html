@@ -357,33 +357,33 @@
           <div class="level-desc" id="level-desc-4">Earn 9★ in Levels 1–3 to unlock</div>
           <div class="level-star" id="level-star-4" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.20s">
-          <div class="level-lock">🔒</div>
-          <div class="level-num" style="color:var(--dim)">05</div>
-          <div class="level-title">Loops</div>
-          <div class="level-desc">Repeat actions easily</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+        <div class="level-card locked" id="level-card-5" style="animation-delay:.20s">
+          <div class="level-lock" id="level-lock-5">🔒</div>
+          <div class="level-num" id="level-num-5" style="color:var(--dim)">05</div>
+          <div class="level-title" id="level-title-5" style="color:var(--dim)">Loops</div>
+          <div class="level-desc" id="level-desc-5">🔒 Complete Level 04 to unlock</div>
+          <div class="level-star" id="level-star-5" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.24s">
-          <div class="level-lock">🔒</div>
-          <div class="level-num" style="color:var(--dim)">06</div>
-          <div class="level-title">Functions</div>
-          <div class="level-desc">Write reusable code blocks</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+        <div class="level-card locked" id="level-card-6" style="animation-delay:.24s">
+          <div class="level-lock" id="level-lock-6">🔒</div>
+          <div class="level-num" id="level-num-6" style="color:var(--dim)">06</div>
+          <div class="level-title" id="level-title-6" style="color:var(--dim)">Input & Operators</div>
+          <div class="level-desc" id="level-desc-6">🔒 Complete Level 05 to unlock</div>
+          <div class="level-star" id="level-star-6" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.28s">
-          <div class="level-lock">🔒</div>
-          <div class="level-num" style="color:var(--dim)">07</div>
-          <div class="level-title">Lists</div>
-          <div class="level-desc">Group data together</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+        <div class="level-card locked" id="level-card-7" style="animation-delay:.28s">
+          <div class="level-lock" id="level-lock-7">🔒</div>
+          <div class="level-num" id="level-num-7" style="color:var(--dim)">07</div>
+          <div class="level-title" id="level-title-7" style="color:var(--dim)">🌉 Logic Bridge</div>
+          <div class="level-desc" id="level-desc-7">🔒 Complete Level 06 to unlock</div>
+          <div class="level-star" id="level-star-7" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
-        <div class="level-card locked" style="animation-delay:.32s">
-          <div class="level-lock">🔒</div>
-          <div class="level-num" style="color:var(--dim)">08</div>
-          <div class="level-title">Maths</div>
-          <div class="level-desc">Calculate with numbers</div>
-          <div class="level-star" style="color:var(--dim)">☆ ☆ ☆</div>
+        <div class="level-card locked" id="level-card-8" style="animation-delay:.32s">
+          <div class="level-lock" id="level-lock-8">🔒</div>
+          <div class="level-num" id="level-num-8" style="color:var(--dim)">08</div>
+          <div class="level-title" id="level-title-8" style="color:var(--dim)">🐍 Python Fundamentals</div>
+          <div class="level-desc" id="level-desc-8">Earn 21★ in Levels 1–7 to unlock</div>
+          <div class="level-star" id="level-star-8" style="color:var(--dim)">☆ ☆ ☆</div>
         </div>
         <div class="level-card locked" style="animation-delay:.36s">
           <div class="level-lock">🔒</div>
@@ -1162,7 +1162,133 @@
         isLast: false,
       },
 
-      /* L3 PAGE 5 — mini IDE: if/else with variable */
+      /* L3 PAGE 5 — multiple choice: greater than or equal */
+      {
+        mascotTitle: "Greater than or equal to ⚖️",
+        mascotBody:  "Sometimes \"greater than\" isn't quite enough — what if the value is exactly equal too? MaySon has an operator for that: <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&gt;=</code> means \"greater than <strong>or</strong> equal to\".",
+        demoCode:    `<span class="cmt"># True if age is 18 or higher:</span><br><span class="kw">if</span> <span class="str">age</span> <span class="punc">&gt;=</span> <span class="num">18</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Adult"</span>`,
+        taskDesc:    'Which operator checks if a value is <strong>greater than or equal to</strong> another?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['>', '>=', '=>'],
+        mcCorrect: '>=',
+        hint: '💡 <strong>Hint:</strong> The equals sign goes <em>after</em> the greater-than sign: <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">&gt;=</code>, not <code style="color:#f87171">=&gt;</code>.',
+        successMsg: '✅ Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">&gt;=</code> is true when the value is bigger than <em>or</em> exactly equal to the number being compared.',
+        isLast: false,
+      },
+
+      /* L3 PAGE 6 — fill in the blank: less than or equal */
+      {
+        mascotTitle: "Less than or equal to too! ❄️",
+        mascotBody:  "The mirror-image operator is <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&lt;=</code> — \"less than or equal to\". Perfect for things like temperature warnings.",
+        demoCode:    `<span class="cmt"># True if temp is 0 or below:</span><br><span class="kw">if</span> <span class="str">temp</span> <span class="punc">&lt;=</span> <span class="num">0</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Freezing!"</span>`,
+        taskDesc:    'Complete the code so it warns when <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">battery</code> is 5 or lower. Drag the correct operator into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'LTE' }
+        ],
+        lineHTML: () => `
+          <span class="kw">if</span> <span class="cs">battery</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="LTE" data-value="" data-cid=""
+              style="min-width:44px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="cp">5:</span>
+        `,
+        chips: [
+          { id:'l3p6gte', label:'>=', css:'c-colon', val:'GTE' },
+          { id:'l3p6lte', label:'<=', css:'c-eq',    val:'LTE' },
+        ],
+        hint: '💡 <strong>Hint:</strong> "5 or lower" means <em>less than or equal to</em> 5 — use <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">&lt;=</code>.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">battery &lt;= 5</code> is true when the battery is 5 or less.',
+        isLast: false,
+      },
+
+      /* L3 PAGE 7 — multiple choice: not equal */
+      {
+        mascotTitle: "Checking what's different — not equal! 🙅",
+        mascotBody:  "Sometimes you want to run code when two things are <strong>not</strong> the same. MaySon uses <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">!=</code> for \"not equal to\".",
+        demoCode:    `<span class="cmt"># True if status is anything except "done":</span><br><span class="kw">if</span> <span class="str">status</span> <span class="punc">!=</span> <span class="str">"done"</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Pending"</span>`,
+        taskDesc:    'Which operator checks that two values are <strong>NOT</strong> equal?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['==', '!=', '<>'],
+        mcCorrect: '!=',
+        hint: '💡 <strong>Hint:</strong> The exclamation mark <code style="color:#f87171">!</code> usually means "not" — combined with <code style="color:#fbbf24">=</code> it means "not equal".',
+        successMsg: '✅ Exactly! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">!=</code> is true whenever the two values are different.',
+        isLast: false,
+      },
+
+      /* L3 PAGE 8 — drag & drop: grading chain with else if */
+      {
+        mascotTitle: "Grading with a chain of conditions 🏆",
+        mascotBody:  "You can chain <strong>multiple</strong> <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else if</code> branches to check several possibilities in order. MaySon checks each one top to bottom and stops at the first true one.",
+        demoCode:    `<span class="kw">set</span> <span class="str">score</span> <span class="punc">to</span> <span class="num">75</span><br><span class="kw">if</span> <span class="str">score</span> <span class="punc">&gt;=</span> <span class="num">90</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"A"</span><br><span class="kw">else if</span> <span class="str">score</span> <span class="punc">&gt;=</span> <span class="num">70</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"B"</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"C"</span>`,
+        taskDesc:    'Complete the grading chain below. Drag the correct blocks into <strong>both</strong> blanks!',
+        zones: [
+          { id:'z0', ph:'____', correct:'ELSEIF' },
+          { id:'z1', ph:'____', correct:'SAY' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="kw">set</span> <span class="cs">score</span> <span class="cp">to</span> <span class="num">60</span></div>
+            <div><span class="kw">if</span> <span class="cs">score</span> <span class="cp">&gt;=</span> <span class="num">90</span><span class="cp">:</span></div>
+            <div style="padding-left:28px"><span class="kw">say</span> <span class="str">"A"</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="ELSEIF" data-value="" data-cid=""
+                  style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">score</span>&nbsp;<span class="cp">&gt;=</span>&nbsp;<span class="num">70</span><span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">say</span> <span class="str">"B"</span></div>
+            <div><span class="kw">else</span><span class="cp">:</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z1" data-correct="SAY" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              <span class="str">"C"</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l3p8if',     label:'if',       css:'c-say',   val:'IF'     },
+          { id:'l3p8elseif', label:'else if',  css:'c-elif',  val:'ELSEIF' },
+          { id:'l3p8set',    label:'set',      css:'c-send',  val:'SET'    },
+          { id:'l3p8say',    label:'say',      css:'c-say',   val:'SAY'    },
+        ],
+        hint: '💡 <strong>Hint:</strong> Since the first check already used <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code>, the second check needs <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else if</code>. The final blank prints the message with <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code>.',
+        successMsg: '🎉 Great chaining! Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">score = 60</code> isn\'t 90+ or 70+, it falls through to <strong>else</strong> and prints "C".',
+        isLast: false,
+      },
+
+      /* L3 PAGE 9 — reading order puzzle */
+      {
+        mascotTitle: "Trace through an if/else chain 🧭",
+        mascotBody:  "Being able to trace through conditions step by step — in the exact order the computer checks them — is a superpower for debugging your own code later.",
+        demoCode:    `<span class="kw">set</span> <span class="str">stock</span> <span class="punc">to</span> <span class="num">0</span><br><span class="kw">if</span> <span class="str">stock</span> <span class="punc">==</span> <span class="num">0</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Out of Stock"</span><br><span class="kw">else</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"In Stock"</span>`,
+        taskDesc:    'Drag the descriptions into the order the computer actually evaluates them.',
+        zones: [
+          { id:'oz0', ph:'Step 1', correct:'A' },
+          { id:'oz1', ph:'Step 2', correct:'B' },
+          { id:'oz2', ph:'Step 3', correct:'C' },
+        ],
+        lineHTML: ()=>'',
+        chips: [],
+        isOrder: true,
+        orderItems: [
+          { id:'oi3-a', label:'The variable stock is set to 0',              val:'A' },
+          { id:'oi3-b', label:'MaySon checks if stock == 0 — it\'s true',    val:'B' },
+          { id:'oi3-c', label:'"Out of Stock" is printed; the else is skipped', val:'C' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Code always runs top to bottom: set the variable first, then check the condition, then run whichever branch matches.',
+        successMsg: 'Spot on! <strong>Set stock → check the condition → run the matching branch.</strong> Since stock is 0, "Out of Stock" prints and the else is never reached.',
+        isLast: false,
+      },
+      /* L3 PAGE 10 — mini IDE: if/else with variable */
       {
         mascotTitle: "Time to write conditions! ⌨️",
         mascotBody:  "You've learned <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code>, <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else</code>, and comparison operators. Now write a full conditional program yourself!<br><br>Use <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set x to 2</code>, then check if <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">x &gt; 10</code>.",
@@ -1506,6 +1632,1062 @@
       },
     ];
 
+    /* ─── PUZZLE DATA — LEVEL 5 (Loops) ──────────────── */
+    const PAGES_L5 = [
+
+      /* L5 PAGE 1 — repeat keyword */
+      {
+        mascotTitle: "Meet the repeat loop! 🔁",
+        mascotBody:  "Sometimes you need to do the <strong>same thing over and over</strong> — like collecting coins in a game. Instead of writing <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">say</code> again and again, MaySon has a <strong>loop</strong> that repeats code for you!",
+        demoCode:    `<span class="cmt"># Print "Hi!" 3 times:</span><br><span class="kw">repeat</span> <span class="num">3</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Hi!"</span>`,
+        taskDesc:    'Complete the code below to print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Coin!"</code> three times in a row. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'______', correct:'REPEAT' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="REPEAT" data-value="" data-cid=""
+                  ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="num">3</span><span class="cw">&nbsp;times:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">say</span> <span class="str">"Coin!"</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l5p1loop',   label:'loop',   css:'c-send', val:'LOOP'   },
+          { id:'l5p1repeat', label:'repeat', css:'c-say',  val:'REPEAT' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The MaySon loop keyword is <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat</code>, followed by a number and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">times:</code>',
+        successMsg: 'You got it! <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat N times:</code> runs the indented code N times in a row.',
+      },
+
+      /* L5 PAGE 2 — how many times? */
+      {
+        mascotTitle: "Choosing how many times 🎡",
+        mascotBody:  "The number right after <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat</code> controls <strong>how many times</strong> the loop runs. Change the number, change the repetitions!",
+        demoCode:    `<span class="cmt"># Spins the wheel 2 times:</span><br><span class="kw">repeat</span> <span class="num">2</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Spin!"</span>`,
+        taskDesc:    'A game wheel needs to spin exactly <strong>5 times</strong>. Drag the correct number into the blank!',
+        zones: [
+          { id:'z0', ph:'_', correct:'NUM5' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">repeat</span>
+              <div class="drop-zone" id="z0" data-correct="NUM5" data-value="" data-cid=""
+                  style="min-width:40px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cw">times:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">say</span> <span class="str">"Spin!"</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l5p2three', label:'3', css:'c-send',  val:'NUM3' },
+          { id:'l5p2seven', label:'7', css:'c-display',val:'NUM7' },
+          { id:'l5p2five',  label:'5', css:'c-quote', val:'NUM5' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The task says exactly <strong>5 times</strong> — the number in <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat ___ times:</code> must match.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">repeat 5 times:</code> spins the wheel exactly 5 times.',
+      },
+
+      /* L5 PAGE 3 — say inside the loop body */
+      {
+        mascotTitle: "What's inside the loop matters 🚀",
+        mascotBody:  "Everything <strong>indented</strong> underneath <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat ... times:</code> is the loop's body — it's what actually repeats.",
+        demoCode:    `<span class="cmt"># A rocket countdown step:</span><br><span class="kw">repeat</span> <span class="num">3</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Tick"</span>`,
+        taskDesc:    'Build a launch sequence that prints <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Go!"</code> four times. Drag the right block into the blank inside the loop!',
+        zones: [
+          { id:'z0', ph:'____', correct:'SAY' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="kw">repeat</span> <span class="num">4</span> <span class="cw">times:</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z0" data-correct="SAY" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">"Go!"</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l5p3set',  label:'set',  css:'c-send', val:'SET' },
+          { id:'l5p3say',  label:'say',  css:'c-say',  val:'SAY' },
+        ],
+        hint: '💡 <strong>Hint:</strong> To print a message inside a loop, you still use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code> — just indented under the loop.',
+        successMsg: 'Excellent! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">say "Go!"</code> inside the loop prints "Go!" four times in a row.',
+      },
+
+      /* L5 PAGE 4 — multiple choice: how many times does it print? */
+      {
+        mascotTitle: "Read the loop like a computer would 🧠",
+        mascotBody:  "Before writing loops yourself, it helps to be able to <strong>read</strong> one and know exactly what it will print.",
+        demoCode:    `<span class="kw">repeat</span> <span class="num">6</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Beep"</span>`,
+        taskDesc:    'How many times will the code above print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">Beep</code>?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['3 times', '6 times', 'Forever'],
+        mcCorrect: '6 times',
+        hint: '💡 <strong>Hint:</strong> The number right after <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat</code> is exactly how many times the body runs.',
+        successMsg: '✅ Exactly! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">repeat 6 times:</code> means the body runs 6 times — no more, no less.',
+      },
+
+      /* L5 PAGE 5 — two blanks: count + message */
+      {
+        mascotTitle: "One more building block — put it together! 🔔",
+        mascotBody:  "You've learned the <strong>count</strong> and the <strong>message</strong> both matter. Let's combine them in one challenge — a morning alarm that rings 3 times saying \"Wake up!\"",
+        demoCode:    `<span class="cmt"># Rings a bell twice:</span><br><span class="kw">repeat</span> <span class="num">2</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Ring!"</span>`,
+        taskDesc:    'Complete the alarm code below. Drag the correct blocks into <strong>both</strong> blanks!',
+        zones: [
+          { id:'z0', ph:'_', correct:'NUM3' },
+          { id:'z1', ph:'__________', correct:'WAKE' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">repeat</span>
+              <div class="drop-zone" id="z0" data-correct="NUM3" data-value="" data-cid=""
+                  style="min-width:40px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cw">times:</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <span class="kw">say</span>
+              <div class="drop-zone" id="z1" data-correct="WAKE" data-value="" data-cid=""
+                  style="min-width:110px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">__________</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l5p5num5',  label:'5',            css:'c-display', val:'NUM5' },
+          { id:'l5p5wake',  label:'"Wake up!"',   css:'c-quote',   val:'WAKE' },
+          { id:'l5p5num3',  label:'3',            css:'c-send',    val:'NUM3' },
+          { id:'l5p5snooze',label:'"Snooze"',     css:'c-colon',   val:'SNOOZE' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The alarm rings <strong>3</strong> times and says <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Wake up!"</code> each time.',
+        successMsg: 'Great work! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">repeat 3 times: say "Wake up!"</code> — the alarm is ready. One challenge left!',
+      },
+
+      /* L5 PAGE 6 — two actions inside one loop body */
+      {
+        mascotTitle: "A loop body can have more than one line! 💃",
+        mascotBody:  "Everything indented under <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat ... times:</code> repeats together — even if it's more than one line. Great for dance moves that come in pairs!",
+        demoCode:    `<span class="cmt"># Repeats BOTH lines together, twice:</span><br><span class="kw">repeat</span> <span class="num">2</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Left"</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Right"</span>`,
+        taskDesc:    'Complete the dance routine so each round prints <strong>"Step"</strong> then <strong>"Clap"</strong>. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'____', correct:'SAY' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="kw">repeat</span> <span class="num">3</span> <span class="cw">times:</span></div>
+            <div style="padding-left:28px"><span class="kw">say</span> <span class="str">"Step"</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z0" data-correct="SAY" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="str">"Clap"</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l5p6set', label:'set', css:'c-send', val:'SET' },
+          { id:'l5p6say', label:'say', css:'c-say',  val:'SAY' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Both lines inside the loop use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code> — one loop body can print more than one message per round.',
+        successMsg: 'Nice moves! Each of the 3 rounds prints both <strong>"Step"</strong> and <strong>"Clap"</strong> — that\'s 6 lines of output in total.',
+      },
+
+      /* L5 PAGE 7 — multiple choice: total output count */
+      {
+        mascotTitle: "Count the total output 🔢",
+        mascotBody:  "When a loop body has more than one line, the total output is <strong>lines per round × number of rounds</strong>.",
+        demoCode:    `<span class="kw">repeat</span> <span class="num">3</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Ping"</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Pong"</span>`,
+        taskDesc:    'How many total lines does the code above print?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['3 lines', '5 lines', '6 lines'],
+        mcCorrect: '6 lines',
+        hint: '💡 <strong>Hint:</strong> Each round prints 2 lines (Ping and Pong), and the loop runs 3 rounds — that\'s 2 × 3.',
+        successMsg: '✅ Exactly! 2 lines per round × 3 rounds = <strong>6 lines</strong> total.',
+      },
+
+      /* L5 PAGE 8 — fill in the count for a new scenario */
+      {
+        mascotTitle: "Warm-up routine time! 🤸",
+        mascotBody:  "Let's apply what you know to a brand new scenario — a fitness app that needs to prompt for jumping jacks.",
+        demoCode:    `<span class="cmt"># Prompts for 4 push-ups:</span><br><span class="kw">repeat</span> <span class="num">4</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Push-up!"</span>`,
+        taskDesc:    'The app needs to prompt for exactly <strong>8 jumping jacks</strong>. Drag the correct number into the blank!',
+        zones: [
+          { id:'z0', ph:'_', correct:'NUM8' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">repeat</span>
+              <div class="drop-zone" id="z0" data-correct="NUM8" data-value="" data-cid=""
+                  style="min-width:40px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cw">times:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">say</span> <span class="str">"Jump!"</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l5p8num4',  label:'4',  css:'c-send',   val:'NUM4'  },
+          { id:'l5p8num8',  label:'8',  css:'c-quote',  val:'NUM8'  },
+          { id:'l5p8num12', label:'12', css:'c-display',val:'NUM12' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The task needs exactly <strong>8</strong> jumping jacks, so <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat 8 times:</code>.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">repeat 8 times:</code> prompts for the jumping jacks exactly 8 times.',
+      },
+
+      /* L5 PAGE 9 — reading order puzzle */
+      {
+        mascotTitle: "Trace through a loop, step by step 🔍",
+        mascotBody:  "Let's make sure you can trace exactly what a loop does, one repetition at a time.",
+        demoCode:    `<span class="kw">repeat</span> <span class="num">2</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Tick"</span>`,
+        taskDesc:    'Drag the descriptions into the order the computer actually runs them.',
+        zones: [
+          { id:'oz0', ph:'Step 1', correct:'A' },
+          { id:'oz1', ph:'Step 2', correct:'B' },
+          { id:'oz2', ph:'Step 3', correct:'C' },
+        ],
+        lineHTML: ()=>'',
+        chips: [],
+        isOrder: true,
+        orderItems: [
+          { id:'oi5-a', label:'MaySon sees repeat 2 times: and starts round 1', val:'A' },
+          { id:'oi5-b', label:'"Tick" is printed for round 1',                  val:'B' },
+          { id:'oi5-c', label:'The loop starts round 2 and prints "Tick" again', val:'C' },
+        ],
+        hint: '💡 <strong>Hint:</strong> A loop starts a round, runs the body, then starts the next round — repeating until it hits the count.',
+        successMsg: 'Spot on! <strong>Start a round → run the body → repeat</strong> until the loop has run its full count.',
+        isLast: false,
+      },
+
+      /* L5 PAGE 10 — final: write real code */
+      {
+        mascotTitle: "Time to write a loop yourself! ⌨️",
+        mascotBody:  "No chips, no blanks — write real MaySon code! Use a <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat</code> loop to print <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">Coin!</code> exactly <strong>three times</strong>, each on its own line.",
+        demoCode:    `<span class="cmt"># Reminder — loop syntax:</span><br><span class="kw">repeat</span> <span class="num">2</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Hop!"</span>  <span class="cmt">← prints Hop! twice</span>`,
+        taskDesc:    'Write a loop that prints <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">Coin!</code> three times.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideRequiredKeywords: ['repeat', 'times', 'say'],
+        ideRequiredMsgs: [
+          'Your code must use a <strong>repeat</strong> loop!',
+          'Your loop needs the <strong>times:</strong> keyword after the number!',
+          'Your loop body must use <strong>say</strong> to print something!',
+        ],
+        ideExpected: 'Coin!\nCoin!\nCoin!',
+        ideWinMsg: '🎉 You wrote a real loop! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">repeat 3 times: say "Coin!"</code> printed the message three times. Level 5 complete!',
+        hint: '💡 <strong>Hint:</strong><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat 3 times:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say "Coin!"</code><br>Remember the body must be indented!',
+        successMsg: '🏅 Amazing! Loops let you repeat actions without copy-pasting code. Level 5 — Loops: mastered!',
+        isLast: true,
+      },
+    ];
+
+    /* ─── PUZZLE DATA — LEVEL 6 (Input & Operators) ──── */
+    const PAGES_L6 = [
+
+      /* L6 PAGE 1 — ask ... into ... */
+      {
+        mascotTitle: "Let's get information from the user! 🎤",
+        mascotBody:  "So far your code has only used values <em>you</em> typed. Real apps often need to <strong>ask the user</strong> something and store their answer. MaySon uses <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">ask \"...\" into varName</code> to do that.",
+        demoCode:    `<span class="cmt"># Ask for a name and store it:</span><br><span class="kw">ask</span> <span class="str">"What's your name?"</span> <span class="cw">into</span> <span class="cs">name</span>`,
+        taskDesc:    'Complete the code below to ask the user for their favorite color. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'___', correct:'ASK' }
+        ],
+        lineHTML: () => `
+          <div class="drop-zone" id="z0" data-correct="ASK" data-value="" data-cid=""
+              ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+          <span class="cs">&nbsp;"Favorite color?"&nbsp;</span><span class="cw">into</span><span class="cs">&nbsp;color</span>
+        `,
+        chips: [
+          { id:'l6p1say', label:'say', css:'c-say',  val:'SAY' },
+          { id:'l6p1ask', label:'ask', css:'c-send', val:'ASK' },
+        ],
+        hint: '💡 <strong>Hint:</strong> To get input from the user, MaySon uses <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask</code>, not <code style="color:#f87171">say</code> — <em>say</em> only outputs, it doesn\'t collect anything!',
+        successMsg: 'You got it! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">ask "..." into color</code> stores the user\'s answer in the variable <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">color</code>.',
+      },
+
+      /* L6 PAGE 2 — into keyword */
+      {
+        mascotTitle: "Where does the answer go? 📥",
+        mascotBody:  "The word <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">into</code> tells MaySon <strong>which variable</strong> should store the user's answer — just like <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">to</code> did for <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">set</code>.",
+        demoCode:    `<span class="cmt"># Store the answer in "age":</span><br><span class="kw">ask</span> <span class="str">"How old are you?"</span> <span class="cw">into</span> <span class="cs">age</span>`,
+        taskDesc:    'Complete the code so the answer is stored <strong>into</strong> the variable <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">score</code>. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'____', correct:'INTO' }
+        ],
+        lineHTML: () => `
+          <span class="kw">ask</span> <span class="str">"What's your score?"</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="INTO" data-value="" data-cid=""
+              style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>
+          <span class="cs">&nbsp;score</span>
+        `,
+        chips: [
+          { id:'l6p2to',   label:'to',   css:'c-colon', val:'TO'   },
+          { id:'l6p2into', label:'into', css:'c-quote', val:'INTO' },
+        ],
+        hint: '💡 <strong>Hint:</strong> <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask</code> pairs with <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">into</code>, while <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set</code> pairs with <code style="color:#fbbf24;font-family:\'JetBrains Mono\',monospace">to</code>. Easy to mix up, but they\'re different keywords!',
+        successMsg: 'Nailed it! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">into</code> is the keyword that connects <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask</code> to a variable.',
+      },
+
+      /* L6 PAGE 3 — addition operator */
+      {
+        mascotTitle: "Operators do math on your data! ➕",
+        mascotBody:  "Once you have numbers stored in variables, you can combine them using <strong>operators</strong>: <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">+</code> adds, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">-</code> subtracts, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">*</code> multiplies, and <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">/</code> divides.",
+        demoCode:    `<span class="cmt"># Add price and tax together:</span><br><span class="kw">set</span> <span class="cs">total</span> <span class="cw">to</span> <span class="cs">price</span> <span class="cp">+</span> <span class="cs">tax</span>`,
+        taskDesc:    'A shopping cart needs to add <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">subtotal</code> and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">shipping</code> together. Drag the correct operator into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'PLUS' }
+        ],
+        lineHTML: () => `
+          <span class="kw">set</span> <span class="cs">total</span> <span class="cw">to</span> <span class="cs">subtotal</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="PLUS" data-value="" data-cid=""
+              style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="cs">shipping</span>
+        `,
+        chips: [
+          { id:'l6p3star', label:'*', css:'c-colon', val:'STAR' },
+          { id:'l6p3plus', label:'+', css:'c-eq',    val:'PLUS' },
+          { id:'l6p3minus',label:'-', css:'c-elif',  val:'MINUS' },
+        ],
+        hint: '💡 <strong>Hint:</strong> To <em>add</em> two values together, use the <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">+</code> operator.',
+        successMsg: 'Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">subtotal + shipping</code> adds the two numbers together.',
+      },
+
+      /* L6 PAGE 4 — multiply operator */
+      {
+        mascotTitle: "Multiplying with * 🔢",
+        mascotBody:  "The <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">*</code> symbol multiplies two values — handy for totals, like the cost of several items.",
+        demoCode:    `<span class="cmt"># Multiply price by quantity:</span><br><span class="kw">set</span> <span class="cs">cost</span> <span class="cw">to</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">qty</span>`,
+        taskDesc:    'Complete the code to find the total cost of <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">quantity</code> items. Drag the correct operator into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'STAR' }
+        ],
+        lineHTML: () => `
+          <span class="kw">set</span> <span class="cs">total</span> <span class="cw">to</span> <span class="cs">price</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="STAR" data-value="" data-cid=""
+              style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="cs">quantity</span>
+        `,
+        chips: [
+          { id:'l6p4slash', label:'/', css:'c-elif', val:'SLASH' },
+          { id:'l6p4star',  label:'*', css:'c-eq',   val:'STAR'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> To find a total cost for many items, you <em>multiply</em> — use <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">*</code>.',
+        successMsg: 'Nice! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">price * quantity</code> multiplies the two values.',
+      },
+
+      /* L6 PAGE 5 — MC: which operator */
+      {
+        mascotTitle: "Quick check — pick the right operator 🧮",
+        mascotBody:  "Let's make sure the four operators have stuck: <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">+</code> add, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">-</code> subtract, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">*</code> multiply, <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">/</code> divide.",
+        demoCode:    `<span class="cmt"># Split a bill between friends:</span><br><span class="kw">set</span> <span class="cs">share</span> <span class="cw">to</span> <span class="cs">bill</span> <span class="cp">/</span> <span class="cs">friends</span>`,
+        taskDesc:    'Which operator correctly finds how much <strong>change</strong> is left after paying, i.e. <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">cash</code> minus <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">price</code>?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['set change to cash + price', 'set change to cash - price', 'set change to cash * price'],
+        mcCorrect: 'set change to cash - price',
+        hint: '💡 <strong>Hint:</strong> "Change" left over after paying means you <em>subtract</em> the price from the cash given — use <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">-</code>.',
+        successMsg: '✅ Correct! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">cash - price</code> calculates the change owed.',
+      },
+
+      /* L6 PAGE 6 — multiple choice: division operator */
+      {
+        mascotTitle: "Splitting things evenly ➗",
+        mascotBody:  "The <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">/</code> operator divides one value by another — perfect for splitting a bill between friends.",
+        demoCode:    `<span class="cmt"># Split a $20 bill 4 ways:</span><br><span class="kw">set</span> <span class="cs">share</span> <span class="cw">to</span> <span class="cs">bill</span> <span class="cp">/</span> <span class="cs">friends</span>`,
+        taskDesc:    'Which operator correctly finds how much <strong>each friend owes</strong> when splitting a bill evenly?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['set share to bill + friends', 'set share to bill / friends', 'set share to bill * friends'],
+        mcCorrect: 'set share to bill / friends',
+        hint: '💡 <strong>Hint:</strong> Splitting something evenly means <em>dividing</em> — use <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">/</code>.',
+        successMsg: '✅ Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">bill / friends</code> divides the total evenly between everyone.',
+      },
+
+      /* L6 PAGE 7 — combine ask + operator (two blanks) */
+      {
+        mascotTitle: "Ask, then do the math 🧮",
+        mascotBody:  "Once you've asked for a number, you can immediately use it in an operator — no extra steps needed.",
+        demoCode:    `<span class="cmt"># Ask for a price, then add tax:</span><br><span class="kw">ask</span> <span class="str">"Price?"</span> <span class="cw">into</span> <span class="cs">price</span><br><span class="kw">set</span> <span class="cs">total</span> <span class="cw">to</span> <span class="cs">price</span> <span class="cp">+</span> <span class="num">2</span>`,
+        taskDesc:    'Complete the code below to ask for a number of items and double it. Drag the correct blocks into <strong>both</strong> blanks!',
+        zones: [
+          { id:'z0', ph:'___', correct:'ASK' },
+          { id:'z1', ph:' ? ', correct:'STAR' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="ASK" data-value="" data-cid=""
+                  style="min-width:50px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">&nbsp;"Items?"&nbsp;</span><span class="cw">into</span><span class="cs">&nbsp;items</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">set</span> <span class="cs">doubled</span> <span class="cw">to</span> <span class="cs">items</span>
+              <div class="drop-zone" id="z1" data-correct="STAR" data-value="" data-cid=""
+                  style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt"> ? </span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              <span class="num">2</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l6p7say',  label:'say', css:'c-say',  val:'SAY'  },
+          { id:'l6p7ask',  label:'ask', css:'c-send', val:'ASK'  },
+          { id:'l6p7plus', label:'+',   css:'c-colon',val:'PLUS' },
+          { id:'l6p7star', label:'*',   css:'c-eq',   val:'STAR' },
+        ],
+        hint: '💡 <strong>Hint:</strong> First blank collects input with <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask</code>. Second blank doubles the value, so it needs <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">*</code>.',
+        successMsg: 'Nice! You combined <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">ask</code> with the <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">*</code> operator to double the user\'s answer.',
+      },
+
+      /* L6 PAGE 8 — comparison operator refresher combined with input */
+      {
+        mascotTitle: "Comparisons work on input too! 🚪",
+        mascotBody:  "The comparison operators from Level 3 — <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&gt;</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&gt;=</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">==</code> — work perfectly well on a variable that came from <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">ask</code>.",
+        demoCode:    `<span class="kw">ask</span> <span class="str">"Your age?"</span> <span class="cw">into</span> <span class="cs">age</span><br><span class="kw">if</span> <span class="cs">age</span> <span class="cp">&gt;=</span> <span class="num">18</span><span class="punc">:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Adult"</span>`,
+        taskDesc:    'Complete the code so it checks whether the entered <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">pin</code> equals <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">1234</code>. Drag the correct operator into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'EQEQ' }
+        ],
+        lineHTML: () => `
+          <span class="kw">if</span> <span class="cs">pin</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="EQEQ" data-value="" data-cid=""
+              style="min-width:44px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="num">1234</span><span class="cp">:</span>
+        `,
+        chips: [
+          { id:'l6p8eq',   label:'=',  css:'c-colon', val:'EQ'   },
+          { id:'l6p8eqeq', label:'==', css:'c-eq',    val:'EQEQ' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Checking whether two values are equal uses <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">==</code>, not a single <code style="color:#f87171">=</code>.',
+        successMsg: 'Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">pin == 1234</code> checks the entered PIN against the correct one.',
+      },
+
+      /* L6 PAGE 9 — multiple choice: predict the output */
+      {
+        mascotTitle: "Predict the output 🔮",
+        mascotBody:  "Let's check your understanding by tracing through a short program using a simulated answer.",
+        demoCode:    `<span class="kw">ask</span> <span class="str">"Number?"</span> <span class="cw">into</span> <span class="cs">n</span><br><span class="kw">set</span> <span class="cs">doubled</span> <span class="cw">to</span> <span class="cs">n</span> <span class="cp">*</span> <span class="num">2</span><br><span class="kw">say</span> <span class="cs">doubled</span>`,
+        taskDesc:    'If the user types <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">6</code> when asked for a number, what does the code above print?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['6', '8', '12'],
+        mcCorrect: '12',
+        hint: '💡 <strong>Hint:</strong> <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">doubled</code> is set to <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">n * 2</code> — and n is 6.',
+        successMsg: '✅ Exactly! Since n = 6, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">n * 2</code> equals <strong>12</strong>.',
+      },
+
+      /* L6 PAGE 10 — final: write real code combining ask + operators */
+      {
+        mascotTitle: "Combine input and operators yourself! ⌨️",
+        mascotBody:  "This is it — no chips, no blanks. <strong>Ask</strong> the user for a number, <strong>multiply</strong> it by 3 using an operator, and <strong>say</strong> the result.",
+        demoCode:    `<span class="cmt"># Reminder:</span><br><span class="kw">ask</span> <span class="str">"Pick a number:"</span> <span class="cw">into</span> <span class="cs">n</span><br><span class="kw">set</span> <span class="cs">doubled</span> <span class="cw">to</span> <span class="cs">n</span> <span class="cp">*</span> <span class="num">2</span><br><span class="kw">say</span> <span class="cs">doubled</span>`,
+        taskDesc:    'Write code that: asks the user for a number and stores it into <strong>n</strong>, sets <strong>tripled</strong> to <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">n * 3</code>, then says <strong>tripled</strong>. When run, the simulated input will be <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">5</code> — the output must be exactly <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">15</code>.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideSimInputs: ['5'],
+        ideRequiredKeywords: ['ask', 'into', 'say'],
+        ideRequiredMsgs: [
+          'Your code must use <strong>ask</strong> to get input from the user!',
+          'Your <strong>ask</strong> statement must store the answer <strong>into</strong> a variable!',
+          'Your code must use <strong>say</strong> to output the result!',
+        ],
+        ideExpected: '15',
+        ideWinMsg: '🎉 You combined input and operators! Since the simulated answer was 5, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">n * 3</code> equals 15. Level 6 complete!',
+        hint: '💡 <strong>Hint:</strong><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask "Pick a number:" into n</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set tripled to n * 3</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say tripled</code>',
+        successMsg: '🏅 Fantastic! You asked for input, did math on it, and printed the result. Level 6 — Input & Operators: mastered!',
+        isLast: true,
+      },
+    ];
+
+    /* ─── PUZZLE DATA — LEVEL 7 (Logic Bridge: MaySon + Python) ─ */
+    const PAGES_L7 = [
+
+      /* L7 PAGE 1 — repeat -> for i in range() */
+      {
+        mascotTitle: "Loops translate too! 🐍🔁",
+        mascotBody:  "You already know MaySon's <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat N times:</code>. Python writes the same idea as <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">for i in range(N):</code> — it repeats the indented body N times.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">repeat</span> <span class="num">3</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Hi!"</span><br><br><span class="cmt"># Python:</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="num">3</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Hi!"</span><span class="punc">)</span>`,
+        taskDesc:    'Translate this MaySon loop into Python. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'___', correct:'FOR' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="FOR" data-value="" data-cid=""
+                  style="min-width:48px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">i</span><span class="cw">&nbsp;in&nbsp;</span><span class="kw">range</span><span class="cp">(3):</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"Hi!"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l7p1repeat', label:'repeat', css:'c-say',  val:'REPEAT' },
+          { id:'l7p1for',    label:'for',    css:'c-print',val:'FOR'    },
+        ],
+        hint: '💡 <strong>Hint:</strong> MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat</code> becomes Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">for</code>, paired with <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(...)</code>.',
+        successMsg: 'You got it! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">for i in range(3):</code> loops 3 times, just like <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat 3 times:</code>.',
+      },
+
+      /* L7 PAGE 2 — range(N) */
+      {
+        mascotTitle: "range() controls the count 🎯",
+        mascotBody:  "Just like the number after <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat</code>, the number inside <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">range(...)</code> controls how many times the Python loop runs.",
+        demoCode:    `<span class="cmt"># Loops 2 times:</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="num">2</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Spin!"</span><span class="punc">)</span>`,
+        taskDesc:    'A wheel must spin exactly <strong>5 times</strong>. Drag the correct number into the blank!',
+        zones: [
+          { id:'z0', ph:'_', correct:'NUM5' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">for</span><span class="cs">&nbsp;i&nbsp;</span><span class="cw">in</span><span class="kw">&nbsp;range</span><span class="cp">(</span>
+              <div class="drop-zone" id="z0" data-correct="NUM5" data-value="" data-cid=""
+                  style="min-width:36px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cp">):</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"Spin!"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l7p2num2', label:'2', css:'c-send',   val:'NUM2' },
+          { id:'l7p2num5', label:'5', css:'c-quote',  val:'NUM5' },
+          { id:'l7p2num9', label:'9', css:'c-display',val:'NUM9' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The task says exactly <strong>5 times</strong> — <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(5)</code> loops 5 times.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">range(5)</code> makes the loop run exactly 5 times.',
+      },
+
+      /* L7 PAGE 3 — ask/into -> input() */
+      {
+        mascotTitle: "Getting input, Python style 🎤🐍",
+        mascotBody:  "In Level 6 you learned MaySon uses <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">ask \"...\" into var</code>. Python uses a function called <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">input(...)</code> and assigns it with <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code>, just like any other variable.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">ask</span> <span class="str">"Your name?"</span> <span class="cw">into</span> <span class="cs">name</span><br><br><span class="cmt"># Python:</span><br><span class="cs">name</span> <span class="cp">=</span> <span class="kw">input</span><span class="punc">(</span><span class="str">"Your name?"</span><span class="punc">)</span>`,
+        taskDesc:    'Translate the MaySon line into Python. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'_____', correct:'INPUT' }
+        ],
+        lineHTML: () => `
+          <span class="cs">age</span> <span class="cp">=</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="INPUT" data-value="" data-cid=""
+              style="min-width:80px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">_____</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div><span class="cp">(</span><span class="cs">"Your age?"</span><span class="cp">)</span>
+        `,
+        chips: [
+          { id:'l7p3ask',   label:'ask',   css:'c-say',   val:'ASK'   },
+          { id:'l7p3input', label:'input', css:'c-print', val:'INPUT' },
+        ],
+        hint: '💡 <strong>Hint:</strong> MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask ... into</code> becomes Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">variable = input(...)</code>.',
+        successMsg: 'Nailed it! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">input(...)</code> collects text from the user, just like <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask</code> did.',
+      },
+
+      /* L7 PAGE 4 — operators are identical (MC) */
+      {
+        mascotTitle: "Good news — operators don't change! 🎉",
+        mascotBody:  "The math operators <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">+ - * /</code> work <strong>exactly the same</strong> in Python as they do in MaySon.",
+        demoCode:    `<span class="cmt"># Same in both languages:</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span> <span class="cp">+</span> <span class="cs">tax</span>`,
+        taskDesc:    'Which line of Python correctly finds the total cost of <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">qty</code> items at <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">price</code> each?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['total = price + qty', 'total = price * qty', 'total = price into qty'],
+        mcCorrect: 'total = price * qty',
+        hint: '💡 <strong>Hint:</strong> To find a total cost for many items you <em>multiply</em> price by quantity — same rule as in MaySon.',
+        successMsg: '✅ Exactly! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">price * qty</code> works identically in Python and MaySon.',
+      },
+
+      /* L7 PAGE 5 — combine input() + arithmetic + print (multi-blank) */
+      {
+        mascotTitle: "Combine everything — input, math & output 🧩",
+        mascotBody:  "Let's translate a full MaySon program into Python: ask for a number, double it, and print the result.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">ask</span> <span class="str">"Pick a number:"</span> <span class="cw">into</span> <span class="cs">n</span><br><span class="kw">set</span> <span class="cs">doubled</span> <span class="cw">to</span> <span class="cs">n</span> <span class="cp">*</span> <span class="num">2</span><br><span class="kw">say</span> <span class="cs">doubled</span>`,
+        taskDesc:    'Translate all three lines into Python. Drag the correct block into <strong>each</strong> blank!',
+        zones: [
+          { id:'z0', ph:'_____', correct:'INPUT' },
+          { id:'z1', ph:'_____', correct:'PRINT' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="cs">n</span> <span class="cp">=</span>
+              <div class="drop-zone" id="z0" data-correct="INPUT" data-value="" data-cid=""
+                  style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">"Pick a number:"</span><span class="cp">)</span>
+            </div>
+            <div><span class="cs">doubled</span> <span class="cp">=</span> <span class="cs">n</span> <span class="cp">*</span> <span class="num">2</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z1" data-correct="PRINT" data-value="" data-cid=""
+                  style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">_____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">doubled</span><span class="cp">)</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l7p5say',   label:'say',   css:'c-say',   val:'SAY'   },
+          { id:'l7p5print', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l7p5input', label:'input', css:'c-eq',    val:'INPUT' },
+          { id:'l7p5ask',   label:'ask',   css:'c-elif',  val:'ASK'   },
+        ],
+        hint: '💡 <strong>Hint:</strong> Blank 1 is <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">input</code> (to collect the number). Blank 2 is <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code> (to output the result).',
+        successMsg: '🏅 Great translation! You now know how <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask</code> and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code> map onto Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">input()</code> and <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print()</code>. One challenge left!',
+      },
+
+      /* L7 PAGE 6 — multiple choice: comparisons translate unchanged */
+      {
+        mascotTitle: "Comparisons don't change either! 🎉",
+        mascotBody:  "Just like the math operators, comparison operators — <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&gt;</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">&gt;=</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">==</code>, <code style=\"color:#4ade80;font-family:'JetBrains Mono',monospace\">!=</code> — work exactly the same in Python as they did in MaySon.",
+        demoCode:    `<span class="cmt"># Same in both languages:</span><br><span class="kw">if</span> <span class="cs">age</span> <span class="cp">&gt;=</span> <span class="num">18</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Adult"</span><span class="punc">)</span>`,
+        taskDesc:    'Which line of Python correctly checks if <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">stock</code> is exactly <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">0</code>?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['if stock = 0:', 'if stock == 0:', 'if stock into 0:'],
+        mcCorrect: 'if stock == 0:',
+        hint: '💡 <strong>Hint:</strong> Checking equality still uses <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">==</code> in Python — a single <code style="color:#f87171">=</code> is for assignment only.',
+        successMsg: '✅ Correct! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">stock == 0</code> works identically in both languages.',
+      },
+
+      /* L7 PAGE 7 — range(start, stop) two-argument form */
+      {
+        mascotTitle: "Python's range() can start anywhere 🎯",
+        mascotBody:  "MaySon's <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">repeat</code> always starts counting from the beginning. Python's <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">range(start, stop)</code> can start from <strong>any</strong> number — a small Python-only bonus!",
+        demoCode:    `<span class="cmt"># Counts 1, 2, 3, 4 (stops before 5):</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="num">1</span><span class="punc">,</span> <span class="num">5</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="cs">i</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the loop so it counts from <strong>3</strong> up to (but not including) <strong>6</strong>. Drag the correct numbers into the blanks!',
+        zones: [
+          { id:'z0', ph:'_', correct:'NUM3' },
+          { id:'z1', ph:'_', correct:'NUM6' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--fc);font-size:.9rem">
+            <span class="kw">for</span><span class="cs">&nbsp;i&nbsp;</span><span class="cw">in</span><span class="kw">&nbsp;range</span><span class="cp">(</span>
+            <div class="drop-zone" id="z0" data-correct="NUM3" data-value="" data-cid=""
+                style="min-width:32px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+              <span class="zt">_</span><span class="rm" onclick="rmChip('z0')">×</span>
+            </div>
+            <span class="cp">,</span>
+            <div class="drop-zone" id="z1" data-correct="NUM6" data-value="" data-cid=""
+                style="min-width:32px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+              <span class="zt">_</span><span class="rm" onclick="rmChip('z1')">×</span>
+            </div>
+            <span class="cp">):</span>
+          </div>
+        `,
+        chips: [
+          { id:'l7p7num1', label:'1', css:'c-send',    val:'NUM1' },
+          { id:'l7p7num3', label:'3', css:'c-quote',   val:'NUM3' },
+          { id:'l7p7num5', label:'5', css:'c-display', val:'NUM5' },
+          { id:'l7p7num6', label:'6', css:'c-eq',      val:'NUM6' },
+        ],
+        hint: '💡 <strong>Hint:</strong> <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(3, 6)</code> starts at 3 and stops right before 6 — counting 3, 4, 5.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">range(3, 6)</code> counts 3, 4, 5 — starting anywhere is a handy Python extra.',
+      },
+
+      /* L7 PAGE 8 — translate a full loop scenario */
+      {
+        mascotTitle: "Translate a whole loop scenario 🔔", 
+        mascotBody:  "Let's translate a complete MaySon loop — an alarm that rings 3 times — into Python.",
+        demoCode:    `<span class="cmt"># MaySon:</span><br><span class="kw">repeat</span> <span class="num">3</span> <span class="cw">times:</span><br>&nbsp;&nbsp;<span class="kw">say</span> <span class="str">"Wake up!"</span>`,
+        taskDesc:    'Translate the alarm loop into Python. Drag the correct blocks into <strong>both</strong> blanks!',
+        zones: [
+          { id:'z0', ph:'___', correct:'FOR' },
+          { id:'z1', ph:'_____', correct:'PRINT' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="FOR" data-value="" data-cid=""
+                  style="min-width:48px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">___</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">i</span><span class="cw">&nbsp;in&nbsp;</span><span class="kw">range</span><span class="cp">(3):</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z1" data-correct="PRINT" data-value="" data-cid=""
+                  style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">_____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">"Wake up!"</span><span class="cp">)</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l7p8repeat', label:'repeat', css:'c-say',   val:'REPEAT' },
+          { id:'l7p8for',    label:'for',    css:'c-print', val:'FOR'    },
+          { id:'l7p8say',    label:'say',    css:'c-elif',  val:'SAY'    },
+          { id:'l7p8print',  label:'print',  css:'c-eq',    val:'PRINT'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> Blank 1 is <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">for</code> (paired with range). Blank 2 is <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>.',
+        successMsg: '🎉 Great translation! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">for i in range(3): print("Wake up!")</code> rings the alarm 3 times, just like the MaySon version.',
+      },
+
+      /* L7 PAGE 9 — multiple choice: predict combined output */
+      {
+        mascotTitle: "Predict the bridged output 🔮",
+        mascotBody:  "One more reading check before your final challenge — trace through a program combining input and a loop.",
+        demoCode:    `<span class="cs">reps</span> <span class="cp">=</span> <span class="kw">int</span><span class="punc">(</span><span class="kw">input</span><span class="punc">(</span><span class="str">"Reps?"</span><span class="punc">)</span><span class="punc">)</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">reps</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Rep!"</span><span class="punc">)</span>`,
+        taskDesc:    'If the user types <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">4</code> for reps, how many times does the code above print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">Rep!</code>?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['1 time', '4 times', 'Reps times but only if reps &gt; 10'],
+        mcCorrect: '4 times',
+        hint: '💡 <strong>Hint:</strong> <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(reps)</code> loops exactly <strong>reps</strong> times — and reps was set to 4.',
+        successMsg: '✅ Exactly! Since reps = 4, <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(reps)</code> loops 4 times.',
+      },
+
+      /* L7 PAGE 10 — final: write real Python combining loop + input */
+      {
+        mascotTitle: "Your final challenge — bridge it all! ⌨️🐍",
+        mascotBody:  "Combine everything from Levels 5 &amp; 6, now written in real Python: a <strong>for loop</strong> using <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">range(...)</code>, and <strong>input</strong>. No chips, no blanks — type it yourself!",
+        demoCode:    `<span class="cmt"># Reminder — loop + input combined:</span><br><span class="cs">reps</span> <span class="cp">=</span> <span class="kw">int</span><span class="punc">(</span><span class="kw">input</span><span class="punc">(</span><span class="str">"Reps?"</span><span class="punc">)</span><span class="punc">)</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">reps</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Rep done!"</span><span class="punc">)</span>`,
+        taskDesc:    'Write a program that: reads a whole number of laps using <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">int(input(...))</code> into a variable called <strong>laps</strong>, then uses a <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">for</code> loop with <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">range(laps)</code> to print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Lap!"</code> that many times. The simulated input will be <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">3</code>.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideLang: 'python',
+        ideLabel: 'Python Editor',
+        idePlaceholder: '# Type your Python code here...',
+        ideSimInputs: ['3'],
+        ideRequiredKeywords: ['input(', 'for ', 'range', 'print('],
+        ideRequiredMsgs: [
+          'Your code must use <strong>input(...)</strong> to collect a number!',
+          'Your code must use a <strong>for</strong> loop!',
+          'Your loop must use <strong>range(...)</strong>!',
+          'Your loop must use <strong>print(...)</strong> to output something!',
+        ],
+        ideExpected: 'Lap!\nLap!\nLap!',
+        ideWinMsg: '🎉 You bridged MaySon and Python into one program! Since laps = 3, the loop printed "Lap!" three times. Level 7 — Logic Bridge: mastered! 🌉',
+        hint: '💡 <strong>Hint:</strong><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">laps = int(input("Laps?"))</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">for i in range(laps):</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Lap!")</code>',
+        successMsg: '🏅🌉 Incredible! You combined input, loops, and printing — all translated from MaySon into real Python. Level 7 complete!',
+        isLast: true,
+      },
+    ];
+
+    /* ─── PUZZLE DATA — LEVEL 8 (Python Fundamentals) ── */
+    const PAGES_L8 = [
+
+      /* L8 PAGE 1 — variables in pure Python */
+      {
+        mascotTitle: "Welcome to pure Python! 🐍✨",
+        mascotBody:  "No more MaySon side-by-side — from here on, everything is <strong>real Python</strong>. Let's warm up with a variable, just like <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">=</code> in Level 4.",
+        demoCode:    `<span class="cmt"># Create a variable called "score":</span><br><span class="cs">score</span> <span class="cp">=</span> <span class="num">0</span>`,
+        taskDesc:    'Complete the code to create a variable called <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">lives</code> and set it to <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">3</code>. Drag the correct symbol into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'EQ' }
+        ],
+        lineHTML: () => `
+          <span class="cs">lives</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="EQ" data-value="" data-cid=""
+              style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="num">3</span>
+        `,
+        chips: [
+          { id:'l8p1to', label:'to', css:'c-colon', val:'TO' },
+          { id:'l8p1eq', label:'=',  css:'c-eq',    val:'EQ' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Python variables always use a single <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code> sign — no extra words needed.',
+        successMsg: 'Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">lives = 3</code> creates the variable and stores 3 in it.',
+      },
+
+      /* L8 PAGE 2 — print + condition (if/elif/else) */
+      {
+        mascotTitle: "Making decisions with if 🚦",
+        mascotBody:  "Python uses <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code>, <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code>, and <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">else</code> to run different code depending on a condition — just like you saw in Level 4.",
+        demoCode:    `<span class="cs">lives</span> <span class="cp">=</span> <span class="num">0</span><br><span class="kw">if</span> <span class="cs">lives</span> <span class="cp">==</span> <span class="num">0</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Game Over"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Keep Playing"</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the code so that when <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">lives</code> is 0 it prints <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Game Over"</code>. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'____', correct:'IF' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="IF" data-value="" data-cid=""
+                  style="min-width:50px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">lives</span> <span class="cp">==</span> <span class="num">0</span><span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"Game Over"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l8p2elif', label:'elif', css:'c-elif', val:'ELIF' },
+          { id:'l8p2if',   label:'if',   css:'c-say',  val:'IF'   },
+        ],
+        hint: '💡 <strong>Hint:</strong> To check the <em>first</em> condition, Python uses <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code>. <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> is only for extra conditions after the first.',
+        successMsg: 'Exactly! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">if lives == 0:</code> checks the condition and runs the indented code when it\'s true.',
+      },
+
+      /* L8 PAGE 3 — for loop */
+      {
+        mascotTitle: "Looping in pure Python 🔁",
+        mascotBody:  "You already used <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">for ... in range(...):</code> in Level 7 — the same syntax works here, with no MaySon needed at all.",
+        demoCode:    `<span class="cmt"># Print "Go!" twice:</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="num">2</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Go!"</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the loop so it prints <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Level Up!"</code> exactly <strong>4 times</strong>. Drag the correct number into the blank!',
+        zones: [
+          { id:'z0', ph:'_', correct:'NUM4' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">for</span><span class="cs">&nbsp;i&nbsp;</span><span class="cw">in</span><span class="kw">&nbsp;range</span><span class="cp">(</span>
+              <div class="drop-zone" id="z0" data-correct="NUM4" data-value="" data-cid=""
+                  style="min-width:36px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">_</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cp">):</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"Level Up!"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l8p3num2', label:'2', css:'c-send',   val:'NUM2' },
+          { id:'l8p3num4', label:'4', css:'c-quote',  val:'NUM4' },
+          { id:'l8p3num8', label:'8', css:'c-display',val:'NUM8' },
+        ],
+        hint: '💡 <strong>Hint:</strong> The task needs the message printed <strong>4 times</strong> — so <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(4)</code>.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">range(4)</code> repeats the loop body exactly 4 times.',
+      },
+
+      /* L8 PAGE 4 — input() */
+      {
+        mascotTitle: "Reading input in pure Python 🎤",
+        mascotBody:  "Real Python programs often need to read what the user types, using <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">input(...)</code>. Wrap it in <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">int(...)</code> when you need a number instead of text.",
+        demoCode:    `<span class="cmt"># Read a whole number from the user:</span><br><span class="cs">age</span> <span class="cp">=</span> <span class="kw">int</span><span class="punc">(</span><span class="kw">input</span><span class="punc">(</span><span class="str">"Age?"</span><span class="punc">)</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the code to read a number of coins from the user. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'_____', correct:'INPUT' }
+        ],
+        lineHTML: () => `
+          <span class="cs">coins</span> <span class="cp">=</span> <span class="kw">int</span><span class="cp">(</span>
+          <div class="drop-zone" id="z0" data-correct="INPUT" data-value="" data-cid=""
+              style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt">_____</span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div><span class="cp">(</span><span class="cs">"Coins?"</span><span class="cp">)</span><span class="cp">)</span>
+        `,
+        chips: [
+          { id:'l8p4print', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l8p4input', label:'input', css:'c-eq',    val:'INPUT' },
+        ],
+        hint: '💡 <strong>Hint:</strong> To collect text or numbers from the user, Python uses <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">input(...)</code> — not <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print(...)</code>, which only outputs.',
+        successMsg: 'Nailed it! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">int(input("Coins?"))</code> reads the answer and converts it to a number.',
+      },
+
+      /* L8 PAGE 5 — MC: predict the output (combines if + loop) */
+      {
+        mascotTitle: "Predict the output 🔮",
+        mascotBody:  "Reading code carefully — tracing through it line by line — is one of the most useful coding skills there is.",
+        demoCode:    `<span class="cs">n</span> <span class="cp">=</span> <span class="num">2</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">n</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Bounce"</span><span class="punc">)</span>`,
+        taskDesc:    'Given <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">n = 2</code>, how many times does the code above print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">Bounce</code>?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['1 time', '2 times', '3 times'],
+        mcCorrect: '2 times',
+        hint: '💡 <strong>Hint:</strong> <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(n)</code> loops exactly <strong>n</strong> times — and n is 2 here.',
+        successMsg: '✅ Correct! Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">n = 2</code>, <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(n)</code> loops twice.',
+      },
+
+      /* L8 PAGE 6 — combine everything (multi-blank) */
+      {
+        mascotTitle: "Put it all together! 🧩",
+        mascotBody:  "Variables, input, operators, conditions, and loops — every Python tool you've learned works together in one program.",
+        demoCode:    `<span class="cmt"># A tiny grading program:</span><br><span class="cs">score</span> <span class="cp">=</span> <span class="num">7</span><br><span class="kw">if</span> <span class="cs">score</span> <span class="cp">&gt;=</span> <span class="num">5</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Pass"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Fail"</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the code below — an inventory checker. Drag the correct blocks into <strong>both</strong> blanks!',
+        zones: [
+          { id:'z0', ph:'____', correct:'IF' },
+          { id:'z1', ph:'_____', correct:'PRINT' },
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="cs">stock</span> <span class="cp">=</span> <span class="num">0</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="IF" data-value="" data-cid=""
+                  style="min-width:50px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">stock</span> <span class="cp">==</span> <span class="num">0</span><span class="cp">:</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-left:28px">
+              <div class="drop-zone" id="z1" data-correct="PRINT" data-value="" data-cid=""
+                  style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
+                <span class="zt">_____</span><span class="rm" onclick="rmChip('z1')">×</span>
+              </div>
+              <span class="cp">(</span><span class="cs">"Out of Stock"</span><span class="cp">)</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l8p6elif',  label:'elif',  css:'c-elif',  val:'ELIF'  },
+          { id:'l8p6print', label:'print', css:'c-print', val:'PRINT' },
+          { id:'l8p6if',    label:'if',    css:'c-say',   val:'IF'    },
+          { id:'l8p6input', label:'input', css:'c-eq',    val:'INPUT' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Blank 1 checks the first condition with <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code>. Blank 2 outputs the message with <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code>.',
+        successMsg: '🏅 Great work! Since <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">stock = 0</code>, the condition is true and <strong>"Out of Stock"</strong> prints. One challenge left!',
+      },
+
+      /* L8 PAGE 7 — elif keyword */
+      {
+        mascotTitle: "Checking a second condition with elif 🔀",
+        mascotBody:  "When <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">if</code> is false, Python can check another condition using <code style=\"color:#f472b6;font-family:'JetBrains Mono',monospace\">elif</code> — short for \"else if\".",
+        demoCode:    `<span class="cs">grade</span> <span class="cp">=</span> <span class="num">85</span><br><span class="kw">if</span> <span class="cs">grade</span> <span class="cp">&gt;=</span> <span class="num">90</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"A"</span><span class="punc">)</span><br><span class="kw">elif</span> <span class="cs">grade</span> <span class="cp">&gt;=</span> <span class="num">80</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"B"</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the code so a score of 70+ prints <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"C"</code>. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'____', correct:'ELIF' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="cs">grade</span> <span class="cp">=</span> <span class="num">72</span></div>
+            <div><span class="kw">if</span> <span class="cs">grade</span> <span class="cp">&gt;=</span> <span class="num">90</span><span class="cp">:</span></div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"A"</span><span class="cp">)</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="ELIF" data-value="" data-cid=""
+                  style="min-width:56px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cs">grade</span> <span class="cp">&gt;=</span> <span class="num">70</span><span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"C"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l8p7else', label:'else', css:'c-colon', val:'ELSE' },
+          { id:'l8p7elif', label:'elif', css:'c-elif',  val:'ELIF' },
+        ],
+        hint: '💡 <strong>Hint:</strong> Checking an <em>additional</em> condition (not just "everything else") needs <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>, not <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else</code>.',
+        successMsg: 'Correct! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">elif grade &gt;= 70:</code> checks a second condition — since grade = 72, it prints "C".',
+        isLast: false,
+      },
+
+      /* L8 PAGE 8 — arithmetic operator in Python */
+      {
+        mascotTitle: "Operators still work exactly the same 🧮",
+        mascotBody:  "Everything you learned about <code style=\"color:#fb923c;font-family:'JetBrains Mono',monospace\">+ - * /</code> back in Level 6 works identically here — no MaySon needed to remind you!",
+        demoCode:    `<span class="cmt"># Total cost of several items:</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">quantity</span>`,
+        taskDesc:    'Complete the code to calculate the <strong>average</strong> of two test scores. Drag the correct operator into the blank!',
+        zones: [
+          { id:'z0', ph:' ? ', correct:'SLASH' }
+        ],
+        lineHTML: () => `
+          <span class="cs">average</span> <span class="cp">=</span> <span class="cp">(</span><span class="cs">score1</span> <span class="cp">+</span> <span class="cs">score2</span><span class="cp">)</span>&nbsp;
+          <div class="drop-zone" id="z0" data-correct="SLASH" data-value="" data-cid=""
+              style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+            <span class="zt"> ? </span><span class="rm" onclick="rmChip('z0')">×</span>
+          </div>&nbsp;<span class="num">2</span>
+        `,
+        chips: [
+          { id:'l8p8star',  label:'*', css:'c-colon', val:'STAR'  },
+          { id:'l8p8slash', label:'/', css:'c-eq',    val:'SLASH' },
+        ],
+        hint: '💡 <strong>Hint:</strong> An average is a sum <em>divided by</em> how many values there are — use <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">/</code>.',
+        successMsg: 'Nice! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">(score1 + score2) / 2</code> calculates the average of the two scores.',
+        isLast: false,
+      },
+
+      /* L8 PAGE 9 — multiple choice: range(start, stop) recap */
+      {
+        mascotTitle: "One more loop check before the finale 🔍",
+        mascotBody:  "Let's make sure the two-argument form of <code style=\"color:#3b82f6;font-family:'JetBrains Mono',monospace\">range(...)</code> from Level 7 has stuck.",
+        demoCode:    `<span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="num">2</span><span class="punc">,</span> <span class="num">5</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="cs">i</span><span class="punc">)</span>`,
+        taskDesc:    'How many times does the loop above run?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['2 times', '3 times', '5 times'],
+        mcCorrect: '3 times',
+        hint: '💡 <strong>Hint:</strong> <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(2, 5)</code> counts 2, 3, 4 — stopping right before 5.',
+        successMsg: '✅ Correct! <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(2, 5)</code> produces 2, 3, 4 — three values, three loop rounds.',
+        isLast: false,
+      },
+
+      /* L8 PAGE 10 — final capstone: write real Python from scratch */
+      {
+        mascotTitle: "Final challenge — pure Python from scratch! ⌨️🐍🏆",
+        mascotBody:  "No MaySon, no chips, no blanks — just you and the editor. Combine <strong>variables</strong>, <strong>input</strong>, <strong>operators</strong>, <strong>conditions</strong>, and a <strong>loop</strong> into one real Python program.",
+        demoCode:    `<span class="cmt"># Reminder — all the tools you need:</span><br><span class="cs">x</span> <span class="cp">=</span> <span class="kw">int</span><span class="punc">(</span><span class="kw">input</span><span class="punc">(</span><span class="str">"Number?"</span><span class="punc">)</span><span class="punc">)</span><br><span class="kw">if</span> <span class="cs">x</span> <span class="cp">&gt;</span> <span class="num">0</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">x</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Star"</span><span class="punc">)</span>`,
+        taskDesc:    'Write a program that: reads a whole number of points using <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">int(input(...))</code> into a variable called <strong>points</strong>, doubles it into a variable called <strong>bonus</strong> using <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">points * 2</code>, then uses <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">if</code> / <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">else</code> to print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"High Score"</code> if bonus is above 10, otherwise print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Try Again"</code>. The simulated input will be <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">6</code> — the output must be exactly <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">High Score</code>.',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isIDE: true,
+        ideLang: 'python',
+        ideLabel: 'Python Editor',
+        idePlaceholder: '# Type your Python code here...',
+        ideSimInputs: ['6'],
+        ideRequiredKeywords: ['input(', 'if ', 'else', 'print('],
+        ideRequiredMsgs: [
+          'Your code must use <strong>input(...)</strong> to read the points!',
+          'Your code must use an <strong>if</strong> statement to check the bonus!',
+          'Your code must include an <strong>else</strong> branch!',
+          'Your code must use <strong>print(...)</strong> to show the result!',
+        ],
+        ideExpected: 'High Score',
+        ideWinMsg: '🎉🐍 You wrote a complete Python program from scratch! Since points = 6, bonus = 12, which is above 10 — so it printed "High Score". Level 8 complete — Python Fundamentals: mastered!',
+        hint: '💡 <strong>Hint:</strong><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">points = int(input("Points?"))</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">bonus = points * 2</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if bonus &gt; 10:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("High Score")</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Try Again")</code>',
+        successMsg: '🏆🐍 Incredible! You combined every Python fundamental — variables, input, operators, conditions, and loops — entirely on your own. Level 8 — Python Fundamentals: mastered! You\'re a real programmer!',
+        isLast: true,
+      },
+    ];
+
     /* ─── LEVEL CONFIG ───────────────────────────────── */
     const LEVEL_CONFIG = {
       1: {
@@ -1536,6 +2718,34 @@
         title: '🐍 Python Bridge',
         completeSub: 'You\'ve completed the <strong>Python Bridge</strong>!<br>You now know how MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">say</code>, <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">set ... to ...</code>, and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if / else if / else</code> map to Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print()</code>, <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">=</code>, and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if</code> / <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code> / <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else</code> — and you wrote a real Python program yourself!',
       },
+      5: {
+        pages: PAGES_L5,
+        breadcrumb: 'Level 05 › Loops',
+        badge: 'Level 05',
+        title: '🔁 Loops',
+        completeSub: 'You\'ve mastered <strong>Loops</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat N times:</code> to run the same action over and over without repeating your code.',
+      },
+      6: {
+        pages: PAGES_L6,
+        breadcrumb: 'Level 06 › Input & Operators',
+        badge: 'Level 06',
+        title: '🎤 Input & Operators',
+        completeSub: 'You\'ve mastered <strong>Input & Operators</strong>!<br>You know how to use <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask ... into ...</code> to collect information, and <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">+ - * /</code> to work with data.',
+      },
+      7: {
+        pages: PAGES_L7,
+        breadcrumb: 'Level 07 › Logic Bridge',
+        badge: 'Level 07',
+        title: '🌉 Logic Bridge',
+        completeSub: 'You\'ve completed the <strong>Logic Bridge</strong>!<br>You now know how MaySon\'s <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">repeat ... times:</code> and <code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">ask ... into ...</code> map to Python\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">for ... in range(...)</code> and <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">input()</code> — and you wrote a real Python program combining both!',
+      },
+      8: {
+        pages: PAGES_L8,
+        breadcrumb: 'Level 08 › Python Fundamentals',
+        badge: 'Level 08',
+        title: '🐍 Python Fundamentals',
+        completeSub: 'You\'ve mastered <strong>Python Fundamentals</strong>!<br>You wrote a complete Python program from scratch — combining variables, input, operators, conditions, and loops — with no MaySon needed at all. You\'re a real programmer! 🏆',
+      },
     };
 
     /* ─── STATE ──────────────────────────────────────── */
@@ -1548,6 +2758,7 @@
     /* ─── STARS & PROGRESSION ────────────────────────── */
     const STAR_KEY = 'mayson_level_stars_v1';
     const STARS_TO_UNLOCK_L4 = 9;
+    const STARS_TO_UNLOCK_L8 = 21;
     const PROGRESS_TABLE = 'level_progress';   // table in Supabase — see SQL setup notes
     let levelStars    = {};   // best stars ever earned per level, e.g. {1:3,2:2,3:0}
     let curHints      = 0;    // hints opened during the current playthrough
@@ -1602,10 +2813,13 @@
     }
     function starsFor(n){ return levelStars[n]||0; }
     function totalCoreStars(){ return [1,2,3].reduce((s,n)=>s+starsFor(n),0); }
+    function totalStars1to7(){ return [1,2,3,4,5,6,7].reduce((s,n)=>s+starsFor(n),0); }
     function isLevel4Unlocked(){ return totalCoreStars() >= STARS_TO_UNLOCK_L4; }
+    function isLevel8Unlocked(){ return totalStars1to7() >= STARS_TO_UNLOCK_L8; }
     function isLevelUnlocked(n){
       if(n===1) return true;
       if(n===4) return isLevel4Unlocked();
+      if(n===8) return isLevel8Unlocked();
       return starsFor(n-1) >= 1;   // previous level must be completed (1+ star)
     }
     function computeEarnedStars(){
@@ -1615,26 +2829,34 @@
     }
     function starString(n){ return '★ '.repeat(n) + '☆ '.repeat(3-n); }
     function recordStars(level, earned){
-      const prevTotal = totalCoreStars();
+      const prevTotal123 = totalCoreStars();
+      const prevTotal17  = totalStars1to7();
       const prevBest = starsFor(level);
       if(earned>prevBest){ levelStars[level]=earned; saveStars(); }
       refreshLevelScreen();
-      if(!isLevel4WasUnlocked(prevTotal) && isLevel4Unlocked()){
+      if(!isLevel4WasUnlocked(prevTotal123) && isLevel4Unlocked()){
         setTimeout(()=>toast('🔓 Python Bridge (Level 04) unlocked!'), 400);
+      }
+      if(!isLevel8WasUnlocked(prevTotal17) && isLevel8Unlocked()){
+        setTimeout(()=>toast('🔓 Python Fundamentals (Level 08) unlocked!'), 400);
       }
     }
     function isLevel4WasUnlocked(prevTotal){ return prevTotal >= STARS_TO_UNLOCK_L4; }
+    function isLevel8WasUnlocked(prevTotal){ return prevTotal >= STARS_TO_UNLOCK_L8; }
 
     const LEVEL_META = {
-      2: { num:'02', title:'Variables',  desc:'Store and use data',      lockDesc:'🔒 Complete Level 01 to unlock' },
-      3: { num:'03', title:'Conditions', desc:'Make decisions with if',  lockDesc:'🔒 Complete Level 02 to unlock' },
+      2: { num:'02', title:'Variables',        desc:'Store and use data',            lockDesc:'🔒 Complete Level 01 to unlock' },
+      3: { num:'03', title:'Conditions',       desc:'Make decisions with if',        lockDesc:'🔒 Complete Level 02 to unlock' },
+      5: { num:'05', title:'Loops',            desc:'Repeat actions with loops',     lockDesc:'🔒 Complete Level 04 to unlock' },
+      6: { num:'06', title:'Input & Operators',desc:'Get input and process data',    lockDesc:'🔒 Complete Level 05 to unlock' },
+      7: { num:'07', title:'🌉 Logic Bridge',  desc:'Combine MaySon & Python logic', lockDesc:'🔒 Complete Level 06 to unlock' },
     };
     function refreshLevelScreen(){
-      [1,2,3].forEach(n=>{
+      [1,2,3,4,5,6,7,8].forEach(n=>{
         const starEl=document.getElementById('level-star-'+n);
         if(starEl) starEl.textContent = starString(starsFor(n));
       });
-      [2,3].forEach(n=>{
+      [2,3,5,6,7].forEach(n=>{
         const meta = LEVEL_META[n];
         const card  = document.getElementById('level-card-'+n);
         const lock  = document.getElementById('level-lock-'+n);
@@ -1664,18 +2886,36 @@
       const star4  = document.getElementById('level-star-4');
       const desc4  = document.getElementById('level-desc-4');
       const lock4  = document.getElementById('level-lock-4');
-      if(!card4) return;
-      if(isLevel4Unlocked()){
-        card4.classList.remove('locked');
-        card4.onclick = ()=>startLevel(4);
-        if(lock4) lock4.remove();
-        if(desc4) desc4.textContent = 'Translate MaySon into Python';
-        if(star4){ star4.style.color=''; star4.textContent=starString(starsFor(4)); }
+      if(card4){
+        if(isLevel4Unlocked()){
+          card4.classList.remove('locked');
+          card4.onclick = ()=>startLevel(4);
+          if(lock4) lock4.remove();
+          if(desc4) desc4.textContent = 'Translate MaySon into Python';
+          if(star4){ star4.style.color=''; star4.textContent=starString(starsFor(4)); }
+        } else {
+          card4.classList.add('locked');
+          card4.onclick = null;
+          if(desc4) desc4.textContent = `🔒 ${totalCoreStars()}/${STARS_TO_UNLOCK_L4}★ from Levels 1–3`;
+          if(star4){ star4.style.color='var(--dim)'; star4.textContent='☆ ☆ ☆'; }
+        }
+      }
+      const card8  = document.getElementById('level-card-8');
+      const star8  = document.getElementById('level-star-8');
+      const desc8  = document.getElementById('level-desc-8');
+      const lock8  = document.getElementById('level-lock-8');
+      if(!card8) return;
+      if(isLevel8Unlocked()){
+        card8.classList.remove('locked');
+        card8.onclick = ()=>startLevel(8);
+        if(lock8) lock8.remove();
+        if(desc8) desc8.textContent = 'Apply MaySon concepts in Python';
+        if(star8){ star8.style.color=''; star8.textContent=starString(starsFor(8)); }
       } else {
-        card4.classList.add('locked');
-        card4.onclick = null;
-        if(desc4) desc4.textContent = `🔒 ${totalCoreStars()}/${STARS_TO_UNLOCK_L4}★ from Levels 1–3`;
-        if(star4){ star4.style.color='var(--dim)'; star4.textContent='☆ ☆ ☆'; }
+        card8.classList.add('locked');
+        card8.onclick = null;
+        if(desc8) desc8.textContent = `🔒 ${totalStars1to7()}/${STARS_TO_UNLOCK_L8}★ from Levels 1–7`;
+        if(star8){ star8.style.color='var(--dim)'; star8.textContent='☆ ☆ ☆'; }
       }
     }
     loadLocalCache();   // instant fallback so the UI has something before Supabase responds
@@ -1701,6 +2941,8 @@
       if(!isLevelUnlocked(n)){
         if(n===4){
           toast(`🔒 Earn ${STARS_TO_UNLOCK_L4}★ across Levels 1–3 to unlock Python Bridge (${totalCoreStars()}/${STARS_TO_UNLOCK_L4} so far)`);
+        } else if(n===8){
+          toast(`🔒 Earn ${STARS_TO_UNLOCK_L8}★ across Levels 1–7 to unlock Python Fundamentals (${totalStars1to7()}/${STARS_TO_UNLOCK_L8} so far)`);
         } else {
           toast(`🔒 Complete Level 0${n-1} first to unlock this level!`);
         }
@@ -1860,16 +3102,40 @@
   }
 
   /* ─── MINI MaySonLang INTERPRETER ────────────────── */
-  function runMaySonLang(src){
-    const rawLines = src.split('\n');
+  /* simInputs: optional array of pre-set values consumed in order by
+     "ask ... into ..." statements (used for Level 6's Input & Operators). */
+  function runMaySonLang(src, simInputs){
+    const inputs = Array.isArray(simInputs) ? simInputs.slice() : [];
     const out = [];
     const vars = {};
     let err = null;
 
-    // Helper: resolve a value token (string literal, number, or variable)
+    // Helper: resolve a value token (string literal, number, variable, or simple arithmetic)
     function resolve(tok, lineNum){
       const t = tok.trim();
       if(t.startsWith('"') && t.endsWith('"') && t.length >= 2) return { val: t.slice(1,-1), ok: true };
+
+      // Simple binary arithmetic: LHS (+|-|*|/) RHS — evaluated left-lazy so chains read left to right
+      if(!t.startsWith('"')){
+        const opMatch = t.match(/^(.+?)\s*([+\-*/])\s*(.+)$/);
+        if(opMatch){
+          const L = resolve(opMatch[1], lineNum);
+          if(!L.ok) return L;
+          const R = resolve(opMatch[3], lineNum);
+          if(!R.ok) return R;
+          const op = opMatch[2];
+          if(op === '+'){
+            if(typeof L.val === 'number' && typeof R.val === 'number') return { val: L.val + R.val, ok: true };
+            return { val: String(L.val) + String(R.val), ok: true };
+          }
+          const ln = Number(L.val), rn = Number(R.val);
+          if(isNaN(ln) || isNaN(rn)) return { val: null, ok: false, err: `Line ${lineNum}: Can't use "${op}" on non-numbers` };
+          if(op === '-') return { val: ln - rn, ok: true };
+          if(op === '*') return { val: ln * rn, ok: true };
+          if(op === '/') return { val: ln / rn, ok: true };
+        }
+      }
+
       if(!isNaN(t) && t !== '') return { val: Number(t), ok: true };
       if(/^[A-Za-z_][A-Za-z0-9_]*$/.test(t)){
         if(t in vars) return { val: vars[t], ok: true };
@@ -1910,133 +3176,164 @@
     }
 
     // Build a list of {indent, line, lineNum} structs
-    const stmts = rawLines.map((raw, i) => {
+    const stmts = src.split('\n').map((raw, i) => {
       const indent = raw.match(/^(\s*)/)[1].length;
       return { raw, line: raw.trim(), indent, lineNum: i+1 };
     }).filter(s => s.line && !s.line.startsWith('#'));
 
-    // Execute statements, tracking index
-    let si = 0;
-    while(si < stmts.length && !err){
-      const { line, indent, lineNum } = stmts[si];
+    // Executes statements in [start,end) that share the same vars/out (so loops
+    // and conditionals can read and write outer-scope variables).
+    function execRange(start, end){
+      let si = start;
+      while(si < end && !err){
+        const { line, indent, lineNum } = stmts[si];
 
-      // --- set statement ---
-      const setMatch = line.match(/^set\s+([A-Za-z_][A-Za-z0-9_]*)\s+to\s+([\s\S]+)$/) ||
-                       line.match(/^set\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
-      if(setMatch){
-        const varName = setMatch[1];
-        const rhs = setMatch[2].trim();
-        const r = resolve(rhs, lineNum);
-        if(!r.ok){ err = r.err; break; }
-        vars[varName] = r.val;
-        si++; continue;
-      }
-
-      // --- say statement ---
-      const sayMatch = line.match(/^say\s+([\s\S]+)$/);
-      if(sayMatch){
-        const r = resolve(sayMatch[1].trim(), lineNum);
-        if(!r.ok){ err = r.err; break; }
-        out.push(String(r.val));
-        si++; continue;
-      }
-
-      // --- if / else if / else block ---
-      const ifMatch = line.match(/^if\s+([\s\S]+):$/);
-      if(ifMatch){
-        // Collect entire if / else-if / else chain at this indent level
-        const chainIndent = indent;
-        const chain = []; // [{cond: string|null, bodyStart, bodyEnd}]
-
-        let j = si;
-        while(j < stmts.length){
-          const s2 = stmts[j];
-          if(s2.indent !== chainIndent) { j++; continue; }
-          const ifM  = s2.line.match(/^if\s+([\s\S]+):$/);
-          const elifM= s2.line.match(/^else\s+if\s+([\s\S]+):$/);
-          const elseM= s2.line.match(/^else:?$/);
-          if(ifM && j === si){
-            // Start collecting body
-            const bodyStart = j+1;
-            let k = j+1;
-            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
-            chain.push({ cond: ifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
-            j = k; continue;
-          }
-          if(elifM){
-            const bodyStart = j+1;
-            let k = j+1;
-            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
-            chain.push({ cond: elifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
-            j = k; continue;
-          }
-          if(elseM){
-            const bodyStart = j+1;
-            let k = j+1;
-            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
-            chain.push({ cond: null, bodyStart, bodyEnd: k, lineNum: s2.lineNum });
-            j = k; break;
-          }
-          // Hit something else at same indent — end of chain
-          break;
+        // --- set statement ---
+        const setMatch = line.match(/^set\s+([A-Za-z_][A-Za-z0-9_]*)\s+to\s+([\s\S]+)$/) ||
+                         line.match(/^set\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
+        if(setMatch){
+          const varName = setMatch[1];
+          const r = resolve(setMatch[2].trim(), lineNum);
+          if(!r.ok){ err = r.err; break; }
+          vars[varName] = r.val;
+          si++; continue;
         }
 
-        // Evaluate chain
-        let ran = false;
-        for(const branch of chain){
-          if(branch.cond === null){
-            // else
-            if(!ran){
-              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
-              const res = runMaySonLang(bodyStmts.map(s=>s.raw).join('\n'));
-              if(res.err){ err = res.err; break; }
-              res.out.forEach(l => out.push(l));
-              ran = true;
+        // --- ask ... into ... (simulated input) ---
+        const askMatch = line.match(/^ask\s+"([^"]*)"\s+into\s+([A-Za-z_][A-Za-z0-9_]*)$/);
+        if(askMatch){
+          const raw = inputs.length ? String(inputs.shift()) : '0';
+          const num = Number(raw);
+          vars[askMatch[2]] = (raw !== '' && !isNaN(num)) ? num : raw;
+          si++; continue;
+        }
+
+        // --- say statement ---
+        const sayMatch = line.match(/^say\s+([\s\S]+)$/);
+        if(sayMatch){
+          const r = resolve(sayMatch[1].trim(), lineNum);
+          if(!r.ok){ err = r.err; break; }
+          out.push(String(r.val));
+          si++; continue;
+        }
+
+        // --- repeat N times: loop (N can be a literal number or a variable) ---
+        const repeatMatch = line.match(/^repeat\s+(\d+|[A-Za-z_][A-Za-z0-9_]*)\s+times:$/);
+        if(repeatMatch){
+          const countR = resolve(repeatMatch[1], lineNum);
+          if(!countR.ok){ err = countR.err; break; }
+          const count = Math.trunc(Number(countR.val)) || 0;
+          let k = si+1;
+          while(k < end && stmts[k].indent > indent) k++;
+          for(let iter=0; iter<count && !err; iter++){
+            execRange(si+1, k);
+          }
+          si = k; continue;
+        }
+
+        // --- if / else if / else block ---
+        const ifMatch = line.match(/^if\s+([\s\S]+):$/);
+        if(ifMatch){
+          const chainIndent = indent;
+          const chain = []; // [{cond: string|null, bodyStart, bodyEnd}]
+
+          let j = si;
+          while(j < end){
+            const s2 = stmts[j];
+            if(s2.indent !== chainIndent) { j++; continue; }
+            const ifM  = s2.line.match(/^if\s+([\s\S]+):$/);
+            const elifM= s2.line.match(/^else\s+if\s+([\s\S]+):$/);
+            const elseM= s2.line.match(/^else:?$/);
+            if(ifM && j === si){
+              const bodyStart = j+1;
+              let k = j+1;
+              while(k < end && stmts[k].indent > chainIndent) k++;
+              chain.push({ cond: ifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+              j = k; continue;
             }
-          } else {
-            const ev = evalCond(branch.cond, branch.lineNum);
-            if(ev.err){ err = ev.err; break; }
-            if(ev.result && !ran){
-              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
-              const res = runMaySonLang(bodyStmts.map(s=>s.raw).join('\n'));
-              if(res.err){ err = res.err; break; }
-              res.out.forEach(l => out.push(l));
-              ran = true;
+            if(elifM){
+              const bodyStart = j+1;
+              let k = j+1;
+              while(k < end && stmts[k].indent > chainIndent) k++;
+              chain.push({ cond: elifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+              j = k; continue;
+            }
+            if(elseM){
+              const bodyStart = j+1;
+              let k = j+1;
+              while(k < end && stmts[k].indent > chainIndent) k++;
+              chain.push({ cond: null, bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+              j = k; break;
+            }
+            break;
+          }
+
+          let ran = false;
+          for(const branch of chain){
+            if(branch.cond === null){
+              if(!ran){ execRange(branch.bodyStart, branch.bodyEnd); ran = true; }
+            } else {
+              const ev = evalCond(branch.cond, branch.lineNum);
+              if(ev.err){ err = ev.err; break; }
+              if(ev.result && !ran){ execRange(branch.bodyStart, branch.bodyEnd); ran = true; }
             }
           }
+          const lastBranch = chain[chain.length-1];
+          si = lastBranch ? lastBranch.bodyEnd : si+1;
+          continue;
         }
-        // Advance si past the entire chain
-        const lastBranch = chain[chain.length-1];
-        si = lastBranch ? lastBranch.bodyEnd : si+1;
-        continue;
-      }
 
-      // --- else / else if at top level (shouldn't appear without preceding if) ---
-      if(line.match(/^else/) || line.match(/^else\s+if/)){
-        // Skip — handled above as part of chain
-        si++; continue;
-      }
+        // --- else / else if at top level (shouldn't appear without preceding if) ---
+        if(line.match(/^else/) || line.match(/^else\s+if/)){
+          si++; continue;
+        }
 
-      err = `Line ${lineNum}: Unknown instruction — "${line.split(' ')[0]}"`;
-      break;
+        err = `Line ${lineNum}: Unknown instruction — "${line.split(' ')[0]}"`;
+        break;
+      }
     }
+
+    execRange(0, stmts.length);
     return { out, err };
   }
 
-  /* ─── LEVEL 4: TINY PYTHON INTERPRETER ───────────────
+  /* ─── TINY PYTHON INTERPRETER (Levels 4, 7 & 8) ───────
      Mirrors runMaySonLang's structure but understands real Python
-     syntax: print(...), var = value, and if / elif / else blocks. */
-  function runPythonLite(src){
-    const rawLines = src.split('\n');
+     syntax: print(...), var = value, if / elif / else, for ... in range(...),
+     and input(...) (simulated via the simInputs queue). */
+  function runPythonLite(src, simInputs){
+    const inputs = Array.isArray(simInputs) ? simInputs.slice() : [];
     const out = [];
     const vars = {};
     let err = null;
 
-    // Helper: resolve a value token (string literal, number, or variable)
+    // Helper: resolve a value token (string literal, number, variable, or simple arithmetic)
     function resolve(tok, lineNum){
       const t = tok.trim();
       if(t.startsWith('"') && t.endsWith('"') && t.length >= 2) return { val: t.slice(1,-1), ok: true };
       if(t.startsWith("'") && t.endsWith("'") && t.length >= 2) return { val: t.slice(1,-1), ok: true };
+
+      // Simple binary arithmetic: LHS (+|-|*|/) RHS
+      if(!t.startsWith('"') && !t.startsWith("'")){
+        const opMatch = t.match(/^(.+?)\s*([+\-*/])\s*(.+)$/);
+        if(opMatch){
+          const L = resolve(opMatch[1], lineNum);
+          if(!L.ok) return L;
+          const R = resolve(opMatch[3], lineNum);
+          if(!R.ok) return R;
+          const op = opMatch[2];
+          if(op === '+'){
+            if(typeof L.val === 'number' && typeof R.val === 'number') return { val: L.val + R.val, ok: true };
+            return { val: String(L.val) + String(R.val), ok: true };
+          }
+          const ln = Number(L.val), rn = Number(R.val);
+          if(isNaN(ln) || isNaN(rn)) return { val: null, ok: false, err: `Line ${lineNum}: Can't use "${op}" on non-numbers` };
+          if(op === '-') return { val: ln - rn, ok: true };
+          if(op === '*') return { val: ln * rn, ok: true };
+          if(op === '/') return { val: ln / rn, ok: true };
+        }
+      }
+
       if(!isNaN(t) && t !== '') return { val: Number(t), ok: true };
       if(/^[A-Za-z_][A-Za-z0-9_]*$/.test(t)){
         if(t in vars) return { val: vars[t], ok: true };
@@ -2075,107 +3372,130 @@
       return { result: false, err: `Line ${lineNum}: Invalid condition "${condStr}"` };
     }
 
-    const stmts = rawLines.map((raw, i) => {
+    const stmts = src.split('\n').map((raw, i) => {
       const indent = raw.match(/^(\s*)/)[1].length;
       return { raw, line: raw.trim(), indent, lineNum: i+1 };
     }).filter(s => s.line && !s.line.startsWith('#'));
 
-    let si = 0;
-    while(si < stmts.length && !err){
-      const { line, indent, lineNum } = stmts[si];
+    // Executes statements in [start,end) sharing vars/out so loops and
+    // conditionals can read and write outer-scope variables.
+    function execRange(start, end){
+      let si = start;
+      while(si < end && !err){
+        const { line, indent, lineNum } = stmts[si];
 
-      // --- assignment: varName = value ---
-      const assignMatch = !line.includes('==') && line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
-      if(assignMatch){
-        const varName = assignMatch[1];
-        const rhs = assignMatch[2].trim();
-        const r = resolve(rhs, lineNum);
-        if(!r.ok){ err = r.err; break; }
-        vars[varName] = r.val;
-        si++; continue;
-      }
-
-      // --- print statement ---
-      const printMatch = line.match(/^print\s*\(([\s\S]+)\)$/);
-      if(printMatch){
-        const r = resolve(printMatch[1].trim(), lineNum);
-        if(!r.ok){ err = r.err; break; }
-        out.push(String(r.val));
-        si++; continue;
-      }
-
-      // --- if / elif / else block ---
-      const ifMatch = line.match(/^if\s+([\s\S]+):$/);
-      if(ifMatch){
-        const chainIndent = indent;
-        const chain = [];
-
-        let j = si;
-        while(j < stmts.length){
-          const s2 = stmts[j];
-          if(s2.indent !== chainIndent) { j++; continue; }
-          const ifM   = s2.line.match(/^if\s+([\s\S]+):$/);
-          const elifM = s2.line.match(/^elif\s+([\s\S]+):$/);
-          const elseM = s2.line.match(/^else:?$/);
-          if(ifM && j === si){
-            const bodyStart = j+1;
-            let k = j+1;
-            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
-            chain.push({ cond: ifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
-            j = k; continue;
+        // --- assignment: varName = value (incl. input()/int(input())) ---
+        const assignMatch = !line.includes('==') && line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
+        if(assignMatch){
+          const varName = assignMatch[1];
+          const rhs = assignMatch[2].trim();
+          const intInputMatch = rhs.match(/^int\(\s*input\((.*)\)\s*\)$/);
+          const inputMatch = !intInputMatch && rhs.match(/^input\((.*)\)$/);
+          if(intInputMatch || inputMatch){
+            const raw = inputs.length ? String(inputs.shift()) : '0';
+            vars[varName] = intInputMatch ? Number(raw) : raw;
+            si++; continue;
           }
-          if(elifM){
-            const bodyStart = j+1;
-            let k = j+1;
-            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
-            chain.push({ cond: elifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
-            j = k; continue;
-          }
-          if(elseM){
-            const bodyStart = j+1;
-            let k = j+1;
-            while(k < stmts.length && stmts[k].indent > chainIndent) k++;
-            chain.push({ cond: null, bodyStart, bodyEnd: k, lineNum: s2.lineNum });
-            j = k; break;
-          }
-          break;
+          const r = resolve(rhs, lineNum);
+          if(!r.ok){ err = r.err; break; }
+          vars[varName] = r.val;
+          si++; continue;
         }
 
-        let ran = false;
-        for(const branch of chain){
-          if(branch.cond === null){
-            if(!ran){
-              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
-              const res = runPythonLite(bodyStmts.map(s=>s.raw).join('\n'));
-              if(res.err){ err = res.err; break; }
-              res.out.forEach(l => out.push(l));
-              ran = true;
-            }
+        // --- print statement ---
+        const printMatch = line.match(/^print\s*\(([\s\S]+)\)$/);
+        if(printMatch){
+          const r = resolve(printMatch[1].trim(), lineNum);
+          if(!r.ok){ err = r.err; break; }
+          out.push(String(r.val));
+          si++; continue;
+        }
+
+        // --- for varName in range(...): loop (bounds can be literals or variables) ---
+        const forMatch = line.match(/^for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+range\(\s*([^,()]+?)\s*(?:,\s*([^,()]+?)\s*)?\):$/);
+        if(forMatch){
+          const varName = forMatch[1];
+          let startN = 0, endN;
+          if(forMatch[3] !== undefined){
+            const S = resolve(forMatch[2], lineNum); if(!S.ok){ err = S.err; break; }
+            const E = resolve(forMatch[3], lineNum); if(!E.ok){ err = E.err; break; }
+            startN = Math.trunc(Number(S.val)) || 0; endN = Math.trunc(Number(E.val)) || 0;
           } else {
-            const ev = evalCond(branch.cond, branch.lineNum);
-            if(ev.err){ err = ev.err; break; }
-            if(ev.result && !ran){
-              const bodyStmts = stmts.slice(branch.bodyStart, branch.bodyEnd);
-              const res = runPythonLite(bodyStmts.map(s=>s.raw).join('\n'));
-              if(res.err){ err = res.err; break; }
-              res.out.forEach(l => out.push(l));
-              ran = true;
+            const E = resolve(forMatch[2], lineNum); if(!E.ok){ err = E.err; break; }
+            endN = Math.trunc(Number(E.val)) || 0;
+          }
+          let k = si+1;
+          while(k < end && stmts[k].indent > indent) k++;
+          for(let iv=startN; iv<endN && !err; iv++){
+            vars[varName] = iv;
+            execRange(si+1, k);
+          }
+          si = k; continue;
+        }
+
+        // --- if / elif / else block ---
+        const ifMatch = line.match(/^if\s+([\s\S]+):$/);
+        if(ifMatch){
+          const chainIndent = indent;
+          const chain = [];
+
+          let j = si;
+          while(j < end){
+            const s2 = stmts[j];
+            if(s2.indent !== chainIndent) { j++; continue; }
+            const ifM   = s2.line.match(/^if\s+([\s\S]+):$/);
+            const elifM = s2.line.match(/^elif\s+([\s\S]+):$/);
+            const elseM = s2.line.match(/^else:?$/);
+            if(ifM && j === si){
+              const bodyStart = j+1;
+              let k = j+1;
+              while(k < end && stmts[k].indent > chainIndent) k++;
+              chain.push({ cond: ifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+              j = k; continue;
+            }
+            if(elifM){
+              const bodyStart = j+1;
+              let k = j+1;
+              while(k < end && stmts[k].indent > chainIndent) k++;
+              chain.push({ cond: elifM[1], bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+              j = k; continue;
+            }
+            if(elseM){
+              const bodyStart = j+1;
+              let k = j+1;
+              while(k < end && stmts[k].indent > chainIndent) k++;
+              chain.push({ cond: null, bodyStart, bodyEnd: k, lineNum: s2.lineNum });
+              j = k; break;
+            }
+            break;
+          }
+
+          let ran = false;
+          for(const branch of chain){
+            if(branch.cond === null){
+              if(!ran){ execRange(branch.bodyStart, branch.bodyEnd); ran = true; }
+            } else {
+              const ev = evalCond(branch.cond, branch.lineNum);
+              if(ev.err){ err = ev.err; break; }
+              if(ev.result && !ran){ execRange(branch.bodyStart, branch.bodyEnd); ran = true; }
             }
           }
+          const lastBranch = chain[chain.length-1];
+          si = lastBranch ? lastBranch.bodyEnd : si+1;
+          continue;
         }
-        const lastBranch = chain[chain.length-1];
-        si = lastBranch ? lastBranch.bodyEnd : si+1;
-        continue;
-      }
 
-      // --- elif / else at top level (shouldn't appear without preceding if) ---
-      if(line.match(/^elif/) || line.match(/^else/)){
-        si++; continue;
-      }
+        // --- elif / else at top level (shouldn't appear without preceding if) ---
+        if(line.match(/^elif/) || line.match(/^else/)){
+          si++; continue;
+        }
 
-      err = `Line ${lineNum}: Unknown instruction — "${line.split(' ')[0]}"`;
-      break;
+        err = `Line ${lineNum}: Unknown instruction — "${line.split(' ')[0]}"`;
+        break;
+      }
     }
+
+    execRange(0, stmts.length);
     return { out, err };
   }
 
@@ -2192,7 +3512,8 @@
     // Pick the interpreter — Level 4's final page writes real Python, everything else is MaySon
     const p = PAGES[curPage];
     const interpret = (p && p.ideLang === 'python') ? runPythonLite : runMaySonLang;
-    const { out, err } = interpret(code);
+    const simQueue = (p && p.ideSimInputs) ? p.ideSimInputs.slice() : [];
+    const { out, err } = interpret(code, simQueue);
 
     if(err){
       curErrors++;

@@ -300,15 +300,35 @@
     function levelProgressHtml(levelStars){
       levelStars = levelStars || {};
       const total123 = [1,2,3].reduce((s,n)=> s + (levelStars[n]||0), 0);
+      const total17  = [1,2,3,4,5,6,7].reduce((s,n)=> s + (levelStars[n]||0), 0);
       const l4Unlocked = total123 >= 9;
+      const l8Unlocked = total17 >= 21;
+
       const rows = [1,2,3].map(n=>{
         const s = levelStars[n] || 0;
         return `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-stars">${starStr(s)}</span></div>`;
       });
+
       rows.push(l4Unlocked
         ? `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-stars">${starStr(levelStars[4]||0)}</span></div>`
-        : `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-locked">🔒 locked</span></div>`
+        : `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-locked">🔒 ${total123}/9★</span></div>`
       );
+
+      // Levels 5-7 unlock sequentially, same rule as levels 2-3 (previous level needs 1+ star)
+      [5,6,7].forEach(n=>{
+        const prevStars = levelStars[n-1] || 0;
+        const unlocked = prevStars >= 1;
+        rows.push(unlocked
+          ? `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-stars">${starStr(levelStars[n]||0)}</span></div>`
+          : `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-locked">🔒 locked</span></div>`
+        );
+      });
+
+      rows.push(l8Unlocked
+        ? `<div class="lvl-row"><span class="lvl-tag">L8</span><span class="lvl-stars">${starStr(levelStars[8]||0)}</span></div>`
+        : `<div class="lvl-row"><span class="lvl-tag">L8</span><span class="lvl-locked">🔒 ${total17}/21★</span></div>`
+      );
+
       return `<div class="level-progress">${rows.join('')}</div>`;
     }
     function starStr(n){ return '★'.repeat(n) + '☆'.repeat(Math.max(0,3-n)); }
