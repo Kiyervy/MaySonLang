@@ -199,7 +199,29 @@
        ────────────────────────────────────────────────── */
     const SUPABASE_URL = 'https://tsvfgaepjeflmvdywngn.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ─── REMEMBER ME ───────────────────────────────────
+       'mayson_remember_me' is a small preference flag that always lives in
+       localStorage ('1' = keep me signed in, '0' = don't). It's not the
+       session itself — it just tells this adapter WHERE to keep the real
+       Supabase session: localStorage (survives fully closing the browser)
+       when remembered, or sessionStorage (wiped the instant the browser/tab
+       closes) when not. index.html, menu.html, and admin.html all use this
+       same adapter so they agree on where to look for a valid session.
+       ─────────────────────────────────────────────────── */
+    const REMEMBER_FLAG = 'mayson_remember_me';
+    function rememberEnabled(){ return localStorage.getItem(REMEMBER_FLAG) !== '0'; }
+    const authStorage = {
+      getItem: (key) => (rememberEnabled() ? localStorage : sessionStorage).getItem(key),
+      setItem: (key, value) => {
+        (rememberEnabled() ? localStorage : sessionStorage).setItem(key, value);
+        (rememberEnabled() ? sessionStorage : localStorage).removeItem(key); // no stale copy left behind
+      },
+      removeItem: (key) => { localStorage.removeItem(key); sessionStorage.removeItem(key); },
+    };
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { storage: authStorage, persistSession: true, autoRefreshToken: true }
+    });
 
     // If a session already exists (e.g. "Remember me" from a previous visit), skip straight in —
     // unless an admin has blocked the account since the last visit.
@@ -299,6 +321,10 @@
           showError('Passwords don\'t match.');
           return;
         }
+        // The remember-me row is hidden during signup, so a fresh account
+        // defaults to a persisted session — the same "stay signed in" UX
+        // people expect right after creating an account.
+        localStorage.setItem(REMEMBER_FLAG, '1');
         setLoading(true);
         const { data, error } = await supabaseClient.auth.signUp({
           email, password,
@@ -319,7 +345,10 @@
         return;
       }
 
-      // login
+      // login — the remember-me checkbox decides where the session token gets
+      // stored (see authStorage above), so set the flag before signing in.
+      const remember = document.getElementById('remember').checked;
+      localStorage.setItem(REMEMBER_FLAG, remember ? '1' : '0');
       setLoading(true);
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       if(error){ setLoading(false); showError(error.message); return; }

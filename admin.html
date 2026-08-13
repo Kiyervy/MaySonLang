@@ -188,7 +188,22 @@
 
     const SUPABASE_URL = 'https://tsvfgaepjeflmvdywngn.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzdmZnYWVwamVmbG12ZHl3bmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMzAxMzksImV4cCI6MjA5ODgwNjEzOX0.VM4JzorIDuokymoWDN2XcOexilu8AF4qWl2ipPBkSso';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* "Remember me" adapter — must match the one in index.html/menu.html exactly, so
+       this page agrees with the others on where the session token lives. */
+    const REMEMBER_FLAG = 'mayson_remember_me';
+    function rememberEnabled(){ return localStorage.getItem(REMEMBER_FLAG) !== '0'; }
+    const authStorage = {
+      getItem: (key) => (rememberEnabled() ? localStorage : sessionStorage).getItem(key),
+      setItem: (key, value) => {
+        (rememberEnabled() ? localStorage : sessionStorage).setItem(key, value);
+        (rememberEnabled() ? sessionStorage : localStorage).removeItem(key);
+      },
+      removeItem: (key) => { localStorage.removeItem(key); sessionStorage.removeItem(key); },
+    };
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { storage: authStorage, persistSession: true, autoRefreshToken: true }
+    });
 
     let users = [];       // merged profiles + level progress
     let currentAdminId = null;
