@@ -76,6 +76,23 @@
       .back-btn{margin-top:24px;padding:10px 24px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--dim);font-family:var(--fb);font-size:.84rem;cursor:pointer;transition:all .15s;flex-shrink:0}
       .back-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
+      /* STARS INFO */
+      .stars-info-btn{margin-top:14px;padding:8px 18px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);border-radius:20px;color:var(--yellow);font-family:var(--fb);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s}
+      .stars-info-btn:hover{border-color:var(--yellow);background:rgba(251,191,36,.18);transform:translateY(-2px)}
+      #stars-info-overlay{position:fixed;inset:0;z-index:200;background:rgba(8,12,24,.9);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+      #stars-info-overlay.show{display:flex}
+      .stars-info-card{background:var(--card);border:1px solid rgba(251,191,36,.35);border-radius:20px;padding:34px 38px;text-align:left;max-width:460px;width:100%;box-shadow:0 0 60px rgba(251,191,36,.1);animation:popIn .35s cubic-bezier(.34,1.56,.64,1) both;max-height:80vh;overflow-y:auto}
+      .stars-info-title{font-family:var(--fh);font-size:1.15rem;font-weight:700;color:var(--yellow);margin-bottom:18px;text-align:center}
+      .stars-info-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+      .stars-info-row .si-stars{font-size:.95rem;color:var(--yellow);white-space:nowrap;flex-shrink:0;padding-top:1px}
+      .stars-info-row .si-text{font-size:.85rem;color:var(--white);line-height:1.4}
+      .stars-info-row .si-text b{color:var(--yellow)}
+      .stars-info-divider{height:1px;background:var(--border);margin:18px 0}
+      .stars-info-unlock{font-size:.82rem;color:var(--dim);line-height:1.6;margin-bottom:6px}
+      .stars-info-unlock b{color:var(--cyan)}
+      .stars-info-close{display:block;margin:22px auto 0;padding:10px 26px;background:linear-gradient(135deg,#ca8a04,var(--yellow));color:#000;border:none;border-radius:9px;cursor:pointer;font-family:var(--fb);font-weight:800;font-size:.88rem;transition:all .15s}
+      .stars-info-close:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(251,191,36,.4)}
+
       /* LOGOUT */
       .logout-btn{position:fixed;top:18px;right:18px;z-index:20;display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--dim);font-family:var(--fb);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;animation:floatIn .6s ease both}
       .logout-btn:hover{border-color:var(--red);color:var(--red);background:rgba(248,113,113,.08);transform:translateY(-2px)}
@@ -99,7 +116,7 @@
       .pdot.active{background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulseDot 1.5s ease infinite}
       .page-counter{font-size:.73rem;color:var(--dim);margin-left:4px;white-space:nowrap}
 
-      .puzzle-card{width:100%;max-width:860px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:floatIn .5s ease both;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+      .puzzle-card{width:100%;max-width:860px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:floatIn .5s ease both;box-shadow:0 20px 60px rgba(0,0,0,.4);flex-shrink:0}
       .puzzle-banner{background:linear-gradient(135deg,#0f3460,#1a4b8c);border-bottom:1px solid var(--border);padding:18px 26px;display:flex;align-items:center;gap:14px}
       .puzzle-badge{background:var(--green);color:#000;font-family:var(--fh);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.08em;text-transform:uppercase}
       .puzzle-level-title{font-family:var(--fh);font-size:.95rem;font-weight:700;color:var(--white)}
@@ -283,6 +300,15 @@
       ::-webkit-scrollbar-thumb{background:#2e4380;border-radius:5px;border:2px solid transparent;background-clip:padding-box}
       ::-webkit-scrollbar-thumb:hover{background:var(--cyan);background-clip:padding-box}
       *{scrollbar-width:thin;scrollbar-color:#2e4380 rgba(255,255,255,.03)}
+
+      /* Scrollable screens (level select, puzzle pages) get a wider, higher-contrast scrollbar —
+         the default 9px dark-on-dark one above is easy to miss against this theme, which made
+         these screens look non-scrollable even though overflow-y:auto was already set. */
+      #levelscreen,#puzzlescreen{scrollbar-width:auto;scrollbar-color:var(--cyan) rgba(255,255,255,.06)}
+      #levelscreen::-webkit-scrollbar,#puzzlescreen::-webkit-scrollbar{width:14px}
+      #levelscreen::-webkit-scrollbar-track,#puzzlescreen::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:8px}
+      #levelscreen::-webkit-scrollbar-thumb,#puzzlescreen::-webkit-scrollbar-thumb{background:var(--blue);border-radius:8px;border:3px solid transparent;background-clip:padding-box}
+      #levelscreen::-webkit-scrollbar-thumb:hover,#puzzlescreen::-webkit-scrollbar-thumb:hover{background:var(--cyan);background-clip:padding-box}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
@@ -328,7 +354,11 @@
 
     <!-- LEVEL SELECT -->
     <div class="screen hidden" id="levelscreen">
-      <div class="level-header"><h1>🗺 Choose Your Level</h1><p>Complete puzzles to unlock new lessons</p></div>
+      <div class="level-header">
+        <h1>🗺 Choose Your Level</h1>
+        <p>Complete puzzles to unlock new lessons</p>
+        <button class="stars-info-btn" onclick="showStarsInfo()">⭐ How stars work</button>
+      </div>
       <div class="levels-grid">
         <div class="level-card" id="level-card-1" onclick="startLevel(1)" style="animation-delay:.04s">
           <div class="level-num">01</div>
@@ -518,6 +548,36 @@
           <button class="ex-cancel" onclick="closeLogoutConfirm()">Cancel</button>
           <button class="ex-confirm" onclick="confirmLogout()">Yes, Log Out</button>
         </div>
+      </div>
+    </div>
+
+    <!-- STARS INFO -->
+    <div id="stars-info-overlay">
+      <div class="stars-info-card">
+        <div class="stars-info-title">⭐ How Stars Work</div>
+        <div class="stars-info-row">
+          <span class="si-stars">★ ★ ★</span>
+          <span class="si-text"><b>Perfect run</b> — you finished the level without opening a hint or getting a check wrong.</span>
+        </div>
+        <div class="stars-info-row">
+          <span class="si-stars">★ ★ ☆</span>
+          <span class="si-text"><b>Solid run</b> — you got a check wrong at least once, but never opened a hint.</span>
+        </div>
+        <div class="stars-info-row">
+          <span class="si-stars">★ ☆ ☆</span>
+          <span class="si-text"><b>Completed</b> — you opened a hint at least once during the level.</span>
+        </div>
+        <div class="stars-info-row">
+          <span class="si-stars">↻</span>
+          <span class="si-text">You can replay any unlocked level any time — only your <b>best</b> star result is kept.</span>
+        </div>
+        <div class="stars-info-divider"></div>
+        <div class="stars-info-unlock">🔓 <b>Level 04</b> unlocks after earning <b>9★</b> across Levels 1–3.</div>
+        <div class="stars-info-unlock">🔓 <b>Level 08</b> unlocks after earning <b>21★</b> across Levels 1–7.</div>
+        <div class="stars-info-unlock">🔓 <b>Level 12</b> unlocks after earning <b>33★</b> across Levels 1–11.</div>
+        <div class="stars-info-unlock">🔓 <b>Level 15</b> unlocks after earning <b>42★</b> across Levels 1–14.</div>
+        <div class="stars-info-unlock">🔓 All other levels just need <b>1★</b> on the level right before them.</div>
+        <button class="stars-info-close" onclick="closeStarsInfo()">Got it</button>
       </div>
     </div>
 
@@ -4658,11 +4718,18 @@
       saveLocalCache();
       if(!currentUserId) return;
       try{
-        await supabaseClient.from(PROGRESS_TABLE).upsert({
+        const { error } = await supabaseClient.from(PROGRESS_TABLE).upsert({
           user_id: currentUserId,
           level_stars: levelStars,
           updated_at: new Date().toISOString(),
         });
+        // The Supabase client resolves normally (doesn't throw) on a DB-level rejection —
+        // RLS denial, CHECK constraint violation, etc. — so we must check `error` explicitly,
+        // or failures like this get silently swallowed with nothing in the console.
+        if(error){
+          console.error('Database rejected the progress save:', error.message, error);
+          toast('⚠️ Progress could not be saved — check your connection');
+        }
       }catch(e){ console.error('Could not sync progress to the database:', e); }
     }
     /* Authoritative load — runs once the Supabase session is known.
@@ -4983,6 +5050,17 @@
         </div>`;
     }
 
+    /* Fisher-Yates shuffle — used to randomize the "Steps to place" tray so the
+       answer order isn't given away just by reading top to bottom. */
+    function shuffled(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
     function renderOrder(p){
       const slots = p.zones.map((z,i)=>`
         <div class="order-slot" id="${z.id}" data-correct="${z.correct}" data-value="" data-iid=""
@@ -4991,7 +5069,7 @@
           <span class="order-slot-text" id="${z.id}-txt" style="color:var(--dim);font-style:italic">Drag a step here…</span>
           <span class="order-slot-rm" onclick="rmOrderItem('${z.id}')">×</span>
         </div>`).join('');
-      const items = p.orderItems.map(it=>`
+      const items = shuffled(p.orderItems).map(it=>`
         <div class="order-item" id="${it.id}" data-val="${it.val}"
             draggable="true" ondragstart="orderDragStart(event,'${it.id}')">
           ${it.label}
@@ -5706,8 +5784,11 @@
 
     if(err){
       curErrors++;
-      outputEl.innerHTML = `<span class="ide-error">❌ ${err}</span>`;
-      showFB('wrong','❌', err);
+      outputEl.innerHTML = `<span class="ide-error">❌ ${escHtml(err)}</span>`;
+      // err is built from the user's own typed code (variable names, conditions, etc.),
+      // so it must be escaped before going through showFB's innerHTML — otherwise code
+      // like "x < 5" in their error message would be parsed as HTML instead of shown as text.
+      showFB('wrong','❌', escHtml(err));
       return;
     }
 
@@ -5758,7 +5839,9 @@
       setTimeout(()=>showSuccessCard(p), 1000);
     } else {
       curErrors++;
-      showFB('wrong','❌',`Output was "${outputText.trim()}" — expected exactly "${expected}"`);
+      // outputText is whatever the user's code printed, so it must be escaped too —
+      // otherwise printing something like "<html>" would render as a tag, not text.
+      showFB('wrong','❌',`Output was "${escHtml(outputText.trim())}" — expected exactly "${escHtml(expected)}"`);
     }
   }
 
@@ -5977,7 +6060,9 @@
       if(!fb) return;
       fb.className=`feedback show ${type}`;
       document.getElementById('fb-icon').textContent=icon;
-      document.getElementById('fb-text').textContent=text;
+      // innerHTML (not textContent) — feedback text is authored content that can include
+      // <code> styling (e.g. highlighting keywords), which needs to render, not display as tags.
+      document.getElementById('fb-text').innerHTML=text;
     }
     function hideFB(){ const fb=document.getElementById('feedback'); if(fb) fb.className='feedback'; }
     function toggleHint(){
@@ -6100,6 +6185,10 @@
       setTimeout(clearConf,5500);
     }
     function clearConf(){ CP.forEach(e=>e.remove()); CP=[]; }
+
+    /* ─── STARS INFO ─────────────────────────────────── */
+    function showStarsInfo(){ document.getElementById('stars-info-overlay').classList.add('show'); }
+    function closeStarsInfo(){ document.getElementById('stars-info-overlay').classList.remove('show'); }
 
     /* ─── EXIT ───────────────────────────────────────── */
     function showExit(){ document.getElementById('exit-overlay').classList.add('show'); }
