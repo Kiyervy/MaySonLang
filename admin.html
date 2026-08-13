@@ -66,7 +66,7 @@
 
       .level-progress{display:flex;flex-direction:column;gap:3px}
       .lvl-row{display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--dim)}
-      .lvl-tag{font-family:var(--fc);font-weight:700;color:var(--cyan);width:24px;flex-shrink:0}
+      .lvl-tag{font-family:var(--fc);font-weight:700;color:var(--cyan);width:28px;flex-shrink:0}
       .lvl-stars{color:var(--yellow);letter-spacing:1px}
       .lvl-locked{color:var(--dim);font-size:.7rem}
 
@@ -224,6 +224,18 @@
     }
 
     /* ─── LOAD ──────────────────────────────────────────────────────── */
+    let levelMeta = {}; // level_number -> { title, description, language_focus }
+
+    async function loadLevelMeta(){
+      const { data, error } = await supabaseClient
+        .from('levels')
+        .select('level_number,title,description,language_focus')
+        .order('sort_order', { ascending: true });
+      if(error){ console.error('Could not load level metadata:', error); return; }
+      levelMeta = {};
+      (data||[]).forEach(l=>{ levelMeta[l.level_number] = l; });
+    }
+
     async function loadUsers(){
       const tbody = document.getElementById('user-tbody');
       tbody.innerHTML = `<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading users…</div></td></tr>`;
@@ -231,6 +243,7 @@
       const [{ data: profiles, error: pErr }, { data: progress, error: prErr }] = await Promise.all([
         supabaseClient.from('profiles').select('id,email,username,is_admin,is_blocked,created_at').order('created_at', { ascending: false }),
         supabaseClient.from('level_progress').select('user_id,level_stars'),
+        loadLevelMeta(),
       ]);
 
       if(pErr){
@@ -297,21 +310,28 @@
         </tr>`;
     }
 
+    function lvlTag(n){
+      const title = levelMeta[n]?.title;
+      return `<span class="lvl-tag"${title ? ` title="${escapeAttr(title)}"` : ''}>L${n}</span>`;
+    }
+
     function levelProgressHtml(levelStars){
       levelStars = levelStars || {};
       const total123 = [1,2,3].reduce((s,n)=> s + (levelStars[n]||0), 0);
       const total17  = [1,2,3,4,5,6,7].reduce((s,n)=> s + (levelStars[n]||0), 0);
-      const l4Unlocked = total123 >= 9;
-      const l8Unlocked = total17 >= 21;
+      const total111 = [1,2,3,4,5,6,7,8,9,10,11].reduce((s,n)=> s + (levelStars[n]||0), 0);
+      const l4Unlocked  = total123 >= 9;
+      const l8Unlocked  = total17  >= 21;
+      const l12Unlocked = total111 >= 33;
 
       const rows = [1,2,3].map(n=>{
         const s = levelStars[n] || 0;
-        return `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-stars">${starStr(s)}</span></div>`;
+        return `<div class="lvl-row">${lvlTag(n)}<span class="lvl-stars">${starStr(s)}</span></div>`;
       });
 
       rows.push(l4Unlocked
-        ? `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-stars">${starStr(levelStars[4]||0)}</span></div>`
-        : `<div class="lvl-row"><span class="lvl-tag">L4</span><span class="lvl-locked">🔒 ${total123}/9★</span></div>`
+        ? `<div class="lvl-row">${lvlTag(4)}<span class="lvl-stars">${starStr(levelStars[4]||0)}</span></div>`
+        : `<div class="lvl-row">${lvlTag(4)}<span class="lvl-locked">🔒 ${total123}/9★</span></div>`
       );
 
       // Levels 5-7 unlock sequentially, same rule as levels 2-3 (previous level needs 1+ star)
@@ -319,14 +339,52 @@
         const prevStars = levelStars[n-1] || 0;
         const unlocked = prevStars >= 1;
         rows.push(unlocked
-          ? `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-stars">${starStr(levelStars[n]||0)}</span></div>`
-          : `<div class="lvl-row"><span class="lvl-tag">L${n}</span><span class="lvl-locked">🔒 locked</span></div>`
+          ? `<div class="lvl-row">${lvlTag(n)}<span class="lvl-stars">${starStr(levelStars[n]||0)}</span></div>`
+          : `<div class="lvl-row">${lvlTag(n)}<span class="lvl-locked">🔒 locked</span></div>`
         );
       });
 
       rows.push(l8Unlocked
-        ? `<div class="lvl-row"><span class="lvl-tag">L8</span><span class="lvl-stars">${starStr(levelStars[8]||0)}</span></div>`
-        : `<div class="lvl-row"><span class="lvl-tag">L8</span><span class="lvl-locked">🔒 ${total17}/21★</span></div>`
+        ? `<div class="lvl-row">${lvlTag(8)}<span class="lvl-stars">${starStr(levelStars[8]||0)}</span></div>`
+        : `<div class="lvl-row">${lvlTag(8)}<span class="lvl-locked">🔒 ${total17}/21★</span></div>`
+      );
+
+      // Levels 9-11 unlock sequentially, same rule as levels 5-7 (previous level needs 1+ star)
+      [9,10,11].forEach(n=>{
+        const prevStars = levelStars[n-1] || 0;
+        const unlocked = prevStars >= 1;
+        rows.push(unlocked
+          ? `<div class="lvl-row">${lvlTag(n)}<span class="lvl-stars">${starStr(levelStars[n]||0)}</span></div>`
+          : `<div class="lvl-row">${lvlTag(n)}<span class="lvl-locked">🔒 locked</span></div>`
+        );
+      });
+
+      rows.push(l12Unlocked
+        ? `<div class="lvl-row">${lvlTag(12)}<span class="lvl-stars">${starStr(levelStars[12]||0)}</span></div>`
+        : `<div class="lvl-row">${lvlTag(12)}<span class="lvl-locked">🔒 ${total111}/33★</span></div>`
+      );
+
+      // Levels 13-15 unlock sequentially, same rule as levels 9-11 (previous level needs 1+ star).
+      // Added for the Level 9 (Lists & Arrays), 10 (Functions & Parameters), and 11 (Debugging &
+      // Errors) expansion — L12 Python Bridge 3, L13 Algorithms, L14 Project Prep, L15 Capstone.
+      // Levels 13-14 unlock sequentially, same rule as levels 9-11 (previous level needs 1+ star).
+      // Added for the Level 9 (Lists & Arrays), 10 (Functions & Parameters), and 11 (Debugging &
+      // Errors) expansion — L12 Python Bridge 3, L13 Algorithms, L14 Project Prep.
+      [13,14].forEach(n=>{
+        const prevStars = levelStars[n-1] || 0;
+        const unlocked = prevStars >= 1;
+        rows.push(unlocked
+          ? `<div class="lvl-row">${lvlTag(n)}<span class="lvl-stars">${starStr(levelStars[n]||0)}</span></div>`
+          : `<div class="lvl-row">${lvlTag(n)}<span class="lvl-locked">🔒 locked</span></div>`
+        );
+      });
+
+      // Level 15 (Capstone) requires a full 42★ across Levels 1-14 — effectively 3★ on every level.
+      const total114 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14].reduce((s,n)=> s + (levelStars[n]||0), 0);
+      const l15Unlocked = total114 >= 42;
+      rows.push(l15Unlocked
+        ? `<div class="lvl-row">${lvlTag(15)}<span class="lvl-stars">${starStr(levelStars[15]||0)}</span></div>`
+        : `<div class="lvl-row">${lvlTag(15)}<span class="lvl-locked">🔒 ${total114}/42★</span></div>`
       );
 
       return `<div class="level-progress">${rows.join('')}</div>`;
