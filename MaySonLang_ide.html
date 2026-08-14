@@ -85,6 +85,22 @@
       }
       .tb-menu-item:hover { color: var(--fg-hi); background: var(--bg2); }
       .tb-spacer { flex: 1; }
+      .lang-toggle {
+        display: flex; align-items: center; gap: 2px;
+        background: var(--bg3); border: 1px solid var(--border2);
+        border-radius: 6px; padding: 2px; margin-right: 10px;
+      }
+      .lang-btn {
+        border: none; background: transparent; cursor: pointer;
+        font-family: var(--font-ui); font-size: 11.5px; font-weight: 600;
+        color: var(--fg-dim); padding: 5px 10px; border-radius: 4px;
+        display: flex; align-items: center; gap: 5px;
+        transition: background .15s, color .15s;
+      }
+      .lang-btn:hover { color: var(--fg-hi); }
+      .lang-btn.active.lang-mayson { background: var(--cyan); color: #06222b; }
+      .lang-btn.active.lang-python { background: #3b82f6; color: #fff; }
+      .lang-btn svg { width: 12px; height: 12px; }
       .tb-run-btn {
         height: 100%; padding: 0 20px;
         background: var(--blue); color: #fff;
@@ -392,6 +408,10 @@
           <div class="tb-menu-item" onclick="showHelp()">Help</div>
         </div>
         <div class="tb-spacer"></div>
+        <div class="lang-toggle" id="lang-toggle">
+          <button class="lang-btn lang-mayson" id="lang-btn-mayson" onclick="setLang('mayson')" title="MaySon Language">MaySon</button>
+          <button class="lang-btn lang-python" id="lang-btn-python" onclick="setLang('python')" title="Python">Python</button>
+        </div>
         <button class="tb-stop-btn" onclick="stopExec()" title="Stop">
           <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="3" y="3" width="10" height="10" rx="1"/></svg>
           Stop
@@ -598,12 +618,13 @@
         return toks;
       }
 
-      async function evalExpr(expr, scope, fns, line){
+      async function evalExpr(expr, scope, fns, line, lang='mayson'){
         expr=expr.trim();
         if(!expr) return null;
 
-        // String literal
-        if(expr[0]==='"'||expr[0]==="'"){
+        // String literal — MaySon uses double quotes only; Python allows single or double
+        const quoteChars = lang==='python' ? ['"',"'"] : ['"'];
+        if(quoteChars.includes(expr[0])){
           const ch=expr[0]; let j=1;
           while(j<expr.length){
             if(expr[j]==='\\'&&j+1<expr.length){j+=2;continue;}
@@ -612,17 +633,23 @@
           }
         }
 
-        // call keyword in expression
+        // call keyword in expression (MaySon-only convenience form; harmless if unused in Python)
         if(expr.startsWith('call ')){
           const inner=expr.slice(5).trim();
           const m=fnCallPattern(inner);
-          if(m){ const args=await argEvalAll(m[1],scope,fns,line); return await callFn(m[0],args,scope,fns,line); }
+          if(m){ const args=await argEvalAll(m[1],scope,fns,line,lang); return await callFn(m[0],args,scope,fns,line,lang); }
         }
 
-        // Boolean/null
-        if(expr==='true') return true;
-        if(expr==='false') return false;
-        if(expr==='null'||expr==='nothing') return null;
+        // Boolean/null — MaySon: true/false/null/nothing — Python: True/False/None
+        if(lang==='python'){
+          if(expr==='True') return true;
+          if(expr==='False') return false;
+          if(expr==='None') return null;
+        } else {
+          if(expr==='true') return true;
+          if(expr==='false') return false;
+          if(expr==='null'||expr==='nothing') return null;
+        }
 
         // Number
         if(/^-?\d+$/.test(expr)) return parseInt(expr);
@@ -632,25 +659,25 @@
         if(expr.startsWith('[')&&expr.endsWith(']')){
           const inner=expr.slice(1,-1).trim();
           if(!inner) return [];
-          return await argEvalAll(inner,scope,fns,line);
+          return await argEvalAll(inner,scope,fns,line,lang);
         }
 
         // Parenthesised
-        if(expr.startsWith('(')&&expr.endsWith(')')) return await evalExpr(expr.slice(1,-1),scope,fns,line);
+        if(expr.startsWith('(')&&expr.endsWith(')')) return await evalExpr(expr.slice(1,-1),scope,fns,line,lang);
 
-        // Logic: or / and
+        // Logic: or / and / not — same English words in both languages
         const orParts=splitKeyword(expr,'or');
-        if(orParts){ for(const p of orParts){ if(!!(await evalExpr(p,scope,fns,line))) return true; } return false; }
+        if(orParts){ for(const p of orParts){ if(!!(await evalExpr(p,scope,fns,line,lang))) return true; } return false; }
         const andParts=splitKeyword(expr,'and');
-        if(andParts){ for(const p of andParts){ if(!(await evalExpr(p,scope,fns,line))) return false; } return true; }
-        if(expr.startsWith('not ')) return !(await evalExpr(expr.slice(4).trim(),scope,fns,line));
+        if(andParts){ for(const p of andParts){ if(!(await evalExpr(p,scope,fns,line,lang))) return false; } return true; }
+        if(expr.startsWith('not ')) return !(await evalExpr(expr.slice(4).trim(),scope,fns,line,lang));
 
         // Comparisons
         for(const op of ['>=','<=','!=',' is not ',' is ','==','>','<']){
           const idx=findOp(expr,op);
           if(idx!==-1){
-            const L=await evalExpr(expr.slice(0,idx).trim(),scope,fns,line);
-            const R=await evalExpr(expr.slice(idx+op.length).trim(),scope,fns,line);
+            const L=await evalExpr(expr.slice(0,idx).trim(),scope,fns,line,lang);
+            const R=await evalExpr(expr.slice(idx+op.length).trim(),scope,fns,line,lang);
             if(op==='=='||op===' is ') return L==R;
             if(op==='!='||op===' is not ') return L!=R;
             if(op==='>') return L>R; if(op==='<') return L<R;
@@ -663,7 +690,7 @@
         if(at){
           const terms=at.filter((_,i)=>i%2===0);
           const ops=at.filter((_,i)=>i%2===1);
-          const vals=[]; for(const t of terms) vals.push(await evalExpr(t,scope,fns,line));
+          const vals=[]; for(const t of terms) vals.push(await evalExpr(t,scope,fns,line,lang));
           // ^
           for(let i=ops.length-1;i>=0;i--){ if(ops[i]==='^'){vals.splice(i,2,Math.pow(vals[i],vals[i+1]));ops.splice(i,1);} }
           // * / // %
@@ -687,15 +714,32 @@
           return res;
         }
 
+        // Dotted method call: receiver.method(args) — e.g. nums.append(4), text.upper()
+        const dm=expr.match(/^([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\(([^()]*)\)$/);
+        if(dm){
+          const [,recvName,method,argStr]=dm;
+          const recv=resolveVar(recvName,scope,line);
+          const args=await argEvalAll(argStr,scope,fns,line,lang);
+          if(Array.isArray(recv)){
+            if(!(method in LIST_METHODS)) throw new MaySonLangError(`Lists have no method '${method}'`,line);
+            return LIST_METHODS[method](recv,args);
+          }
+          if(typeof recv==='string'){
+            if(!(method in STR_METHODS)) throw new MaySonLangError(`Text has no method '${method}'`,line);
+            return STR_METHODS[method](recv,args);
+          }
+          throw new MaySonLangError(`'${recvName}' has no method '${method}'`,line);
+        }
+
         // Function call name(args)
         const fm=fnCallPattern(expr);
-        if(fm){ const args=await argEvalAll(fm[1],scope,fns,line); return await callFn(fm[0],args,scope,fns,line); }
+        if(fm){ const args=await argEvalAll(fm[1],scope,fns,line,lang); return await callFn(fm[0],args,scope,fns,line,lang); }
 
         // List index arr[i]
         const im=indexPattern(expr);
         if(im){
           const arr=resolveVar(im[0],scope,line);
-          const idx=await evalExpr(im[1],scope,fns,line);
+          const idx=await evalExpr(im[1],scope,fns,line,lang);
           if(!Array.isArray(arr)&&typeof arr!=='string') throw new MaySonLangError(`'${im[0]}' is not a list`,line);
           const i=Math.trunc(Number(idx));
           if(isNaN(i)||i<0||i>=arr.length) throw new MaySonLangError(`Index ${idx} is out of range for '${im[0]}' (has ${arr.length} items, 0 to ${arr.length-1})`,line);
@@ -710,10 +754,10 @@
 
       // Evaluates a comma-separated argument/element list, in order (left to right),
       // so side effects like ask/input happen in the order they're written.
-      async function argEvalAll(s, scope, fns, line){
+      async function argEvalAll(s, scope, fns, line, lang='mayson'){
         const parts=argSplit(s);
         const out=[];
-        for(const p of parts) out.push(await evalExpr(p,scope,fns,line));
+        for(const p of parts) out.push(await evalExpr(p,scope,fns,line,lang));
         return out;
       }
 
@@ -732,20 +776,55 @@
         return [name, expr.slice(b+1,-1)];
       }
       function resolveVar(name, scope, line){
-        if(name==='true') return true; if(name==='false') return false;
-        if(name==='null'||name==='nothing') return null;
+        if(name==='true'||name==='True') return true;
+        if(name==='false'||name==='False') return false;
+        if(name==='null'||name==='nothing'||name==='None') return null;
         if(name in scope) return scope[name];
         throw new MaySonLangError(`Undefined variable: '${name}'`, line);
       }
 
-      /* ── BUILT-INS ── */
+      // Renders a value for output — shared by MaySon's `say` and Python's `print`.
+      function displayValue(val){
+        if(val===null||val===undefined) return 'nothing';
+        if(typeof val==='boolean') return val?'true':'false';
+        if(Array.isArray(val)) return '['+val.map(v=>displayValue(v)).join(', ')+']';
+        if(typeof val==='number'&&Number.isInteger(val)) return String(val);
+        return String(val);
+      }
+
+      /* ── LIST / STRING METHODS ── (dotted-call syntax: nums.append(4), text.upper()) */
+      const LIST_METHODS = {
+        append: (arr,a)=>{ arr.push(a[0]); return null; },
+        remove: (arr,a)=>{ const idx=arr.indexOf(a[0]); if(idx!==-1) arr.splice(idx,1); return null; },
+        pop:    (arr,a)=> a.length ? arr.splice(a[0],1)[0] : arr.pop(),
+        insert: (arr,a)=>{ arr.splice(a[0],0,a[1]); return null; },
+        sort:   (arr)=>{ arr.sort((x,y)=>x>y?1:x<y?-1:0); return null; },
+        reverse:(arr)=>{ arr.reverse(); return null; },
+        count:  (arr,a)=> arr.filter(x=>x===a[0]).length,
+        index:  (arr,a)=> arr.indexOf(a[0]),
+        clear:  (arr)=>{ arr.length=0; return null; },
+      };
+      const STR_METHODS = {
+        upper:      (s)=>s.toUpperCase(),
+        lower:      (s)=>s.toLowerCase(),
+        strip:      (s)=>s.trim(),
+        title:      (s)=>s.replace(/\b\w/g,c=>c.toUpperCase()),
+        replace:    (s,a)=>s.replaceAll(String(a[0]),String(a[1])),
+        split:      (s,a)=> a.length ? s.split(String(a[0])) : s.split(/\s+/),
+        startswith: (s,a)=>s.startsWith(String(a[0])),
+        endswith:   (s,a)=>s.endsWith(String(a[0])),
+      };
+
+      /* ── BUILT-INS ── (shared by both languages — call syntax is identical) */
       const BUILTINS = {
         len:   a=>a[0].length??0,
         length:a=>a[0].length??0,   // alias — matches the levels' length(...)
         type:  a=>typeof a[0],
         number:a=>{ const n=Number(a[0]); return Number.isInteger(n)?n:n; },
         int:   a=>Math.trunc(Number(a[0])),
+        float: a=>Number(a[0]),     // Python alias for number
         text:  a=>String(a[0]),
+        str:   a=>String(a[0]),     // Python alias for text
         round: a=>Math.round(a[0]),
         floor: a=>Math.floor(a[0]),
         ceil:  a=>Math.ceil(a[0]),
@@ -770,11 +849,13 @@
                   a.length===2?[...Array(Math.max(0,a[1]-a[0]))].map((_,i)=>i+a[0]):
                   [...Array(Math.max(0,Math.ceil((a[1]-a[0])/a[2])))].map((_,i)=>a[0]+i*a[2]),
         sort:  a=>[...a[0]].sort((x,y)=>x>y?1:x<y?-1:0),
+        sorted:a=>[...a[0]].sort((x,y)=>x>y?1:x<y?-1:0), // Python alias for sort
         reverse:a=>[...a[0]].reverse(),
         unique:a=>[...new Set(a[0])],
         first: a=>a[0][0],
         last:  a=>a[0][a[0].length-1],
         slice: a=>a[0].slice(a[1],a[2]),
+        print: a=>{ pushOut(a.length ? a.map(x=>displayValue(x)).join(' ') : '','normal'); return null; }, // Python's print()
         input: null, // handled specially in callFn — pauses execution for real UI input
         exit:  _=>{ throw new MaySonLangError('Program exited'); },
       };
@@ -793,7 +874,7 @@
         });
       }
 
-      async function callFn(name, args, scope, fns, line){
+      async function callFn(name, args, scope, fns, line, lang='mayson'){
         if(name==='input'){
           const raw = await requestInput(args[0] ?? '');
           return raw; // real input() always returns a string, like Python's
@@ -803,7 +884,7 @@
         const fn=fns[name];
         if(args.length!==fn.params.length) throw new MaySonLangError(`'${name}' expects ${fn.params.length} arg(s), got ${args.length}`,line);
         const fnScope={...fn.closure, ...Object.fromEntries(fn.params.map((p,i)=>[p,args[i]]))};
-        const interp=new Interpreter(fns, fn.callDepth+1);
+        const interp=new Interpreter(fns, fn.callDepth+1, lang);
         if(interp.callDepth>500) throw new MaySonLangError('Max recursion depth exceeded',line);
         try{ await interp.execute(fn.body, fnScope); }
         catch(e){ if(e instanceof ReturnSignal) return e.value; throw e; }
@@ -824,9 +905,10 @@
 
       /* ── INTERPRETER CLASS ── */
       class Interpreter {
-        constructor(functions={}, callDepth=0){
+        constructor(functions={}, callDepth=0, lang='mayson'){
           this.functions=functions;
           this.callDepth=callDepth;
+          this.lang=lang; // 'mayson' | 'python'
         }
 
         get outputLines(){ return OUT; }
@@ -844,7 +926,7 @@
           }
         }
 
-        async _eval(e,s,l){ return await evalExpr(e,s,this.functions,l); }
+        async _eval(e,s,l){ return await evalExpr(e,s,this.functions,l,this.lang); }
         async _cond(c,s,l){ return !!(await this._eval(c,s,l)); }
 
         _block(tokens, start, baseIndent){
@@ -853,15 +935,25 @@
           return {block, next:i};
         }
 
-        display(val){
-          if(val===null||val===undefined) return 'nothing';
-          if(typeof val==='boolean') return val?'true':'false';
-          if(Array.isArray(val)) return '['+val.map(v=>this.display(v)).join(', ')+']';
-          if(typeof val==='number'&&Number.isInteger(val)) return String(val);
-          return String(val);
+        display(val){ return displayValue(val); }
+
+        // Dispatches to the MaySon or Python statement parser, after handling the small
+        // set of keywords (return/break/continue) that are spelled identically in both.
+        async _stmt(tok, tokens, i, scope){
+          const c=tok.content, ln=tok.line;
+          if(/^return(\s|$)/.test(c)){
+            const expr=c.slice(6).trim();
+            throw new ReturnSignal(expr?await this._eval(expr,scope,ln):null);
+          }
+          if(c==='break') throw new BreakSignal();
+          if(c==='continue') throw new ContinueSignal();
+          return this.lang==='python'
+            ? await this._stmtPy(tok,tokens,i,scope)
+            : await this._stmtMayson(tok,tokens,i,scope);
         }
 
-        async _stmt(tok, tokens, i, scope){
+        /* ════════════ MAYSON STATEMENTS ════════════ */
+        async _stmtMayson(tok, tokens, i, scope){
           const c=tok.content, ln=tok.line;
 
           // say / show
@@ -944,15 +1036,10 @@
           // call fn(args) statement
           m=c.match(/^call\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)$/);
           if(m){
-            const args=await argEvalAll(m[2],scope,this.functions,ln);
-            await callFn(m[1],args,scope,this.functions,ln);
+            const args=await argEvalAll(m[2],scope,this.functions,ln,this.lang);
+            await callFn(m[1],args,scope,this.functions,ln,this.lang);
             return i+1;
           }
-
-          // return / break / continue
-          if(c.startsWith('return')){ const expr=c.slice(6).trim(); throw new ReturnSignal(expr?await this._eval(expr,scope,ln):null); }
-          if(c==='break') throw new BreakSignal();
-          if(c==='continue') throw new ContinueSignal();
 
           // if / check  (check kept as alias)
           m=c.match(/^(?:if|check)\s+(.+?)\s*:?$/);
@@ -982,8 +1069,7 @@
               let broke=false;
               try{ await this._runBlock(block,ls); }
               catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
-              // flush ALL mutations back to outer scope
-              Object.assign(scope,ls);
+              Object.assign(scope,ls); // flush ALL mutations back to outer scope
               if(broke) break;
               iteration++;
             }
@@ -1010,20 +1096,7 @@
 
           // while
           m=c.match(/^while\s+(.+?)\s*:?$/);
-          if(m){
-            const {block,next}=this._block(tokens,i+1,tok.indent);
-            let guard=0;
-            while(await this._cond(m[1],scope,ln)){
-              if(++guard>100000) throw new MaySonLangError('Infinite loop (>100k iterations)',ln);
-              const ls={...scope};
-              let broke=false;
-              try{ await this._runBlock(block,ls); }
-              catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
-              Object.assign(scope,ls);
-              if(broke) break;
-            }
-            return next;
-          }
+          if(m) return await this._whileLoop(m[1],tokens,i,tok.indent,scope,ln);
 
           // bare expression (also how a function is called with no "call" needed, e.g. `greet("Sam")`)
           try{ await this._eval(c,scope,ln); return i+1; }
@@ -1050,6 +1123,139 @@
             return {block:els,next:afterElse};
           }
           return {block:[],next:start};
+        }
+
+        /* ════════════ PYTHON STATEMENTS ════════════ */
+        async _stmtPy(tok, tokens, i, scope){
+          const c=tok.content, ln=tok.line;
+
+          // augmented assignment: x += / -= / *= / /= expr
+          let m=c.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*(\+|-|\*|\/)=\s*(.+)$/);
+          if(m){
+            const cur=resolveVar(m[1],scope,ln), rhs=await this._eval(m[3],scope,ln);
+            let val;
+            if(m[2]==='+') val=(typeof cur==='string'||typeof rhs==='string')?String(cur)+String(rhs):cur+rhs;
+            else if(m[2]==='-') val=cur-rhs;
+            else if(m[2]==='*') val=cur*rhs;
+            else val=cur/rhs;
+            scope[m[1]]=val; return i+1;
+          }
+
+          // indexed assignment: nums[i] = expr
+          m=c.match(/^([A-Za-z_][A-Za-z0-9_]*)\[(.+)\]\s*=(?!=)\s*(.+)$/);
+          if(m){
+            const arr=resolveVar(m[1],scope,ln);
+            if(!Array.isArray(arr)) throw new MaySonLangError(`'${m[1]}' is not a list`,ln);
+            arr[await this._eval(m[2],scope,ln)]=await this._eval(m[3],scope,ln);
+            return i+1;
+          }
+
+          // plain assignment: x = expr  (negative lookahead keeps this from matching == )
+          m=c.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=(?!=)\s*(.+)$/);
+          if(m){ scope[m[1]]=await this._eval(m[2],scope,ln); return i+1; }
+
+          // def name(params):  — define fn also works (same underlying mechanism as MaySon)
+          m=c.match(/^def\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*:?$/);
+          if(m){
+            const [,fname,paramStr]=m;
+            const params=paramStr.split(',').map(p=>p.trim()).filter(Boolean);
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            this.functions[fname]={params,body:block,closure:{...scope},callDepth:this.callDepth};
+            return next;
+          }
+
+          // if / elif / else
+          m=c.match(/^if\s+(.+?)\s*:?$/);
+          if(m){
+            const {block:then,next:afterThen}=this._block(tokens,i+1,tok.indent);
+            const {block:els,next:afterElse}=await this._collectElsePy(tokens,afterThen,tok.indent,scope);
+            if(await this._cond(m[1],scope,ln)) await this._runBlock(then,scope);
+            else if(els.length) await this._runBlock(els,scope);
+            return afterElse;
+          }
+          if(/^(elif|else)\b.*:?$/.test(c)){
+            const {next}=this._block(tokens,i+1,tok.indent); return next; // already consumed by if
+          }
+
+          // for x in range(...):
+          m=c.match(/^for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+range\(([^()]*)\)\s*:?$/);
+          if(m){
+            const [,varName,argStr]=m;
+            const rangeArgs=await argEvalAll(argStr,scope,this.functions,ln,this.lang);
+            const seq=BUILTINS.range(rangeArgs);
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            for(const item of seq){
+              const ls={...scope,[varName]:item};
+              let broke=false;
+              try{ await this._runBlock(block,ls); }
+              catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
+              Object.assign(scope,ls);
+              if(broke) break;
+            }
+            return next;
+          }
+
+          // for x in someList:
+          m=c.match(/^for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+(.+?)\s*:?$/);
+          if(m){
+            const [,varName,listExpr]=m;
+            const lst=await this._eval(listExpr,scope,ln);
+            if(!Array.isArray(lst)) throw new MaySonLangError(`Expected a list to loop over`,ln);
+            const {block,next}=this._block(tokens,i+1,tok.indent);
+            for(const item of lst){
+              const ls={...scope,[varName]:item};
+              let broke=false;
+              try{ await this._runBlock(block,ls); }
+              catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
+              Object.assign(scope,ls);
+              if(broke) break;
+            }
+            return next;
+          }
+
+          // while
+          m=c.match(/^while\s+(.+?)\s*:?$/);
+          if(m) return await this._whileLoop(m[1],tokens,i,tok.indent,scope,ln);
+
+          // bare expression — print(...), function calls, list.append(x), etc.
+          try{ await this._eval(c,scope,ln); return i+1; }
+          catch(e){ throw e instanceof MaySonLangError ? e : new MaySonLangError(e.message||String(e),ln); }
+        }
+
+        async _collectElsePy(tokens, start, baseIndent, scope){
+          if(start>=tokens.length) return {block:[],next:start};
+          const tok=tokens[start]; const c=tok.content;
+          if(tok.indent!==baseIndent) return {block:[],next:start};
+
+          if(/^else\s*:?$/.test(c)){
+            const {block,next}=this._block(tokens,start+1,tok.indent);
+            return {block,next};
+          }
+          const em=c.match(/^elif\s+(.+?)\s*:?$/);
+          if(em){
+            const cond=em[1];
+            const {block:then,next:afterThen}=this._block(tokens,start+1,tok.indent);
+            const {block:els,next:afterElse}=await this._collectElsePy(tokens,afterThen,baseIndent,scope);
+            if(await this._cond(cond,scope,tok.line)) return {block:then,next:afterElse};
+            return {block:els,next:afterElse};
+          }
+          return {block:[],next:start};
+        }
+
+        /* ════════════ SHARED ════════════ */
+        async _whileLoop(condExpr, tokens, i, baseIndent, scope, ln){
+          const {block,next}=this._block(tokens,i+1,baseIndent);
+          let guard=0;
+          while(await this._cond(condExpr,scope,ln)){
+            if(++guard>100000) throw new MaySonLangError('Infinite loop (>100k iterations)',ln);
+            const ls={...scope};
+            let broke=false;
+            try{ await this._runBlock(block,ls); }
+            catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
+            Object.assign(scope,ls);
+            if(broke) break;
+          }
+          return next;
         }
 
         async _runBlock(block, scope){ await this.execute(block,scope,0,-1); }
@@ -1154,15 +1360,114 @@
         { kw:'# comment',     desc:'comment',            code:'# This is a comment' },
       ];
 
+      const EXAMPLE_PY = `# ── MaySonLang IDE — Python mode ────────────
+      # Press Ctrl+Enter (or Run button) to execute
+
+      name = "World"
+      print("Hello, " + name + "!")
+
+      # Variables & arithmetic
+      x = 10
+      y = 3
+      print("x + y =", x + y)
+      print("x ** 2 =", x ^ 2)
+
+      # Compound assignment
+      x += 5
+      print("x after += 5:", x)
+      x -= 3
+      print("x after -= 3:", x)
+      x *= 2
+      print("x after *= 2:", x)
+      x /= 4
+      print("x after /= 4:", x)
+
+      # if / elif / else
+      score = 85
+      if score >= 90:
+        print("Grade: A")
+      elif score >= 80:
+        print("Grade: B")
+      elif score >= 70:
+        print("Grade: C")
+      else:
+        print("Grade: F")
+
+      # for i in range(...)
+      print("Squares:")
+      for i in range(5):
+        print(" ", i, "^2 =", i * i)
+
+      # while loop
+      count = 5
+      print("Countdown:")
+      while count > 0:
+        print(" ", count)
+        count -= 1
+
+      # Lists, indexing, and list methods
+      fruits = ["apple", "banana", "cherry"]
+      fruits.append("mango")
+      print("Fruits:", fruits)
+      print("Count:", len(fruits))
+      for fruit in fruits:
+        print(" ", fruit.upper())
+
+      # Functions — def / return / call by name (no "call" needed)
+      def greet(person):
+        return "Hello, " + person + "!"
+
+      def factorial(n):
+        if n <= 1:
+          return 1
+        return n * factorial(n - 1)
+
+      print(greet("MaySonLang"))
+      print("5! =", factorial(5))
+      print("10! =", factorial(10))
+
+      # Real input() — pauses and waits for you to type a value
+      player_name = input("What's your name? ")
+      print("Welcome, " + player_name + "!")
+      lucky_num = int(input("Pick a lucky number: "))
+      print("Your lucky number times 2 is", lucky_num * 2)
+      `;
+
+      const SNIPPETS_PY = [
+        { kw:'print',          desc:'print output',       code:'print("Hello!")' },
+        { kw:'x = 5',          desc:'variable',            code:'x = 5' },
+        { kw:'input()',        desc:'get real input',      code:'name = input("Your name? ")\nprint("Hi, " + name + "!")' },
+        { kw:'x += N',         desc:'compound assignment', code:'x += 1' },
+        { kw:'x -= N',         desc:'compound assignment', code:'x -= 1' },
+        { kw:'x *= N',         desc:'compound assignment', code:'x *= 2' },
+        { kw:'x /= N',         desc:'compound assignment', code:'x /= 2' },
+        { kw:'if:',            desc:'if condition',        code:'' },
+        { kw:'elif:',          desc:'else if',             code:'elif x == 0:\n  print("zero")' },
+        { kw:'else:',          desc:'else',                code:'else:\n  print("nope")' },
+        { kw:'for i in range', desc:'for loop',             code:'for i in range(5):\n  print(i)' },
+        { kw:'for x in list',  desc:'list loop',            code:'for item in my_list:\n  print(item)' },
+        { kw:'while:',         desc:'while loop',           code:'' },
+        { kw:'def fn():',      desc:'define function',      code:'def greet(name):\n  return "Hi " + name\n\nprint(greet("World"))' },
+        { kw:'[list]',         desc:'create list',          code:'nums = [1, 2, 3]\nnums.append(4)' },
+        { kw:'list[i]',        desc:'index into a list',    code:'nums = [10, 20, 30]\nprint(nums[0])\nprint(nums[len(nums) - 1])' },
+        { kw:'len(list)',      desc:'count items',          code:'nums = [1, 2, 3]\nprint(len(nums))' },
+        { kw:'list.append(x)', desc:'add to a list',        code:'nums = [1, 2]\nnums.append(3)' },
+        { kw:'text.upper()',   desc:'string method',        code:'name = "sam"\nprint(name.upper())' },
+        { kw:'# comment',      desc:'comment',              code:'# This is a comment' },
+      ];
+
       let tabs = [];
       let activeTab = 0;
       let tabCounter = 0;
       const savedContent = {};
 
       // ── FILE MANAGEMENT ────────────────────────────────────────────────
-      function createTab(name, content='', activate=true){
+      function langFromName(name){ return name.toLowerCase().endsWith('.py') ? 'python' : 'mayson'; }
+
+      function createTab(name, content='', activate=true, lang){
         const id = ++tabCounter;
-        tabs.push({id, name, content, dirty:false});
+        lang = lang || langFromName(name);
+        tabs.push({id, name, content, dirty:false, lang});
         savedContent[id] = content;
         renderTabs();
         renderFileList();
@@ -1180,7 +1485,34 @@
         updateGutter();
         renderTabs();
         renderFileList();
+        renderLangToggle();
+        renderSnippets();
         updateStatus();
+      }
+
+      // Switches the ACTIVE tab's language. Renames the tab's extension to match, and
+      // refreshes the placeholder/snippets/status so the whole IDE reflects the new mode.
+      // Doesn't touch the code already in the editor — only how it's interpreted.
+      function setLang(lang){
+        const t = tabs[activeTab]; if(!t) return;
+        t.lang = lang;
+        // swap a recognized .ms/.py extension; leave other names alone
+        if(/\.(ms|py)$/i.test(t.name)){
+          t.name = t.name.replace(/\.(ms|py)$/i, lang==='python' ? '.py' : '.ms');
+        }
+        renderTabs();
+        renderFileList();
+        renderLangToggle();
+        renderSnippets();
+        updateStatus();
+        editor.placeholder = lang==='python' ? '# Python code...' : '# MaySon code...';
+        editor.focus();
+      }
+
+      function renderLangToggle(){
+        const lang = tabs[activeTab]?.lang || 'mayson';
+        document.getElementById('lang-btn-mayson').classList.toggle('active', lang==='mayson');
+        document.getElementById('lang-btn-python').classList.toggle('active', lang==='python');
       }
 
       function renderTabs(){
@@ -1188,6 +1520,7 @@
         list.innerHTML = tabs.map((t,i)=>`
           <div class="tab ${i===activeTab?'active':''}" onclick="setActiveTab(${t.id})">
             ${t.dirty?`<span class="tab-dot"></span>`:''}
+            <span class="tab-lang-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;background:${t.lang==='python'?'#3b82f6':'var(--cyan)'}"></span>
             <span>${t.name}</span>
             <span class="tab-close" onclick="closeTab(event,${t.id})">×</span>
           </div>
@@ -1198,7 +1531,7 @@
         const list = document.getElementById('file-list');
         list.innerHTML = tabs.map((t,i)=>`
           <div class="sb-file ${i===activeTab?'active':''}" onclick="setActiveTab(${t.id})">
-            <span class="sb-file-icon">📄</span>
+            <span class="sb-file-icon">${t.lang==='python'?'🐍':'📄'}</span>
             <span>${t.name}</span>
           </div>
         `).join('');
@@ -1216,12 +1549,17 @@
       }
 
       function newFile(){
-        createTab(`untitled${tabCounter+1}.ms`, '# New file\n');
+        // New files default to whatever language the current tab is using, so
+        // switching to Python and clicking + keeps you in Python.
+        const lang = tabs[activeTab]?.lang || 'mayson';
+        const ext = lang==='python' ? 'py' : 'ms';
+        const starter = lang==='python' ? '# New file\n' : '# New file\n';
+        createTab(`untitled${tabCounter+1}.${ext}`, starter, true, lang);
       }
 
       function openFile(){
         const inp=document.createElement('input');
-        inp.type='file'; inp.accept='.ms,.txt';
+        inp.type='file'; inp.accept='.ms,.py,.txt';
         inp.onchange=e=>{
           const f=e.target.files[0]; if(!f) return;
           const r=new FileReader();
@@ -1293,11 +1631,15 @@
         const ln=before.split('\n').length;
         const col=before.slice(before.lastIndexOf('\n')+1).length+1;
         document.getElementById('status-cursor').textContent=`Ln ${ln}, Col ${col}`;
+        const lang = tabs[activeTab]?.lang || 'mayson';
+        document.getElementById('status-lang').textContent = lang==='python' ? 'Python' : 'MaySonLang';
       }
 
       // ── SNIPPETS ──────────────────────────────────────────────────────
       function renderSnippets(){
-        document.getElementById('snippets-list').innerHTML=SNIPPETS.map(s=>`
+        const lang = tabs[activeTab]?.lang || 'mayson';
+        const list = lang==='python' ? SNIPPETS_PY : SNIPPETS;
+        document.getElementById('snippets-list').innerHTML=list.map(s=>`
           <div class="snippet-item" onclick="insertSnippet(${JSON.stringify(s.code)})" title="${s.desc}">
             <span class="snippet-kw">${s.kw}</span>
             <span class="snippet-desc">${s.desc}</span>
@@ -1346,8 +1688,9 @@
         outDot.style.boxShadow='0 0 6px var(--yellow)';
         setStatus('Running…');
 
+        const lang = tabs[activeTab]?.lang || 'mayson';
         const t0=performance.now();
-        const interp=new Interpreter();
+        const interp=new Interpreter({}, 0, lang);
 
         // Stream output live as the program runs (so text printed before an
         // `ask`/`input()` prompt is visible while the program waits on the user).
@@ -1435,6 +1778,33 @@
         showDropdown(200, 42, items);
       }
       function showHelp(){
+        const lang = tabs[activeTab]?.lang || 'mayson';
+        if(lang==='python'){
+          appendOut('═══ PYTHON MODE QUICK REFERENCE ═══','success');
+          appendOut('print("hello")          → print','info');
+          appendOut('x = 5                   → variable','info');
+          appendOut('name = input("Name? ")  → real input (pauses for you to type)','info');
+          appendOut('x += 3 / -= / *= / /=   → compound assignment','info');
+          appendOut('if x > 0:               → if','info');
+          appendOut('elif x == 0:            → else if','info');
+          appendOut('else:                   → else','info');
+          appendOut('for i in range(5):      → for loop','info');
+          appendOut('for v in my_list:       → loop over a list','info');
+          appendOut('while x > 0:            → while loop','info');
+          appendOut('def fn(a, b):           → define function','info');
+          appendOut('  return a + b','info');
+          appendOut('fn(1, 2)                → call function (no "call" needed)','info');
+          appendOut('nums = [1, 2, 3]        → create a list','info');
+          appendOut('nums[0]                 → index into a list (0 = first item)','info');
+          appendOut('len(nums)               → count items in a list','info');
+          appendOut('nums.append(x)          → add to a list','info');
+          appendOut('nums.remove(x)          → remove from a list','info');
+          appendOut('text.upper()            → string method (also .lower/.strip/...)','info');
+          appendOut('int(x) / str(x)         → convert types','info');
+          appendOut('# comment               → comment','info');
+          appendOut('════════════════════════════════════','success');
+          return;
+        }
         appendOut('═══ MaySonLang IDE QUICK REFERENCE ═══','success');
         appendOut('say "hello"              → print','info');
         appendOut('set x to 5              → variable','info');
@@ -1456,8 +1826,8 @@
         appendOut('set nums to [1, 2, 3]   → create a list','info');
         appendOut('nums[0]                 → index into a list (0 = first item)','info');
         appendOut('length(nums)            → count items in a list (len also works)','info');
-        appendOut('add x to list           → list.append(x)','info');
-        appendOut('remove x from list      → list.remove(x)','info');
+        appendOut('nums.append(x) / add x to list  → both work','info');
+        appendOut('nums.remove(x) / remove x from list → both work','info');
         appendOut('# comment               → comment','info');
         appendOut('════════════════════════════════════════','success');
       }
