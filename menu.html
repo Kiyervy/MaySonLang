@@ -3670,7 +3670,7 @@
       /* L12 PAGE 1 — MC: project kickoff, choosing the right concept */
       {
         mascotTitle: "Welcome to your Mini Project! 🎬🏆",
-        mascotBody:  "You're going to build a complete program from scratch, one piece at a time: a <strong>Movie Ticket Booth</strong>. It'll use everything you've learned — variables, conditions, loops, input, and operators — combined into one real project.",
+        mascotBody:  "You're going to build a complete program from scratch, one piece at a time: a <strong>Movie Ticket Booth &amp; Snack Counter</strong>. It'll combine <strong>everything</strong> you've learned — variables, conditions, loops, input, operators, functions, and lists — into one real project.",
         demoCode:    `<span class="cmt"># A ticket price depends on the customer's age —</span><br><span class="cmt"># that calls for... a condition!</span>`,
         taskDesc:    'The booth needs to charge <strong>different prices</strong> depending on the customer\'s age. Which concept fits best?',
         zones: [],
@@ -3735,53 +3735,42 @@
         isLast: false,
       },
 
-      /* L12 PAGE 4 — drag & drop: read ticket count + compute total (multi-blank) */
+      /* L12 PAGE 4 — drag & drop: wrap the pricing math in a reusable function */
       {
-        mascotTitle: "Step 2 — how many tickets? 🧮",
-        mascotBody:  "Next, ask how many tickets the customer wants, and multiply by the price to get the total cost.",
-        demoCode:    `<span class="cmt"># Total cost for several items:</span><br><span class="cs">count</span> <span class="cp">=</span> <span class="kw">int</span><span class="punc">(</span><span class="kw">input</span><span class="punc">(</span><span class="str">"How many?"</span><span class="punc">)</span><span class="punc">)</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">count</span>`,
-        taskDesc:    'Complete the code below. Drag the correct blocks into <strong>both</strong> blanks!',
+        mascotTitle: "Step 2 — turn the math into a function 🧰",
+        mascotBody:  "Instead of just multiplying inline, let's wrap the total calculation in a <strong>function</strong> so it's reusable — exactly like you learned in the Functions &amp; Parameters level.",
+        demoCode:    `<span class="cmt"># A function that multiplies two numbers:</span><br><span class="kw">def</span> <span class="cs">multiply</span><span class="punc">(</span><span class="cs">a</span><span class="punc">,</span> <span class="cs">b</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">return</span> <span class="cs">a</span> <span class="cp">*</span> <span class="cs">b</span>`,
+        taskDesc:    'Complete the function below so it sends the ticket total back to whoever calls it. Drag the correct block into the blank!',
         zones: [
-          { id:'z0', ph:'_____', correct:'INPUT' },
-          { id:'z1', ph:' ? ', correct:'STAR' },
+          { id:'z0', ph:'______', correct:'RETURN' }
         ],
         lineHTML: () => `
           <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
-            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <span class="cs">count</span> <span class="cp">=</span> <span class="kw">int</span><span class="cp">(</span>
-              <div class="drop-zone" id="z0" data-correct="INPUT" data-value="" data-cid=""
-                  style="min-width:70px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
-                <span class="zt">_____</span><span class="rm" onclick="rmChip('z0')">×</span>
+            <div><span class="kw">def</span> <span class="cs">ticket_total</span><span class="punc">(</span><span class="cs">price</span><span class="punc">,</span> <span class="cs">count</span><span class="punc">)</span><span class="cp">:</span></div>
+            <div style="padding-left:28px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="drop-zone" id="z0" data-correct="RETURN" data-value="" data-cid=""
+                  style="min-width:90px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
               </div>
-              <span class="cp">(</span><span class="cs">"Tickets?"</span><span class="cp">))</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span>
-              <div class="drop-zone" id="z1" data-correct="STAR" data-value="" data-cid=""
-                  style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z1')">
-                <span class="zt"> ? </span><span class="rm" onclick="rmChip('z1')">×</span>
-              </div>
-              <span class="cs">count</span>
+              <span class="cs">price</span> <span class="cp">*</span> <span class="cs">count</span>
             </div>
           </div>
         `,
         chips: [
-          { id:'l12p4print', label:'print', css:'c-say',  val:'PRINT' },
-          { id:'l12p4input', label:'input', css:'c-eq',   val:'INPUT' },
-          { id:'l12p4plus',  label:'+',     css:'c-elif', val:'PLUS'  },
-          { id:'l12p4star',  label:'*',     css:'c-print',val:'STAR'  },
+          { id:'l12p4print2', label:'print',  css:'c-print', val:'PRINT'  },
+          { id:'l12p4return', label:'return', css:'c-say',   val:'RETURN' },
         ],
-        hint: '💡 <strong>Hint:</strong> Blank 1 is <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">input</code>. Blank 2 needs to <em>multiply</em> price by count — use <code style="color:#fb923c;font-family:\'JetBrains Mono\',monospace">*</code>.',
-        successMsg: 'Nice! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">total = price * count</code> calculates the full cost of all the tickets.',
+        hint: '💡 <strong>Hint:</strong> <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">print</code> only displays a value — <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">return</code> sends it back so it can be stored and reused.',
+        successMsg: 'Nice! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">return price * count</code> — now this calculation can be reused anywhere in your project.',
         isLast: false,
       },
 
-      /* L12 PAGE 5 — MC: predict total cost */
+      /* L12 PAGE 5 — MC: predict function call result */
       {
-        mascotTitle: "Test the total cost calculation 🔍",
-        mascotBody:  "Quick check before we add the next piece of the project.",
-        demoCode:    `<span class="cs">price</span> <span class="cp">=</span> <span class="num">10</span><br><span class="cs">count</span> <span class="cp">=</span> <span class="num">4</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">count</span>`,
-        taskDesc:    'What is the value of <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">total</code> after this code runs?',
+        mascotTitle: "Test your function 🔍",
+        mascotBody:  "Let's make sure calling the function gives the right total before wiring it into the project.",
+        demoCode:    `<span class="kw">def</span> <span class="cs">ticket_total</span><span class="punc">(</span><span class="cs">price</span><span class="punc">,</span> <span class="cs">count</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">return</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">count</span>`,
+        taskDesc:    'What does <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">ticket_total(10, 4)</code> return?',
         zones: [],
         lineHTML: ()=>'',
         chips: [],
@@ -3789,13 +3778,40 @@
         mcChoices: ['14', '40', '4'],
         mcCorrect: '40',
         hint: '💡 <strong>Hint:</strong> <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">price * count</code> = 10 × 4.',
-        successMsg: '✅ Correct! 10 × 4 = <strong>40</strong>.',
+        successMsg: '✅ Correct! 10 × 4 = <strong>40</strong> — exactly what the function returns.',
         isLast: false,
       },
 
-      /* L12 PAGE 6 — drag & drop: loop printing a ticket per round */
+      /* L12 PAGE 6 — drag & drop: call the function and store the result */
       {
-        mascotTitle: "Step 3 — issue each ticket 🎫",
+        mascotTitle: "Step 3 — call your function 📞",
+        mascotBody:  "Now call <code style=\"color:#22d3ee;font-family:'JetBrains Mono',monospace\">ticket_total(...)</code> with your price and count, and store whatever it returns.",
+        demoCode:    `<span class="cs">total</span> <span class="cp">=</span> <span class="cs">ticket_total</span><span class="punc">(</span><span class="cs">price</span><span class="punc">,</span> <span class="cs">count</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the code below to call your function and store the result in total. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'____________', correct:'CALL' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--fc);font-size:.9rem">
+            <span class="cs">total</span> <span class="cp">=</span>
+            <div class="drop-zone" id="z0" data-correct="CALL" data-value="" data-cid=""
+                style="min-width:170px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+              <span class="zt">____________</span><span class="rm" onclick="rmChip('z0')">×</span>
+            </div>
+          </div>
+        `,
+        chips: [
+          { id:'l12p6bare', label:'ticket_total',               css:'c-elif', val:'WRONG' },
+          { id:'l12p6call', label:'ticket_total(price, count)',  css:'c-eq',   val:'CALL'  },
+        ],
+        hint: '💡 <strong>Hint:</strong> Calling a function always needs <strong>parentheses with its arguments</strong> — the name alone doesn\'t run it.',
+        successMsg: 'Perfect! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">total = ticket_total(price, count)</code> runs your function and saves what it returns.',
+        isLast: false,
+      },
+
+      /* L12 PAGE 7 — drag & drop: loop printing a ticket per round */
+      {
+        mascotTitle: "Step 4 — issue each ticket 🎫",
         mascotBody:  "Now let's print a line for every ticket purchased, using a loop tied to the ticket count.",
         demoCode:    `<span class="cmt"># Prints once for every ticket:</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">count</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Ticket Issued"</span><span class="punc">)</span>`,
         taskDesc:    'Complete the code so it prints a ticket line once for <strong>every</strong> ticket bought. Drag the correct block into the blank!',
@@ -3816,52 +3832,135 @@
           </div>
         `,
         chips: [
-          { id:'l12p6price', label:'range(price)', css:'c-elif', val:'RPRICE' },
-          { id:'l12p6range', label:'range(count)', css:'c-eq',   val:'RANGE'  },
+          { id:'l12p7price', label:'range(price)', css:'c-elif', val:'RPRICE' },
+          { id:'l12p7range', label:'range(count)', css:'c-eq',   val:'RANGE'  },
         ],
         hint: '💡 <strong>Hint:</strong> To print one ticket line per ticket, the loop must run <strong>count</strong> times — <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">range(count)</code>.',
         successMsg: 'Perfect! The loop now prints "Ticket Issued" exactly once for every ticket purchased.',
         isLast: false,
       },
 
-      /* L12 PAGE 7 — order puzzle: trace the whole booth so far */
+      /* L12 PAGE 8 — drag & drop: build a snack list and announce every item */
       {
-        mascotTitle: "Trace the booth program so far 🧭",
-        mascotBody:  "Let's make sure you can trace through everything you've built before adding the final piece.",
-        demoCode:    `<span class="kw">if</span> <span class="cs">age</span> <span class="cp">&lt;</span> <span class="num">13</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">price</span> <span class="cp">= 5</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">price</span> <span class="cp">= 10</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">count</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">count</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Ticket Issued"</span><span class="punc">)</span>`,
+        mascotTitle: "Step 5 — add snacks to the order 🍿",
+        mascotBody:  "No movie is complete without snacks! Let's store a list of snack items and announce each one being added — just like you did with lists back in Level 09.",
+        demoCode:    `<span class="cmt"># A list of snack items:</span><br><span class="cs">snacks</span> <span class="cp">=</span> <span class="str">["Popcorn", "Soda", "Candy"]</span><br><span class="kw">for</span> <span class="cs">item</span> <span class="cw">in</span> <span class="cs">snacks</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="cs">item</span> <span class="cp">+</span> <span class="str">" added to order"</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the loop below so it walks through every snack in the list. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'______', correct:'SNACKS' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="cs">snacks</span> <span class="cp">=</span> <span class="str">["Popcorn", "Soda", "Candy"]</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="kw">for</span> <span class="cs">item</span> <span class="cw">in</span>
+              <div class="drop-zone" id="z0" data-correct="SNACKS" data-value="" data-cid=""
+                  style="min-width:90px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">______</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+              <span class="cp">:</span>
+            </div>
+            <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">item</span> <span class="cp">+</span> <span class="str">" added to order"</span><span class="cp">)</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l12p8item',   label:'item',   css:'c-elif', val:'ITEM'   },
+          { id:'l12p8snacks', label:'snacks', css:'c-eq',   val:'SNACKS' },
+        ],
+        hint: '💡 <strong>Hint:</strong> After <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">in</code> goes the <strong>list</strong> you\'re looping over — "snacks" — not the loop variable "item".',
+        successMsg: 'Great! <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">for item in snacks:</code> announces every snack, one at a time.',
+        isLast: false,
+      },
+
+      /* L12 PAGE 9 — drag & drop: accumulator loop totaling the snack prices */
+      {
+        mascotTitle: "Step 6 — total up the snack cost 💰",
+        mascotBody:  "Each snack has a price too. Let's add them all up using an <strong>accumulator</strong> — a running-total variable that grows with each loop, just like you practiced in Project Prep.",
+        demoCode:    `<span class="cmt"># Add up every price in the list:</span><br><span class="cs">snack_prices</span> <span class="cp">=</span> <span class="str">[6, 4, 3]</span><br><span class="cs">snack_total</span> <span class="cp">=</span> <span class="num">0</span><br><span class="kw">for</span> <span class="cs">cost</span> <span class="cw">in</span> <span class="cs">snack_prices</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">snack_total</span> <span class="cp">=</span> <span class="cs">snack_total</span> <span class="cp">+</span> <span class="cs">cost</span>`,
+        taskDesc:    'Complete the accumulator below so <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">snack_total</code> grows by each snack\'s price. Drag the correct block into the blank!',
+        zones: [
+          { id:'z0', ph:'____', correct:'ZERO' }
+        ],
+        lineHTML: () => `
+          <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
+            <div><span class="cs">snack_prices</span> <span class="cp">=</span> <span class="str">[6, 4, 3]</span></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="cs">snack_total</span> <span class="cp">=</span>
+              <div class="drop-zone" id="z0" data-correct="ZERO" data-value="" data-cid=""
+                  style="min-width:42px" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'z0')">
+                <span class="zt">____</span><span class="rm" onclick="rmChip('z0')">×</span>
+              </div>
+            </div>
+            <div><span class="kw">for</span> <span class="cs">cost</span> <span class="cw">in</span> <span class="cs">snack_prices</span><span class="cp">:</span></div>
+            <div style="padding-left:28px"><span class="cs">snack_total</span> <span class="cp">=</span> <span class="cs">snack_total</span> <span class="cp">+</span> <span class="cs">cost</span></div>
+          </div>
+        `,
+        chips: [
+          { id:'l12p9one',  label:'1', css:'c-elif', val:'ONE'  },
+          { id:'l12p9zero', label:'0', css:'c-eq',   val:'ZERO' },
+        ],
+        hint: '💡 <strong>Hint:</strong> An accumulator always <strong>starts at 0</strong> — if it started at 1, the total would come out wrong.',
+        successMsg: 'Perfect! Starting at <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">0</code> and adding each cost gives an accurate running total: 6 + 4 + 3 = 13.',
+        isLast: false,
+      },
+
+      /* L12 PAGE 10 — MC: predict the accumulator result */
+      {
+        mascotTitle: "Test your accumulator 🔍",
+        mascotBody:  "Trace through the loop one more time to make sure the running total is right.",
+        demoCode:    `<span class="cs">snack_prices</span> <span class="cp">=</span> <span class="str">[6, 4, 3]</span><br><span class="cs">snack_total</span> <span class="cp">=</span> <span class="num">0</span><br><span class="kw">for</span> <span class="cs">cost</span> <span class="cw">in</span> <span class="cs">snack_prices</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">snack_total</span> <span class="cp">=</span> <span class="cs">snack_total</span> <span class="cp">+</span> <span class="cs">cost</span>`,
+        taskDesc:    'What is <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">snack_total</code> after this loop finishes?',
+        zones: [],
+        lineHTML: ()=>'',
+        chips: [],
+        isMC: true,
+        mcChoices: ['3', '13', '63'],
+        mcCorrect: '13',
+        hint: '💡 <strong>Hint:</strong> 6 + 4 + 3 = ?',
+        successMsg: '✅ Correct! 6 + 4 + 3 = <strong>13</strong>.',
+        isLast: false,
+      },
+
+      /* L12 PAGE 11 — order puzzle: trace the whole booth so far */
+      {
+        mascotTitle: "Trace the whole booth so far 🧭",
+        mascotBody:  "Let's make sure you can trace through everything you've built — pricing, the function, the snack list, and the tickets — before adding the final piece.",
+        demoCode:    `<span class="kw">if</span> <span class="cs">age</span> <span class="cp">&lt;</span> <span class="num">13</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">price</span> <span class="cp">= 5</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">price</span> <span class="cp">= 10</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">ticket_total</span><span class="cp">(</span><span class="cs">price</span><span class="punc">,</span> <span class="cs">count</span><span class="cp">)</span><br><span class="kw">for</span> <span class="cs">item</span> <span class="cw">in</span> <span class="cs">snacks</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="cs">item</span> <span class="cp">+</span> <span class="str">" added to order"</span><span class="punc">)</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">count</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Ticket Issued"</span><span class="punc">)</span>`,
         taskDesc:    'With age = 30 and count = 2, drag the descriptions into the order the computer executes them.',
         zones: [
           { id:'oz0', ph:'Step 1', correct:'A' },
           { id:'oz1', ph:'Step 2', correct:'B' },
           { id:'oz2', ph:'Step 3', correct:'C' },
           { id:'oz3', ph:'Step 4', correct:'D' },
+          { id:'oz4', ph:'Step 5', correct:'E' },
         ],
         lineHTML: ()=>'',
         chips: [],
         isOrder: true,
         orderItems: [
-          { id:'oi12-a', label:'age &lt; 13 is false, so price is set to 10', val:'A' },
-          { id:'oi12-b', label:'total is set to 10 × 2 = 20',                 val:'B' },
-          { id:'oi12-c', label:'The loop runs and prints "Ticket Issued"',    val:'C' },
-          { id:'oi12-d', label:'The loop runs a second time, printing it again', val:'D' },
+          { id:'oi12-a', label:'age &lt; 13 is false, so price is set to 10',                       val:'A' },
+          { id:'oi12-b', label:'ticket_total(price, count) runs and returns 20',                    val:'B' },
+          { id:'oi12-c', label:'The snack loop prints an "added to order" line for all 3 snacks',   val:'C' },
+          { id:'oi12-d', label:'The ticket loop runs and prints "Ticket Issued"',                   val:'D' },
+          { id:'oi12-e', label:'The ticket loop runs a second time, printing it again',             val:'E' },
         ],
-        hint: '💡 <strong>Hint:</strong> Pricing is decided first, then the total is calculated, then the loop issues one ticket per round.',
-        successMsg: 'Perfect trace! <strong>Decide price → calculate total → issue each ticket.</strong> That\'s the shape of the whole program.',
+        hint: '💡 <strong>Hint:</strong> Pricing is decided first, then the total is calculated by the function, then snacks are announced, then tickets are issued one by one.',
+        successMsg: 'Perfect trace! <strong>Decide price → calculate total → announce snacks → issue each ticket.</strong> That\'s the shape of the whole program.',
         isLast: false,
       },
 
-      /* L12 PAGE 8 — drag & drop: add a discount condition after the loop */
+      /* L12 PAGE 12 — drag & drop: add a discount condition after everything else */
       {
-        mascotTitle: "Step 4 — a group discount 💰",
-        mascotBody:  "Let's add one final piece: if the total is high enough, the booth should offer a group discount message.",
-        demoCode:    `<span class="cmt"># Checked after the loop finishes:</span><br><span class="kw">if</span> <span class="cs">total</span> <span class="cp">&gt;=</span> <span class="num">30</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Group Discount!"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Full Price"</span><span class="punc">)</span>`,
-        taskDesc:    'Complete the code so a discount message prints once the total reaches <strong>50</strong>. Drag the correct block into the blank!',
+        mascotTitle: "Step 7 — a group discount 💰",
+        mascotBody:  "Let's add one final piece: if the grand total is high enough, the booth should offer a group discount message.",
+        demoCode:    `<span class="cmt"># Checked after everything else:</span><br><span class="kw">if</span> <span class="cs">grand_total</span> <span class="cp">&gt;=</span> <span class="num">30</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Group Discount!"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Full Price"</span><span class="punc">)</span>`,
+        taskDesc:    'Complete the code so a discount message prints once the grand total reaches <strong>50</strong>. Drag the correct block into the blank!',
         zones: [
           { id:'z0', ph:'____', correct:'ELSE' }
         ],
         lineHTML: () => `
           <div style="display:flex;flex-direction:column;gap:6px;width:100%;font-family:var(--fc);font-size:.9rem;line-height:2">
-            <div><span class="kw">if</span> <span class="cs">total</span> <span class="cp">&gt;=</span> <span class="num">50</span><span class="cp">:</span></div>
+            <div><span class="kw">if</span> <span class="cs">grand_total</span> <span class="cp">&gt;=</span> <span class="num">50</span><span class="cp">:</span></div>
             <div style="padding-left:28px"><span class="kw">print</span><span class="cp">(</span><span class="cs">"Group Discount Applied!"</span><span class="cp">)</span></div>
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <div class="drop-zone" id="z0" data-correct="ELSE" data-value="" data-cid=""
@@ -3874,37 +3973,37 @@
           </div>
         `,
         chips: [
-          { id:'l12p8elif', label:'elif', css:'c-elif',  val:'ELIF' },
-          { id:'l12p8else', label:'else', css:'c-print', val:'ELSE' },
+          { id:'l12p12elif', label:'elif', css:'c-elif',  val:'ELIF' },
+          { id:'l12p12else', label:'else', css:'c-print', val:'ELSE' },
         ],
         hint: '💡 <strong>Hint:</strong> Since this needs to catch <em>every other case</em> (not another condition), it\'s <code style="color:#3b82f6;font-family:\'JetBrains Mono\',monospace">else</code>, not <code style="color:#f472b6;font-family:\'JetBrains Mono\',monospace">elif</code>.',
-        successMsg: 'Your booth now offers a group discount once the total reaches $50 — otherwise it charges full price!',
+        successMsg: 'Your booth now offers a group discount once the grand total reaches $50 — otherwise it charges full price!',
         isLast: false,
       },
 
-      /* L12 PAGE 9 — MC: predict the full combined output */
+      /* L12 PAGE 13 — MC: predict the full combined output */
       {
         mascotTitle: "Predict your whole project's output 🔮",
-        mascotBody:  "One last check before you build the entire project yourself — trace through the complete booth program.",
-        demoCode:    `<span class="kw">if</span> <span class="cs">age</span> <span class="cp">&lt;</span> <span class="num">13</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">price</span> <span class="cp">= 5</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="cs">price</span> <span class="cp">= 10</span><br><span class="cs">total</span> <span class="cp">=</span> <span class="cs">price</span> <span class="cp">*</span> <span class="cs">count</span><br><span class="kw">for</span> <span class="cs">i</span> <span class="cw">in</span> <span class="kw">range</span><span class="punc">(</span><span class="cs">count</span><span class="punc">)</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Ticket Issued"</span><span class="punc">)</span><br><span class="kw">if</span> <span class="cs">total</span> <span class="cp">&gt;=</span> <span class="num">50</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Group Discount!"</span><span class="punc">)</span><br><span class="kw">else</span><span class="cp">:</span><br>&nbsp;&nbsp;<span class="kw">print</span><span class="punc">(</span><span class="str">"Full Price"</span><span class="punc">)</span>`,
-        taskDesc:    'With age = 40 and count = 3, how many total lines does the code above print?',
+        mascotBody:  "One last check before you build the entire project yourself — trace through everything: pricing, the function, snacks, tickets, and the discount.",
+        demoCode:    `<span class="cmt"># price decided → total = ticket_total(price, count)</span><br><span class="cmt"># the snack loop prints once per snack (3 snacks)</span><br><span class="cmt"># the ticket loop prints once per ticket (count times)</span><br><span class="cmt"># then one final discount / full-price line</span>`,
+        taskDesc:    'With <strong>3 snacks</strong> in the list and <strong>count = 5</strong> tickets, how many total lines does the whole program print?',
         zones: [],
         lineHTML: ()=>'',
         chips: [],
         isMC: true,
-        mcChoices: ['3 lines', '4 lines', '1 line'],
-        mcCorrect: '4 lines',
-        hint: '💡 <strong>Hint:</strong> The loop prints "Ticket Issued" 3 times (count = 3), plus one more line for either the discount or full-price message — 3 + 1.',
-        successMsg: '✅ Correct! 3 ticket lines from the loop, plus 1 final pricing message = <strong>4 lines</strong> total.',
+        mcChoices: ['8 lines', '9 lines', '5 lines'],
+        mcCorrect: '9 lines',
+        hint: '💡 <strong>Hint:</strong> 3 snack lines + 5 ticket lines + 1 final pricing message = 3 + 5 + 1.',
+        successMsg: '✅ Correct! 3 snack announcements + 5 ticket lines + 1 final message = <strong>9 lines</strong> total.',
         isLast: false,
       },
 
-      /* L12 PAGE 10 — final capstone: build the complete Movie Ticket Booth */
+      /* L12 PAGE 14 — final capstone: build the WHOLE Movie Ticket Booth & Snack Counter */
       {
-        mascotTitle: "Final project — build the WHOLE Movie Ticket Booth! ⌨️🎬🏆",
-        mascotBody:  "This is it — your complete mini project. No chips, no blanks. Combine <strong>every</strong> concept from Levels 1–11 into one finished program, entirely your own design.",
-        demoCode:    `<span class="cmt"># Reminder — all the pieces you've built:</span><br><span class="cmt"># 1) if/elif/else decides the price</span><br><span class="cmt"># 2) input() + int() reads numbers</span><br><span class="cmt"># 3) a variable stores the total</span><br><span class="cmt"># 4) a for loop issues each ticket</span><br><span class="cmt"># 5) a final if/else offers a discount</span>`,
-        taskDesc:    'Build the complete Movie Ticket Booth: read a whole number <strong>age</strong>, then decide <strong>price</strong> using <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">if age &lt; 13: price = 5</code>, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">elif age &gt;= 65: price = 7</code>, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">else: price = 10</code>. Read a whole number <strong>count</strong> (number of tickets). Set <strong>total</strong> to <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">price * count</code>. Loop <strong>count</strong> times printing <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Ticket Issued"</code>. Finally, print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Group Discount Applied!"</code> if total is 50 or more, otherwise print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Full Price"</code>. The simulated inputs will be age = <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">30</code>, count = <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">5</code>.',
+        mascotTitle: "Final project — build the WHOLE Movie Ticket Booth &amp; Snack Counter! ⌨️🎬🏆",
+        mascotBody:  "This is it — your complete mini project. No chips, no blanks. Combine <strong>every</strong> concept from Levels 1–14 into one finished program, entirely your own design.",
+        demoCode:    `<span class="cmt"># Reminder — all the pieces you've built:</span><br><span class="cmt"># 1) if/elif/else decides the price</span><br><span class="cmt"># 2) a function returns price × count</span><br><span class="cmt"># 3) a snack list is announced with a loop</span><br><span class="cmt"># 4) an accumulator totals the snack prices</span><br><span class="cmt"># 5) a for loop issues each ticket</span><br><span class="cmt"># 6) a final if/else offers a discount</span>`,
+        taskDesc:    'Build the <strong>complete</strong> Movie Ticket Booth &amp; Snack Counter: read a whole number <strong>age</strong>, then decide <strong>price</strong> using <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">if age &lt; 13: price = 5</code>, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">elif age &gt;= 65: price = 7</code>, <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">else: price = 10</code>. Read a whole number <strong>count</strong> (number of tickets). Define a function <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">ticket_total(price, count)</code> that <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">return</code>s <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">price * count</code>, and call it to set <strong>total</strong>. Create a list <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">snacks = ["Popcorn", "Soda", "Candy"]</code> and loop over it, printing <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">item + " added to order"</code> for each one. Create a list <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">snack_prices = [6, 4, 3]</code> and use an accumulator loop (starting at 0) to add them into <strong>snack_total</strong>. Set <strong>grand_total</strong> to <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">total + snack_total</code>. Loop <strong>count</strong> times printing <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Ticket Issued"</code>. Finally, print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Group Discount Applied!"</code> if grand_total is 50 or more, otherwise print <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">"Full Price"</code>. The simulated inputs will be age = <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">30</code>, count = <code style="color:#4ade80;font-family:\'JetBrains Mono\',monospace">5</code>.',
         zones: [],
         lineHTML: ()=>'',
         chips: [],
@@ -3913,20 +4012,23 @@
         ideLabel: 'Python Editor',
         idePlaceholder: '# Type your Python code here...',
         ideSimInputs: ['30', '5'],
-        ideRequiredKeywords: ['input(', 'if ', 'elif', 'else', 'for ', 'range', 'print('],
+        ideRequiredKeywords: ['input(', 'if ', 'elif', 'else', 'def ', 'return', 'for ', 'range', '[', 'print('],
         ideRequiredMsgs: [
           'Your code must use <strong>input(...)</strong> to read age and ticket count!',
           'Your code must use <strong>if</strong> to check the age tiers!',
           'Your code must use <strong>elif</strong> for the senior price tier!',
-          'Your code must use <strong>else</strong> to catch the remaining age tier!',
-          'Your code must use a <strong>for</strong> loop to issue each ticket!',
-          'Your loop must use <strong>range(...)</strong>!',
+          'Your code must use <strong>else</strong> to catch the remaining age tier and the pricing fallback!',
+          'Your code must <strong>define a function</strong> using <strong>def</strong> — wrap the ticket total calculation in a reusable function!',
+          'Your function must use <strong>return</strong> to send the total back!',
+          'Your code must use a <strong>for</strong> loop — for the snacks, the snack prices, or the tickets!',
+          'Your ticket loop must use <strong>range(...)</strong>!',
+          'Your code must include at least one <strong>list</strong>, like <code>snacks = [...]</code>!',
           'Your code must use <strong>print(...)</strong> to show the results!',
         ],
-        ideExpected: 'Ticket Issued\nTicket Issued\nTicket Issued\nTicket Issued\nTicket Issued\nGroup Discount Applied!',
-        ideWinMsg: '🎉🎬 You built a complete Movie Ticket Booth from scratch! Age 30 means adult price ($10), and 10 × 5 = 50, which triggers the group discount. Level 12 — Python Bridge 3: complete! 🏆',
-        hint: '💡 <strong>Hint:</strong><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">age = int(input("Age?"))</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if age &lt; 13:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">price = 5</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">elif age &gt;= 65:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">price = 7</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">price = 10</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">count = int(input("Count?"))</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">total = price * count</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">for i in range(count):</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Ticket Issued")</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if total &gt;= 50:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Group Discount Applied!")</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Full Price")</code>',
-        successMsg: '🏆🎓🎬 Congratulations! You built a complete, multi-concept Python project entirely from scratch — variables, conditions, loops, input, and operators, all working together. Level 15 — Capstones Mini-Project: mastered! You are a real programmer!',
+        ideExpected: 'Popcorn added to order\nSoda added to order\nCandy added to order\nTicket Issued\nTicket Issued\nTicket Issued\nTicket Issued\nTicket Issued\nGroup Discount Applied!',
+        ideWinMsg: '🎉🎬 You built a complete Movie Ticket Booth &amp; Snack Counter from scratch! Age 30 means adult price ($10), a $50 ticket total plus $13 in snacks pushes the grand total to $63 — well past the group discount threshold. Level 15 — Capstones Mini-Project: complete! 🏆',
+        hint: '💡 <strong>Hint:</strong><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">age = int(input("Age?"))</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if age &lt; 13:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">price = 5</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">elif age &gt;= 65:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">price = 7</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">price = 10</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">count = int(input("Count?"))</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">def ticket_total(price, count):</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">return price * count</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">total = ticket_total(price, count)</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">snacks = ["Popcorn", "Soda", "Candy"]</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">for item in snacks:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print(item + " added to order")</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">snack_prices = [6, 4, 3]</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">snack_total = 0</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">for cost in snack_prices:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">snack_total = snack_total + cost</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">grand_total = total + snack_total</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">for i in range(count):</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Ticket Issued")</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">if grand_total &gt;= 50:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Group Discount Applied!")</code><br><code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">else:</code><br>&nbsp;&nbsp;<code style="color:#22d3ee;font-family:\'JetBrains Mono\',monospace">print("Full Price")</code>',
+        successMsg: '🏆🎓🎬 Congratulations! You built a complete, multi-concept Python project entirely from scratch — variables, conditions, loops, input, operators, a custom function, and lists, all working together. Level 15 — Capstones Mini-Project: mastered! You are a real programmer!',
         isLast: true,
       },
     ];

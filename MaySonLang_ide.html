@@ -203,7 +203,7 @@
       /* GUTTER + CODE */
       #code-wrap { flex: 1; display: flex; overflow: auto; background: var(--bg0); }
       #gutter {
-        width: 36px; flex-shrink: 0;
+        width: 28px; flex-shrink: 0;
         background: var(--bg1); border-right: 1px solid var(--border);
         padding: 14px 0;
         font-family: var(--font-code); font-size: 13px; line-height: 1.65;
@@ -510,9 +510,7 @@
 
     <script>
       'use strict';
-      // ══════════════════════════════════════════════════════════════════
-      //  MaySonLang INTERPRETER  (full JS port)
-      // ══════════════════════════════════════════════════════════════════
+      //  MaySonLang INTERPRETER
 
       class MaySonLangError extends Error {
         constructor(msg, line){ super(line ? `Line ${line}: ${msg}` : msg); this.msLine = line; }
@@ -600,7 +598,7 @@
         return toks;
       }
 
-      function evalExpr(expr, scope, fns, line){
+      async function evalExpr(expr, scope, fns, line){
         expr=expr.trim();
         if(!expr) return null;
 
@@ -618,7 +616,7 @@
         if(expr.startsWith('call ')){
           const inner=expr.slice(5).trim();
           const m=fnCallPattern(inner);
-          if(m){ const args=argSplit(m[1]).map(a=>evalExpr(a,scope,fns,line)); return callFn(m[0],args,scope,fns,line); }
+          if(m){ const args=await argEvalAll(m[1],scope,fns,line); return await callFn(m[0],args,scope,fns,line); }
         }
 
         // Boolean/null
@@ -634,25 +632,25 @@
         if(expr.startsWith('[')&&expr.endsWith(']')){
           const inner=expr.slice(1,-1).trim();
           if(!inner) return [];
-          return argSplit(inner).map(a=>evalExpr(a,scope,fns,line));
+          return await argEvalAll(inner,scope,fns,line);
         }
 
         // Parenthesised
-        if(expr.startsWith('(')&&expr.endsWith(')')) return evalExpr(expr.slice(1,-1),scope,fns,line);
+        if(expr.startsWith('(')&&expr.endsWith(')')) return await evalExpr(expr.slice(1,-1),scope,fns,line);
 
         // Logic: or / and
         const orParts=splitKeyword(expr,'or');
-        if(orParts) return orParts.some(p=>!!evalExpr(p,scope,fns,line));
+        if(orParts){ for(const p of orParts){ if(!!(await evalExpr(p,scope,fns,line))) return true; } return false; }
         const andParts=splitKeyword(expr,'and');
-        if(andParts) return andParts.every(p=>!!evalExpr(p,scope,fns,line));
-        if(expr.startsWith('not ')) return !evalExpr(expr.slice(4).trim(),scope,fns,line);
+        if(andParts){ for(const p of andParts){ if(!(await evalExpr(p,scope,fns,line))) return false; } return true; }
+        if(expr.startsWith('not ')) return !(await evalExpr(expr.slice(4).trim(),scope,fns,line));
 
         // Comparisons
         for(const op of ['>=','<=','!=',' is not ',' is ','==','>','<']){
           const idx=findOp(expr,op);
           if(idx!==-1){
-            const L=evalExpr(expr.slice(0,idx).trim(),scope,fns,line);
-            const R=evalExpr(expr.slice(idx+op.length).trim(),scope,fns,line);
+            const L=await evalExpr(expr.slice(0,idx).trim(),scope,fns,line);
+            const R=await evalExpr(expr.slice(idx+op.length).trim(),scope,fns,line);
             if(op==='=='||op===' is ') return L==R;
             if(op==='!='||op===' is not ') return L!=R;
             if(op==='>') return L>R; if(op==='<') return L<R;
@@ -663,8 +661,9 @@
         // Arithmetic
         const at=arithTokenize(expr);
         if(at){
-          const vals=at.filter((_,i)=>i%2===0).map(t=>evalExpr(t,scope,fns,line));
+          const terms=at.filter((_,i)=>i%2===0);
           const ops=at.filter((_,i)=>i%2===1);
+          const vals=[]; for(const t of terms) vals.push(await evalExpr(t,scope,fns,line));
           // ^
           for(let i=ops.length-1;i>=0;i--){ if(ops[i]==='^'){vals.splice(i,2,Math.pow(vals[i],vals[i+1]));ops.splice(i,1);} }
           // * / // %
@@ -690,16 +689,32 @@
 
         // Function call name(args)
         const fm=fnCallPattern(expr);
-        if(fm){ const args=argSplit(fm[1]).map(a=>evalExpr(a,scope,fns,line)); return callFn(fm[0],args,scope,fns,line); }
+        if(fm){ const args=await argEvalAll(fm[1],scope,fns,line); return await callFn(fm[0],args,scope,fns,line); }
 
         // List index arr[i]
         const im=indexPattern(expr);
-        if(im){ const arr=resolveVar(im[0],scope,line); const idx=evalExpr(im[1],scope,fns,line); return arr[idx]; }
+        if(im){
+          const arr=resolveVar(im[0],scope,line);
+          const idx=await evalExpr(im[1],scope,fns,line);
+          if(!Array.isArray(arr)&&typeof arr!=='string') throw new MaySonLangError(`'${im[0]}' is not a list`,line);
+          const i=Math.trunc(Number(idx));
+          if(isNaN(i)||i<0||i>=arr.length) throw new MaySonLangError(`Index ${idx} is out of range for '${im[0]}' (has ${arr.length} items, 0 to ${arr.length-1})`,line);
+          return arr[i];
+        }
 
         // Variable
         if(/^[A-Za-z_][A-Za-z0-9_]*$/.test(expr)) return resolveVar(expr,scope,line);
 
         throw new MaySonLangError(`Cannot evaluate: ${JSON.stringify(expr)}`,line);
+      }
+
+      // Evaluates a comma-separated argument/element list, in order (left to right),
+      // so side effects like ask/input happen in the order they're written.
+      async function argEvalAll(s, scope, fns, line){
+        const parts=argSplit(s);
+        const out=[];
+        for(const p of parts) out.push(await evalExpr(p,scope,fns,line));
+        return out;
       }
 
       function fnCallPattern(expr){
@@ -726,8 +741,10 @@
       /* ── BUILT-INS ── */
       const BUILTINS = {
         len:   a=>a[0].length??0,
+        length:a=>a[0].length??0,   // alias — matches the levels' length(...)
         type:  a=>typeof a[0],
         number:a=>{ const n=Number(a[0]); return Number.isInteger(n)?n:n; },
+        int:   a=>Math.trunc(Number(a[0])),
         text:  a=>String(a[0]),
         round: a=>Math.round(a[0]),
         floor: a=>Math.floor(a[0]),
@@ -758,16 +775,28 @@
         first: a=>a[0][0],
         last:  a=>a[0][a[0].length-1],
         slice: a=>a[0].slice(a[1],a[2]),
-        input: null, // handled specially
+        input: null, // handled specially in callFn — pauses execution for real UI input
         exit:  _=>{ throw new MaySonLangError('Program exited'); },
       };
 
       let inputResolver = null;
 
-      function callFn(name, args, scope, fns, line){
+      // Pauses execution and shows the input row in the output panel; resolves with the
+      // raw string the user typed once they press Enter / click the Enter button.
+      function requestInput(promptText){
+        return new Promise(resolve=>{
+          inputResolver = resolve;
+          const label = document.getElementById('input-prompt-label');
+          if(label) label.textContent = promptText ? `${promptText} ` : '› ';
+          inputRow.classList.add('visible');
+          inputField.focus();
+        });
+      }
+
+      async function callFn(name, args, scope, fns, line){
         if(name==='input'){
-          // async input handled via promise + UI
-          throw { isInputRequest: true, prompt: args[0]??'' };
+          const raw = await requestInput(args[0] ?? '');
+          return raw; // real input() always returns a string, like Python's
         }
         if(name in BUILTINS){ try{ return BUILTINS[name](args); }catch(e){ throw new MaySonLangError(`In '${name}': ${e.message}`,line); } }
         if(!(name in fns)) throw new MaySonLangError(`Unknown function: '${name}'`,line);
@@ -776,9 +805,21 @@
         const fnScope={...fn.closure, ...Object.fromEntries(fn.params.map((p,i)=>[p,args[i]]))};
         const interp=new Interpreter(fns, fn.callDepth+1);
         if(interp.callDepth>500) throw new MaySonLangError('Max recursion depth exceeded',line);
-        try{ interp.execute(fn.body, fnScope); }
+        try{ await interp.execute(fn.body, fnScope); }
         catch(e){ if(e instanceof ReturnSignal) return e.value; throw e; }
         return null;
+      }
+
+      /* ── SHARED OUTPUT SINK ──
+         A module-level sink (not per-Interpreter-instance) so that `say` inside a
+         called function's body streams to the same output as the caller — a
+         separate outputLines array per call would silently swallow it. */
+      let OUT = [];
+      let OUT_CB = null; // (text,type) => void — set by runCode() for live streaming
+      function pushOut(text, type='normal'){
+        const entry = {text, type};
+        OUT.push(entry);
+        if(OUT_CB) OUT_CB(text, type);
       }
 
       /* ── INTERPRETER CLASS ── */
@@ -786,21 +827,25 @@
         constructor(functions={}, callDepth=0){
           this.functions=functions;
           this.callDepth=callDepth;
-          this.outputLines=[];
         }
 
-        run(source){ this.execute(tokenize(source), {}); }
+        get outputLines(){ return OUT; }
 
-        execute(tokens, scope, start=0, baseIndent=-1){
+        async run(source){
+          OUT = [];
+          await this.execute(tokenize(source), {});
+        }
+
+        async execute(tokens, scope, start=0, baseIndent=-1){
           let i=start;
           while(i<tokens.length){
             if(baseIndent>=0&&tokens[i].indent<=baseIndent) break;
-            i=this._stmt(tokens[i],tokens,i,scope);
+            i=await this._stmt(tokens[i],tokens,i,scope);
           }
         }
 
-        _eval(e,s,l){ return evalExpr(e,s,this.functions,l); }
-        _cond(c,s,l){ return !!this._eval(c,s,l); }
+        async _eval(e,s,l){ return await evalExpr(e,s,this.functions,l); }
+        async _cond(c,s,l){ return !!(await this._eval(c,s,l)); }
 
         _block(tokens, start, baseIndent){
           const block=[]; let i=start;
@@ -816,43 +861,57 @@
           return String(val);
         }
 
-        _stmt(tok, tokens, i, scope){
+        async _stmt(tok, tokens, i, scope){
           const c=tok.content, ln=tok.line;
 
           // say / show
           if(c==='say'||c.startsWith('say ')||c==='show'||c.startsWith('show ')){
             const expr=c.replace(/^(say|show)\s*/,'');
-            const val=expr?this._eval(expr,scope,ln):'';
-            this.outputLines.push({text:this.display(val),type:'normal'});
+            const val=expr?await this._eval(expr,scope,ln):'';
+            pushOut(this.display(val),'normal');
+            return i+1;
+          }
+
+          // ask "prompt" into varName  — pauses for real input, auto-numifies like the levels
+          let m=c.match(/^ask\s+(.+?)\s+into\s+([A-Za-z_][A-Za-z0-9_]*)$/);
+          if(m){
+            const promptVal = await this._eval(m[1],scope,ln);
+            const raw = await requestInput(this.display(promptVal));
+            const num = Number(raw);
+            scope[m[2]] = (raw!==''&&!isNaN(num)) ? num : raw;
             return i+1;
           }
 
           // set x to expr  /  set x[idx] to expr
-          let m=c.match(/^set\s+(.+?)\s+to\s+(.+)$/);
+          m=c.match(/^set\s+(.+?)\s+to\s+(.+)$/);
           if(m){
-            const [,target,expr]=m, val=this._eval(expr,scope,ln);
+            const [,target,expr]=m, val=await this._eval(expr,scope,ln);
             const im=indexPattern(target);
-            if(im){ const arr=resolveVar(im[0],scope,ln); arr[this._eval(im[1],scope,ln)]=val; }
+            if(im){
+              const arr=resolveVar(im[0],scope,ln);
+              if(!Array.isArray(arr)) throw new MaySonLangError(`'${im[0]}' is not a list`,ln);
+              arr[await this._eval(im[1],scope,ln)]=val;
+            }
             else scope[target.trim()]=val;
             return i+1;
           }
 
           // increase x by N
           m=c.match(/^increase\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
-          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)+this._eval(m[2],scope,ln); return i+1; }
+          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)+await this._eval(m[2],scope,ln); return i+1; }
 
           // decrease x by N
           m=c.match(/^decrease\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
-          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)-this._eval(m[2],scope,ln); return i+1; }
+          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)-await this._eval(m[2],scope,ln); return i+1; }
 
           // multiply x by N
           m=c.match(/^multiply\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
-          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)*this._eval(m[2],scope,ln); return i+1; }
+          if(m){ scope[m[1]]=resolveVar(m[1],scope,ln)*await this._eval(m[2],scope,ln); return i+1; }
 
           // divide x by N
           m=c.match(/^divide\s+([A-Za-z_][A-Za-z0-9_]*)\s+by\s+(.+)$/);
           if(m){
-            const d=this._eval(m[2],scope,ln);
+            const d=await this._eval(m[2],scope,ln);
             if(d===0) throw new MaySonLangError('Division by zero',ln);
             scope[m[1]]=resolveVar(m[1],scope,ln)/d; return i+1;
           }
@@ -862,18 +921,18 @@
           if(m){
             const lst=resolveVar(m[2],scope,ln);
             if(!Array.isArray(lst)) throw new MaySonLangError(`'${m[2]}' is not a list`,ln);
-            lst.push(this._eval(m[1],scope,ln)); return i+1;
+            lst.push(await this._eval(m[1],scope,ln)); return i+1;
           }
 
           // remove x from list
           m=c.match(/^remove\s+(.+)\s+from\s+([A-Za-z_][A-Za-z0-9_]*)$/);
           if(m){
-            const lst=resolveVar(m[2],scope,ln), v=this._eval(m[1],scope,ln);
+            const lst=resolveVar(m[2],scope,ln), v=await this._eval(m[1],scope,ln);
             const idx=lst.indexOf(v); if(idx!==-1) lst.splice(idx,1); return i+1;
           }
 
-          // make fn(params):
-          m=c.match(/^make\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*:?$/);
+          // make fn(params):  /  define fn(params):  — both create a function
+          m=c.match(/^(?:make|define)\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*:?$/);
           if(m){
             const [,fname,paramStr]=m;
             const params=paramStr.split(',').map(p=>p.trim()).filter(Boolean);
@@ -885,13 +944,13 @@
           // call fn(args) statement
           m=c.match(/^call\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)$/);
           if(m){
-            const args=argSplit(m[2]).map(a=>this._eval(a,scope,ln));
-            callFn(m[1],args,scope,this.functions,ln);
+            const args=await argEvalAll(m[2],scope,this.functions,ln);
+            await callFn(m[1],args,scope,this.functions,ln);
             return i+1;
           }
 
           // return / break / continue
-          if(c.startsWith('return')){ const expr=c.slice(6).trim(); throw new ReturnSignal(expr?this._eval(expr,scope,ln):null); }
+          if(c.startsWith('return')){ const expr=c.slice(6).trim(); throw new ReturnSignal(expr?await this._eval(expr,scope,ln):null); }
           if(c==='break') throw new BreakSignal();
           if(c==='continue') throw new ContinueSignal();
 
@@ -899,9 +958,9 @@
           m=c.match(/^(?:if|check)\s+(.+?)\s*:?$/);
           if(m){
             const {block:then,next:afterThen}=this._block(tokens,i+1,tok.indent);
-            const {block:els,next:afterElse}=this._collectElse(tokens,afterThen,tok.indent,scope);
-            if(this._cond(m[1],scope,ln)) this._runBlock(then,scope);
-            else if(els.length) this._runBlock(els,scope);
+            const {block:els,next:afterElse}=await this._collectElse(tokens,afterThen,tok.indent,scope);
+            if(await this._cond(m[1],scope,ln)) await this._runBlock(then,scope);
+            else if(els.length) await this._runBlock(els,scope);
             return afterElse;
           }
 
@@ -917,11 +976,11 @@
             const {block,next}=this._block(tokens,i+1,tok.indent);
             let iteration=0;
             while(true){
-              const count=Math.floor(Number(this._eval(countExpr,scope,ln)));
+              const count=Math.floor(Number(await this._eval(countExpr,scope,ln)));
               if(iteration>=count) break;
               const ls={...scope,i:iteration};
               let broke=false;
-              try{ this._runBlock(block,ls); }
+              try{ await this._runBlock(block,ls); }
               catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
               // flush ALL mutations back to outer scope
               Object.assign(scope,ls);
@@ -931,17 +990,17 @@
             return next;
           }
 
-          // repeat for each x in list
-          m=c.match(/^repeat\s+for\s+each\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+(.+?)\s*:?$/);
+          // repeat for each x in list  /  for each x in list  (both forms accepted)
+          m=c.match(/^(?:repeat\s+)?for\s+each\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+(.+?)\s*:?$/);
           if(m){
             const [,varName,listExpr]=m;
-            const lst=this._eval(listExpr,scope,ln);
+            const lst=await this._eval(listExpr,scope,ln);
             if(!Array.isArray(lst)) throw new MaySonLangError(`Expected list`,ln);
             const {block,next}=this._block(tokens,i+1,tok.indent);
             for(const item of lst){
               const ls={...scope,[varName]:item};
               let broke=false;
-              try{ this._runBlock(block,ls); }
+              try{ await this._runBlock(block,ls); }
               catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
               Object.assign(scope,ls);
               if(broke) break;
@@ -954,11 +1013,11 @@
           if(m){
             const {block,next}=this._block(tokens,i+1,tok.indent);
             let guard=0;
-            while(this._cond(m[1],scope,ln)){
+            while(await this._cond(m[1],scope,ln)){
               if(++guard>100000) throw new MaySonLangError('Infinite loop (>100k iterations)',ln);
               const ls={...scope};
               let broke=false;
-              try{ this._runBlock(block,ls); }
+              try{ await this._runBlock(block,ls); }
               catch(e){ if(e instanceof BreakSignal){broke=true;} else if(e instanceof ContinueSignal){} else throw e; }
               Object.assign(scope,ls);
               if(broke) break;
@@ -966,12 +1025,12 @@
             return next;
           }
 
-          // bare expression
-          try{ this._eval(c,scope,ln); return i+1; }
-          catch(e){ if(e&&e.isInputRequest) throw e; throw new MaySonLangError(e.message||String(e),ln); }
+          // bare expression (also how a function is called with no "call" needed, e.g. `greet("Sam")`)
+          try{ await this._eval(c,scope,ln); return i+1; }
+          catch(e){ throw e instanceof MaySonLangError ? e : new MaySonLangError(e.message||String(e),ln); }
         }
 
-        _collectElse(tokens, start, baseIndent, scope){
+        async _collectElse(tokens, start, baseIndent, scope){
           if(start>=tokens.length) return {block:[],next:start};
           const tok=tokens[start]; const c=tok.content;
           if(tok.indent!==baseIndent) return {block:[],next:start};
@@ -986,14 +1045,14 @@
           if(em){
             const cond=em[1];
             const {block:then,next:afterThen}=this._block(tokens,start+1,tok.indent);
-            const {block:els,next:afterElse}=this._collectElse(tokens,afterThen,baseIndent,scope);
-            if(this._cond(cond,scope,tok.line)) return {block:then,next:afterElse};
+            const {block:els,next:afterElse}=await this._collectElse(tokens,afterThen,baseIndent,scope);
+            if(await this._cond(cond,scope,tok.line)) return {block:then,next:afterElse};
             return {block:els,next:afterElse};
           }
           return {block:[],next:start};
         }
 
-        _runBlock(block, scope){ this.execute(block,scope,0,-1); }
+        async _runBlock(block, scope){ await this.execute(block,scope,0,-1); }
       }
 
       // ══════════════════════════════════════════════════════════════════
@@ -1045,30 +1104,38 @@
       repeat 5 times:
         say "  " + i + "^2 = " + (i * i)
 
-      # Lists & for-each
+      # Lists & for-each  (both "for each" and "repeat for each" work)
       set fruits to ["apple", "banana", "cherry"]
       add "mango" to fruits
       say "Fruits: " + fruits
-      repeat for each fruit in fruits:
+      say "Count: " + length(fruits)
+      for each fruit in fruits:
         say "  → " + upper(fruit)
 
-      # Functions
-      make greet(person):
+      # Functions  ("make" and "define" both work — call by name, no "call" needed)
+      define greet(person):
         return "Hello, " + person + "!"
 
       make factorial(n):
         if n <= 1:
           return 1
-        return n * call factorial(n - 1)
+        return n * factorial(n - 1)
 
-      say call greet("MaySonLang")
-      say "5! = " + call factorial(5)
-      say "10! = " + call factorial(10)
+      say greet("MaySonLang")
+      say "5! = " + factorial(5)
+      say "10! = " + factorial(10)
+
+      # Real input — pauses and waits for you to type a value, just like the levels
+      ask "What's your name?" into playerName
+      say "Welcome, " + playerName + "!"
+      ask "Pick a lucky number:" into luckyNum
+      say "Your lucky number times 2 is " + (luckyNum * 2)
       `;
 
       const SNIPPETS = [
         { kw:'say',           desc:'print output',      code:'say "Hello!"' },
         { kw:'set x to',      desc:'variable',           code:'set x to 5' },
+        { kw:'ask into',      desc:'get real input',     code:'ask "Your name?" into name\nsay "Hi, " + name + "!"' },
         { kw:'increase x by', desc:'x += N',             code:'increase x by 1' },
         { kw:'decrease x by', desc:'x -= N',             code:'decrease x by 1' },
         { kw:'multiply x by', desc:'x *= N',             code:'multiply x by 2' },
@@ -1078,10 +1145,12 @@
         { kw:'else:',         desc:'else',               code:'else:\n  say "nope"' },
         { kw:'repeat N:',     desc:'for loop (i=index)', code:'repeat 5 times:\n  say i' },
         { kw:'repeat x:',     desc:'loop with variable', code:'repeat x times:\n  decrease x by 1' },
-        { kw:'for each:',     desc:'list loop',          code:'repeat for each item in myList:\n  say item' },
+        { kw:'for each:',     desc:'list loop',          code:'for each item in myList:\n  say item' },
         { kw:'while:',        desc:'while loop',         code:'' },
-        { kw:'make fn():',    desc:'define function',    code:'make greet(name):\n  return "Hi " + name\n\nsay call greet("World")' },
+        { kw:'define fn():',  desc:'define function',    code:'define greet(name):\n  return "Hi " + name\n\nsay greet("World")' },
         { kw:'[list]',        desc:'create list',        code:'set nums to [1, 2, 3]\nadd 4 to nums' },
+        { kw:'list[i]',       desc:'index into a list',  code:'set nums to [10, 20, 30]\nsay nums[0]\nsay nums[length(nums) - 1]' },
+        { kw:'length(list)',  desc:'count items',        code:'set nums to [1, 2, 3]\nsay length(nums)' },
         { kw:'# comment',     desc:'comment',            code:'# This is a comment' },
       ];
 
@@ -1267,7 +1336,7 @@
         document.getElementById('status-msg').textContent=msg;
       }
 
-      function runCode(){
+      async function runCode(){
         clearOutput();
         const code=editor.value.trim();
         if(!code){ appendOut('// Nothing to run.','info'); return; }
@@ -1280,9 +1349,12 @@
         const t0=performance.now();
         const interp=new Interpreter();
 
+        // Stream output live as the program runs (so text printed before an
+        // `ask`/`input()` prompt is visible while the program waits on the user).
+        OUT_CB = (text,type)=>appendOut(text,type);
+
         try{
-          interp.run(code);
-          interp.outputLines.forEach(l=>appendOut(l.text,l.type));
+          await interp.run(code);
           const ms=(performance.now()-t0).toFixed(1);
           execTime.textContent=`${ms}ms`;
           outDot.className='panel-dot dot-green';
@@ -1290,15 +1362,24 @@
           setStatus(`Done in ${ms}ms`);
           if(!outputEl.textContent.trim()) appendOut('// (no output)','info');
         } catch(e){
-          interp.outputLines.forEach(l=>appendOut(l.text,l.type));
           appendOut('Error: '+e.message,'error');
           outDot.className='panel-dot dot-red';
           outDot.style='';
           setStatus('Error: '+e.message);
+        } finally {
+          OUT_CB = null;
+          inputRow.classList.remove('visible');
         }
       }
 
-      function stopExec(){ setStatus('Stopped'); }
+      function stopExec(){
+        setStatus('Stopped');
+        if(inputResolver){
+          const r=inputResolver; inputResolver=null;
+          inputRow.classList.remove('visible');
+          r(''); // unstick a pending ask/input() so the run doesn't hang forever
+        }
+      }
 
       // ── FIND BAR ──────────────────────────────────────────────────────
       function openFindBar(){ document.getElementById('find-bar').classList.add('visible'); document.getElementById('find-input').focus(); }
@@ -1357,6 +1438,7 @@
         appendOut('═══ MaySonLang IDE QUICK REFERENCE ═══','success');
         appendOut('say "hello"              → print','info');
         appendOut('set x to 5              → variable','info');
+        appendOut('ask "Name?" into name   → real input (pauses for you to type)','info');
         appendOut('increase x by 3         → x += 3','info');
         appendOut('decrease x by 1         → x -= 1','info');
         appendOut('multiply x by 2         → x *= 2','info');
@@ -1366,11 +1448,14 @@
         appendOut('else:                   → else','info');
         appendOut('repeat 5 times:         → for i in range(5)','info');
         appendOut('repeat x times:         → x re-read each iteration','info');
-        appendOut('repeat for each v in l: → for each item in list','info');
+        appendOut('for each v in list:     → loop over a list (repeat for each also works)','info');
         appendOut('while x > 0:            → while loop','info');
-        appendOut('make fn(a, b):          → define function','info');
+        appendOut('define fn(a, b):        → define function (make also works)','info');
         appendOut('  return a + b','info');
-        appendOut('say call fn(1, 2)       → call function','info');
+        appendOut('say fn(1, 2)            → call function (no "call" needed)','info');
+        appendOut('set nums to [1, 2, 3]   → create a list','info');
+        appendOut('nums[0]                 → index into a list (0 = first item)','info');
+        appendOut('length(nums)            → count items in a list (len also works)','info');
         appendOut('add x to list           → list.append(x)','info');
         appendOut('remove x from list      → list.remove(x)','info');
         appendOut('# comment               → comment','info');
