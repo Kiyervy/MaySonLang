@@ -225,11 +225,43 @@
 
     // If a session already exists (e.g. "Remember me" from a previous visit), skip straight in —
     // unless an admin has blocked the account since the last visit.
+    //
+    // This same block also handles the redirect Supabase sends people back to after they click
+    // "Confirm email address" (or a password-reset link) in their inbox — instead of just landing
+    // on a blank/duplicate login screen, we detect that and show a proper "Email confirmed!" screen.
     (async ()=>{
+      // Supabase appends the result of the email link as either a URL fragment
+      // (#access_token=...&type=signup) or, on newer PKCE-style projects, a
+      // ?code=... query param. Handle both, and surface any error Supabase sends
+      // back (e.g. an expired or already-used link) instead of leaving the user
+      // looking at a generic browser error page.
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const queryParams = new URLSearchParams(window.location.search);
+      const linkType = hashParams.get('type') || queryParams.get('type');
+      const linkError = hashParams.get('error_description') || queryParams.get('error_description');
+
+      if (queryParams.has('code')) {
+        await supabaseClient.auth.exchangeCodeForSession(window.location.href).catch(()=>{});
+      }
+
+      // Strip the token/code/error out of the visible URL so it's not left sitting
+      // in the address bar (or accidentally re-submitted on a refresh/bookmark).
+      if (window.location.hash || queryParams.has('code') || queryParams.has('error')) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+
+      if (linkError) {
+        showError(decodeURIComponent(linkError.replace(/\+/g, ' ')));
+      }
+
       const { data } = await supabaseClient.auth.getSession();
       if(!data?.session) return;
       if(await isAccountBlocked(data.session.user.id)){
         await supabaseClient.auth.signOut();
+        return;
+      }
+      if (linkType === 'signup' || linkType === 'email_change') {
+        runSuccess('Email confirmed! 🎉');
         return;
       }
       window.location.href = 'menu.html';
