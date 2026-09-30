@@ -94,6 +94,81 @@
       .stars-info-close{display:block;margin:22px auto 0;padding:10px 26px;background:linear-gradient(135deg,#ca8a04,var(--yellow));color:#000;border:none;border-radius:9px;cursor:pointer;font-family:var(--fb);font-weight:800;font-size:.88rem;transition:all .15s}
       .stars-info-close:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(251,191,36,.4)}
 
+
+      /* TUTORIAL */
+      .btn-tutorial{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;box-shadow:0 6px 28px rgba(167,139,250,.35)}
+      .btn-tutorial:hover{box-shadow:0 10px 40px rgba(167,139,250,.5)}
+      #tutorial-overlay{position:fixed;inset:0;z-index:200;background:rgba(8,12,24,.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+      #tutorial-overlay.show{display:flex}
+      .tut-card{background:var(--card);border:1px solid rgba(167,139,250,.4);border-radius:22px;width:100%;max-width:640px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 0 80px rgba(167,139,250,.14);animation:popIn .35s cubic-bezier(.34,1.56,.64,1) both;overflow:hidden}
+      .tut-top{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 0}
+      .tut-step{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+      .tut-x{background:transparent;border:1px solid var(--border);color:var(--dim);width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:1rem;font-weight:800;transition:all .15s}
+      .tut-x:hover{border-color:var(--red);color:var(--red)}
+      .tut-tabs{display:flex;gap:6px;padding:12px 22px 0;overflow-x:auto;flex-shrink:0}
+      .tut-tab{flex-shrink:0;padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:var(--fb);font-size:.74rem;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap}
+      .tut-tab:hover{color:var(--white);border-color:var(--purple)}
+      .tut-tab.active{background:rgba(167,139,250,.15);border-color:var(--purple);color:var(--purple)}
+      .tut-body{padding:20px 26px 6px;overflow-y:auto;flex:1;min-height:340px}
+      .tut-page{animation:floatIn .35s ease both}
+      .tut-icon{font-size:2.4rem;margin-bottom:6px}
+      .tut-title{font-family:var(--fh);font-size:1.2rem;font-weight:700;color:var(--purple);margin-bottom:10px}
+      .tut-page p{font-size:.88rem;line-height:1.65;color:var(--white);margin-bottom:12px}
+      .tut-page p b{color:var(--cyan)}
+      .tut-page code{font-family:var(--fc);font-size:.82rem;color:var(--cyan);background:rgba(34,211,238,.08);padding:1px 6px;border-radius:5px}
+      .tut-list{list-style:none;margin:0 0 12px}
+      .tut-list li{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;line-height:1.55;margin-bottom:8px;color:var(--white)}
+      .tut-list li::before{content:'▸';color:var(--purple);flex-shrink:0}
+      .tut-list li b{color:var(--yellow)}
+      .tut-note{margin-top:14px;padding:11px 14px;border-radius:12px;font-size:.8rem;line-height:1.55;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);color:var(--white)}
+      .tut-note.red{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.35)}
+      .tut-note.green{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)}
+      .tut-note b{color:var(--yellow)}
+      .tut-demo{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin:4px 0 14px}
+      .tut-demo-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+      .tut-codeline{font-family:var(--fc);font-size:.95rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+      .tut-blank{display:inline-block;min-width:74px;height:32px;border:2px dashed var(--purple);border-radius:8px;background:rgba(167,139,250,.08);position:relative;vertical-align:middle}
+      .tut-blank::after{content:'"Hi"';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#0d1428;font-weight:600;background:var(--green);border-radius:6px;opacity:0;animation:tutFill 4s ease-in-out infinite}
+      @keyframes tutFill{0%,35%{opacity:0;transform:translate(60px,60px) scale(.9)}50%,85%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(0,0) scale(1)}}
+      .tut-chips{display:flex;gap:8px;flex-wrap:wrap}
+      .tut-chip{padding:7px 15px;border-radius:9px;font-family:var(--fc);font-size:.85rem;font-weight:600;cursor:grab;user-select:none}
+      .tut-chip.a{background:rgba(74,222,128,.15);border:1px solid var(--green);color:var(--green)}
+      .tut-chip.b{background:rgba(251,191,36,.12);border:1px solid var(--yellow);color:var(--yellow)}
+      .tut-chip.c{background:rgba(244,114,182,.12);border:1px solid var(--pink);color:var(--pink)}
+      .tut-mc{display:flex;flex-direction:column;gap:8px}
+      .tut-mc div{padding:10px 14px;border-radius:10px;border:2px solid var(--border);background:var(--card);font-size:.85rem;font-weight:700}
+      .tut-mc div.pick{border-color:var(--green);background:rgba(74,222,128,.12);color:var(--green)}
+      .tut-slot{display:flex;align-items:center;gap:10px;padding:8px 12px;border:2px dashed var(--border);border-radius:10px;margin-bottom:7px;font-size:.82rem}
+      .tut-slot span.n{font-size:.68rem;font-weight:800;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;min-width:44px}
+      .tut-slot.filled{border-style:solid;border-color:var(--green);background:rgba(74,222,128,.08);color:var(--green);font-weight:700}
+      .tut-ide{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#060a15}
+      .tut-ide-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(0,0,0,.3);border-bottom:1px solid var(--border)}
+      .tut-ide-bar i{width:10px;height:10px;border-radius:50%;display:block}
+      .tut-ide pre{font-family:var(--fc);font-size:.85rem;color:var(--cyan);padding:12px 14px;margin:0;line-height:1.6}
+      .tut-ide pre em{color:var(--dim);font-style:normal}
+      .tut-ide-run{display:inline-block;margin:0 14px 12px;padding:6px 16px;border-radius:8px;background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff;font-size:.78rem;font-weight:800}
+      .tut-ide-out{border-top:1px solid var(--border);padding:8px 14px;font-family:var(--fc);font-size:.82rem;color:var(--green)}
+      .tut-hearts{display:flex;align-items:center;justify-content:center;gap:8px;font-size:1.7rem;margin:6px 0 14px}
+      .tut-hearts span{transition:transform .2s,opacity .2s,filter .2s}
+      .tut-hearts span.lost{opacity:.25;filter:grayscale(1);transform:scale(.85)}
+      .tut-hearts span.hit{animation:shake .35s ease}
+      .tut-demo-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+      .tut-demo-btn{padding:8px 18px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--white);font-family:var(--fb);font-weight:800;font-size:.8rem;cursor:pointer;transition:all .15s}
+      .tut-demo-btn:hover{border-color:var(--purple);color:var(--purple)}
+      .tut-demo-btn.bad:hover{border-color:var(--red);color:var(--red)}
+      .tut-demo-msg{text-align:center;font-size:.8rem;color:var(--dim);min-height:1.4em;margin-top:10px}
+      .tut-demo-msg.bad{color:var(--red);font-weight:700}
+      .tut-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 22px 18px;border-top:1px solid var(--border)}
+      .tut-dots{display:flex;gap:6px}
+      .tut-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s}
+      .tut-dot.active{background:var(--purple);transform:scale(1.35)}
+      .tut-nav{padding:10px 22px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--white);font-family:var(--fb);font-weight:800;font-size:.86rem;cursor:pointer;transition:all .15s}
+      .tut-nav:hover:not(:disabled){border-color:var(--purple);color:var(--purple)}
+      .tut-nav:disabled{opacity:.3;cursor:default}
+      .tut-nav.primary{background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;color:#fff}
+      .tut-nav.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(167,139,250,.45);color:#fff}
+      @media(max-width:520px){.tut-body{padding:16px 18px 4px}.tut-top,.tut-tabs,.tut-foot{padding-left:16px;padding-right:16px}}
+
       /* LOGOUT */
       .logout-btn{position:fixed;top:18px;right:18px;z-index:20;display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--dim);font-family:var(--fb);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;animation:floatIn .6s ease both}
       .logout-btn:hover{border-color:var(--red);color:var(--red);background:rgba(248,113,113,.08);transform:translateY(-2px)}
@@ -394,6 +469,11 @@
           <span class="btn-label">Free Coding<span class="btn-sub">Open the MaySon IDE</span></span>
           <span class="btn-arrow">›</span>
         </button>
+        <button class="menu-btn btn-tutorial" onclick="showTutorial()">
+          <span class="btn-icon">📖</span>
+          <span class="btn-label">Tutorial<span class="btn-sub">How puzzles, attempts &amp; rules work</span></span>
+          <span class="btn-arrow">›</span>
+        </button>
         <button class="menu-btn btn-exit" onclick="showExit()">
           <span class="btn-icon">⏻</span>
           <span class="btn-label">Exit<span class="btn-sub">Close MaySon</span></span>
@@ -612,6 +692,23 @@
         <div class="exit-btns">
           <button class="ex-cancel" onclick="closeLogoutConfirm()">Cancel</button>
           <button class="ex-confirm" onclick="confirmLogout()">Yes, Log Out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TUTORIAL -->
+    <div id="tutorial-overlay" onclick="if(event.target===this)closeTutorial()">
+      <div class="tut-card" role="dialog" aria-modal="true" aria-label="MaySon tutorial">
+        <div class="tut-top">
+          <span class="tut-step" id="tut-step"></span>
+          <button class="tut-x" onclick="closeTutorial()" title="Close (Esc)">✕</button>
+        </div>
+        <div class="tut-tabs" id="tut-tabs"></div>
+        <div class="tut-body" id="tut-body"></div>
+        <div class="tut-foot">
+          <button class="tut-nav" id="tut-prev" onclick="tutGo(-1)">← Back</button>
+          <div class="tut-dots" id="tut-dots"></div>
+          <button class="tut-nav primary" id="tut-next" onclick="tutGo(1)">Next →</button>
         </div>
       </div>
     </div>
@@ -9064,6 +9161,179 @@ const RND = (function(){
     /* ─── STARS INFO ─────────────────────────────────── */
     function showStarsInfo(){ document.getElementById('stars-info-overlay').classList.add('show'); }
     function closeStarsInfo(){ document.getElementById('stars-info-overlay').classList.remove('show'); }
+
+    /* ─── TUTORIAL ───────────────────────────────────── */
+    const TUT_PAGES = [
+      { tab:'Welcome', icon:'👋', title:'Welcome to MaySon',
+        html:`
+          <p>Every level is a short set of <b>puzzles</b> that teach you to think like a programmer. There are four kinds of puzzle, and this guide walks through each one.</p>
+          <ul class="tut-list">
+            <li><b>Drag &amp; Drop</b> — fill the blanks in a line of code</li>
+            <li><b>Multiple Choice</b> — pick the one right answer</li>
+            <li><b>Task Ordering</b> — put steps into the right sequence</li>
+            <li><b>Hands-on Programming</b> — type and run your own code</li>
+          </ul>
+          <p>You also need to know two rules: the <b>attempt limit</b> (5 wrong checks per level) and the <b>stay-on-the-tab</b> rule. Use <b>Next →</b> or the tabs above to move around.</p>
+          <div class="tut-note green">💡 Puzzles are randomized, so the same level won't look identical each time you play it.</div>`},
+
+      { tab:'Drag & Drop', icon:'📦', title:'Drag & Drop',
+        html:`
+          <p>You'll see a line of code with one or more <b>empty blanks</b>, and a tray of blocks underneath. Drag the right block into each blank.</p>
+          <div class="tut-demo">
+            <div class="tut-demo-label">Example</div>
+            <div class="tut-codeline"><span style="color:var(--pink)">print</span>(<span class="tut-blank"></span>)</div>
+            <div class="tut-chips"><span class="tut-chip a">"Hi"</span><span class="tut-chip b">42</span><span class="tut-chip c">True</span></div>
+          </div>
+          <ul class="tut-list">
+            <li>Press and hold a block, drag it over a blank, then let go.</li>
+            <li>Not sure you placed it right? Drag a different block onto the blank, or press <b>↺ Reset</b> to clear everything.</li>
+            <li>When every blank is filled, press <b>✓ Check Answer</b>.</li>
+          </ul>
+          <div class="tut-note">⚠️ Only <b>Check</b> counts. Moving blocks around is free, but every wrong check costs one attempt.</div>`},
+
+      { tab:'Multiple Choice', icon:'🔘', title:'Multiple Choice',
+        html:`
+          <p>Read the question, then tap the answer you think is right. Answers are <b>shuffled</b> every time, so remembering "it was the second one" won't help you.</p>
+          <div class="tut-demo">
+            <div class="tut-demo-label">Example</div>
+            <div class="tut-mc">
+              <div>A) A box that stores a value</div>
+              <div class="pick">B) A variable ✓</div>
+              <div>C) A type of loop</div>
+            </div>
+          </div>
+          <ul class="tut-list">
+            <li>There is <b>no separate Check button</b>. Tapping an answer submits it right away.</li>
+            <li>A wrong tap costs <b>one attempt</b>, so read carefully before you choose.</li>
+            <li>Stuck? Open <b>💡 Hint</b> for a nudge (it never gives away the answer).</li>
+          </ul>`},
+
+      { tab:'Task Ordering', icon:'📋', title:'Task Ordering',
+        html:`
+          <p>You get a set of steps in a jumbled order. Drag each step into the numbered slot where it belongs, so the whole sequence works from <b>Step 1</b> to the end.</p>
+          <div class="tut-demo">
+            <div class="tut-demo-label">Example: making a variable and printing it</div>
+            <div class="tut-slot filled"><span class="n">Step 1</span>Create a variable</div>
+            <div class="tut-slot filled"><span class="n">Step 2</span>Give it a value</div>
+            <div class="tut-slot"><span class="n">Step 3</span><span style="color:var(--dim);font-style:italic">Drag a step here…</span></div>
+            <div class="tut-chips" style="margin-top:10px"><span class="tut-chip a" style="font-family:var(--fb)">Print the value</span></div>
+          </div>
+          <ul class="tut-list">
+            <li>Drag steps from the <b>Steps to place</b> tray into the slots.</li>
+            <li>Made a mistake? Click the <b>×</b> on a slot to send the step back to the tray.</li>
+            <li>Think about what has to exist <b>before</b> something else can happen. Then press <b>✓ Check Order</b>.</li>
+          </ul>
+          <div class="tut-note">⚠️ A wrong order counts as one attempt, same as any other wrong check.</div>`},
+
+      { tab:'Hands-on Coding', icon:'💻', title:'Hands-on Programming',
+        html:`
+          <p>Here there are no blocks: you <b>type the code yourself</b> in a mini editor, then run it. Your output must match what the task asks for.</p>
+          <div class="tut-ide">
+            <div class="tut-ide-bar"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#4ade80"></i><span style="font-size:.68rem;color:var(--dim);font-weight:800;letter-spacing:.08em;margin-left:4px">MAYSON EDITOR</span></div>
+            <pre><em># Task: print the number 3</em>
+lives = 3
+print(lives)</pre>
+            <span class="tut-ide-run">▶ Run Code</span>
+            <div class="tut-ide-out">3</div>
+          </div>
+          <ul class="tut-list" style="margin-top:14px">
+            <li><b>▶ Run Code</b> (or <b>Ctrl/Cmd + Enter</b>) runs your program and shows the result under <b>Output</b>.</li>
+            <li><b>✕ Clear</b> empties the editor. The <b>Tab</b> key inserts spaces.</li>
+            <li>Errors, missing required keywords, and wrong output all show a message explaining what to fix.</li>
+          </ul>
+          <div class="tut-note red">⌨️ <b>You must type your code.</b> Pasting or dropping text into the editor is blocked, so learn it by typing it.</div>`},
+
+      { tab:'Attempts', icon:'❤️', title:'The Attempt Limit',
+        html:`
+          <p>Each level gives you <b>5 attempts</b>, shown as hearts in the top bar. Every <b>wrong check</b> costs one heart. It applies to all four puzzle types.</p>
+          <div class="tut-demo">
+            <div class="tut-demo-label">Try it</div>
+            <div class="tut-hearts" id="tut-hearts"></div>
+            <div class="tut-demo-btns">
+              <button class="tut-demo-btn bad" onclick="tutWrong()">✕ Submit a wrong answer</button>
+              <button class="tut-demo-btn" onclick="tutHeartsReset()">↺ Reset demo</button>
+            </div>
+            <div class="tut-demo-msg" id="tut-hearts-msg">Hearts are <b>per level</b>. Click the button to see what happens.</div>
+          </div>
+          <ul class="tut-list">
+            <li>When the <b>last heart is gone</b>, the level ends as <b>Level Failed</b> and restarts from the beginning with a full set of fresh hearts. Nothing is lost.</li>
+            <li>When you have 2 hearts or fewer, the hearts <b>pulse red</b> as a warning.</li>
+            <li>Hints don't cost hearts, but they do affect your ⭐ rating: 3★ is a perfect run with no wrong checks and no hints.</li>
+          </ul>`},
+
+      { tab:'Stay on the Tab', icon:'🚫', title:'Stay on the Tab',
+        html:`
+          <p>To keep levels fair, MaySon watches whether you stay on the game while a level is running.</p>
+          <div class="tut-note red" style="margin-top:0;margin-bottom:14px">
+            <b>If you leave the level, it's cancelled immediately.</b> Switching to another browser tab, switching to another window or app, minimizing the browser, or clicking into a split-screen window all count as leaving.
+          </div>
+          <ul class="tut-list">
+            <li>You'll see <b>Level Cancelled</b>. From there choose <b>↻ Try Again</b> or go back to <b>☰ Levels</b>.</li>
+            <li>The level <b>restarts from the beginning</b>, with a fresh set of puzzles and full hearts.</li>
+            <li>It only applies <b>during a level</b>. The menu, level select and this tutorial are safe to leave.</li>
+          </ul>
+          <div class="tut-note">
+            <b>Also during levels:</b> copying, pasting, screenshots, printing, and developer-tools shortcuts are disabled. You get <b>3 warnings</b>, and the 3rd cancels the level the same way.
+          </div>
+          <div class="tut-note green">✅ Tip: silence notifications and keep the game in focus, and you'll be fine.</div>`}
+    ];
+    let tutIdx = 0, tutHearts = 5;
+
+    function showTutorial(){
+      tutIdx = 0;
+      document.getElementById('tut-tabs').innerHTML = TUT_PAGES.map((pg,i)=>
+        `<button class="tut-tab" id="tut-tab-${i}" onclick="tutShow(${i})">${pg.icon} ${pg.tab}</button>`).join('');
+      document.getElementById('tut-dots').innerHTML = TUT_PAGES.map((_,i)=>`<span class="tut-dot" id="tut-dot-${i}"></span>`).join('');
+      document.getElementById('tutorial-overlay').classList.add('show');
+      tutShow(0);
+    }
+    function closeTutorial(){ document.getElementById('tutorial-overlay').classList.remove('show'); }
+    function tutGo(d){
+      const n = tutIdx + d;
+      if(n >= TUT_PAGES.length){ closeTutorial(); return; }
+      tutShow(n);
+    }
+    function tutShow(i){
+      tutIdx = Math.max(0, Math.min(TUT_PAGES.length-1, i));
+      const pg = TUT_PAGES[tutIdx];
+      const body = document.getElementById('tut-body');
+      body.innerHTML = `<div class="tut-page"><div class="tut-icon">${pg.icon}</div><div class="tut-title">${pg.title}</div>${pg.html}</div>`;
+      body.scrollTop = 0;
+      TUT_PAGES.forEach((_,k)=>{
+        document.getElementById('tut-tab-'+k)?.classList.toggle('active', k===tutIdx);
+        document.getElementById('tut-dot-'+k)?.classList.toggle('active', k===tutIdx);
+      });
+      document.getElementById('tut-tab-'+tutIdx)?.scrollIntoView({inline:'center',block:'nearest'});
+      document.getElementById('tut-step').textContent = `Step ${tutIdx+1} of ${TUT_PAGES.length}`;
+      document.getElementById('tut-prev').disabled = tutIdx===0;
+      document.getElementById('tut-next').textContent = tutIdx===TUT_PAGES.length-1 ? 'Got it ✓' : 'Next →';
+      if(pg.tab==='Attempts') tutHeartsReset();
+    }
+    function tutRenderHearts(hitIdx){
+      const el = document.getElementById('tut-hearts'); if(!el) return;
+      let h=''; for(let i=0;i<5;i++) h+=`<span class="${i>=tutHearts?'lost':''}${i===hitIdx?' hit':''}">❤️</span>`;
+      el.innerHTML = h;
+    }
+    function tutHeartsReset(){
+      tutHearts = 5; tutRenderHearts();
+      const m = document.getElementById('tut-hearts-msg');
+      if(m){ m.className='tut-demo-msg'; m.innerHTML='Hearts are <b>per level</b>. Click the button to see what happens.'; }
+    }
+    function tutWrong(){
+      const m = document.getElementById('tut-hearts-msg');
+      if(tutHearts<=0){ tutHeartsReset(); return; }
+      tutHearts--; tutRenderHearts(tutHearts);
+      if(!m) return;
+      if(tutHearts===0){ m.className='tut-demo-msg bad'; m.textContent='💥 Level Failed. The level would restart with 5 fresh hearts.'; }
+      else { m.className='tut-demo-msg'; m.textContent = tutHearts+' attempt'+(tutHearts===1?'':'s')+' left.'; }
+    }
+    document.addEventListener('keydown', e=>{
+      if(!document.getElementById('tutorial-overlay')?.classList.contains('show')) return;
+      if(e.key==='Escape') closeTutorial();
+      else if(e.key==='ArrowRight') tutGo(1);
+      else if(e.key==='ArrowLeft' && tutIdx>0) tutGo(-1);
+    });
+
 
     /* ─── EXIT ───────────────────────────────────────── */
     function showExit(){ document.getElementById('exit-overlay').classList.add('show'); }

@@ -12,6 +12,7 @@
   'use strict';
 
   var KEY = 'mayson_theme';
+  var SEEN = 'mayson_theme_seen';
   var DEFAULT = 'night';
   var THEMES = {
     morning:   { label: 'Morning',   icon: '🌤️', sub: 'Bright & fresh',    swatch: 'linear-gradient(160deg,#a9d8ff,#fff3d6)' },
@@ -26,8 +27,10 @@
   }
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
-    var fab = document.getElementById('theme-fab');
-    if (fab) fab.textContent = THEMES[t].icon;
+    var fi = document.getElementById('theme-fab-icon');
+    if (fi) fi.textContent = THEMES[t].icon;
+    var fc = document.getElementById('theme-fab-current');
+    if (fc) fc.textContent = THEMES[t].label;
     var opts = document.querySelectorAll('.theme-opt');
     for (var i = 0; i < opts.length; i++) {
       var on = opts[i].getAttribute('data-theme-id') === t;
@@ -120,18 +123,43 @@
     '@media (prefers-reduced-motion:reduce){.ts-cloud,.ts-sun,.ts-shoot{animation:none!important}.ts-cloud{transform:translateX(12vw)}}',
 
     /* ── PICKER ── */
-    '#theme-fab{position:fixed;right:18px;bottom:18px;z-index:90;width:46px;height:46px;border-radius:50%;',
-    '  border:1px solid var(--border);background:var(--card);color:var(--white);font-size:1.3rem;line-height:1;cursor:pointer;',
-    '  display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.28);',
-    '  transition:transform .2s cubic-bezier(.34,1.56,.64,1),border-color .15s}',
-    '#theme-fab:hover{transform:translateY(-2px) scale(1.06);border-color:var(--cyan)}',
+    '#theme-fab{position:fixed;right:18px;bottom:18px;z-index:90;display:flex;align-items:center;gap:10px;',
+    '  padding:6px 18px 6px 6px;border-radius:999px;border:2px solid rgba(255,255,255,.55);cursor:pointer;',
+    '  background:linear-gradient(135deg,#7c3aed,#3b82f6);color:#fff;font-family:var(--fb,"Nunito",sans-serif);text-align:left;',
+    '  box-shadow:0 8px 28px rgba(76,60,220,.55),0 2px 8px rgba(0,0,0,.25);',
+    '  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}',
+    '#theme-fab:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 12px 36px rgba(76,60,220,.7),0 2px 8px rgba(0,0,0,.25)}',
+    '#theme-fab:active{transform:scale(.97)}',
+    '#theme-fab-icon{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.95);',
+    '  display:flex;align-items:center;justify-content:center;font-size:1.3rem;line-height:1}',
+    '#theme-fab-text{display:flex;flex-direction:column;line-height:1.15}',
+    '#theme-fab-label{font-size:.86rem;font-weight:800;letter-spacing:.01em}',
+    '#theme-fab-current{font-size:.7rem;font-weight:700;opacity:.85}',
+    /* Attention pulse until the visitor opens the picker for the first time */
+    '#theme-fab.attn::before{content:"";position:absolute;inset:-6px;border-radius:999px;border:3px solid #a78bfa;',
+    '  pointer-events:none;animation:tsRing 1.8s ease-out infinite}',
+    '@keyframes tsRing{0%{transform:scale(.94);opacity:.95}100%{transform:scale(1.16);opacity:0}}',
+    /* Speech bubble that explains the button */
+    '#theme-tip{position:fixed;right:18px;bottom:84px;z-index:90;max-width:230px;padding:10px 32px 10px 14px;display:none;',
+    '  background:var(--card);color:var(--white);border:2px solid #a78bfa;border-radius:14px;',
+    '  font-family:var(--fb,"Nunito",sans-serif);font-size:.8rem;font-weight:700;line-height:1.4;',
+    '  box-shadow:0 12px 32px rgba(0,0,0,.35);animation:tsBob 2.4s ease-in-out infinite}',
+    '#theme-tip.show{display:block}',
+    '#theme-tip::after{content:"";position:absolute;bottom:-9px;right:40px;width:14px;height:14px;background:var(--card);',
+    '  border-right:2px solid #a78bfa;border-bottom:2px solid #a78bfa;transform:rotate(45deg)}',
+    '#theme-tip b{color:#a78bfa}',
+    '#theme-tip-x{position:absolute;top:4px;right:6px;width:22px;height:22px;border:none;background:transparent;color:var(--dim);',
+    '  font-size:.85rem;font-weight:800;cursor:pointer;border-radius:6px}',
+    '#theme-tip-x:hover{color:var(--red)}',
+    '@keyframes tsBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}',
     '#theme-fab:focus-visible,.theme-opt:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}',
-    '#theme-pop{position:fixed;right:18px;bottom:74px;z-index:91;width:262px;padding:12px;display:none;',
+    '#theme-pop{position:fixed;right:18px;bottom:84px;z-index:91;width:286px;padding:14px;display:none;',
     '  background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 16px 44px rgba(0,0,0,.35);',
     '  font-family:var(--fb,"Nunito",sans-serif);color:var(--white)}',
     '#theme-pop.show{display:block;animation:tsPop .22s cubic-bezier(.34,1.56,.64,1) both}',
     '@keyframes tsPop{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}',
-    '.theme-pop-title{font-size:.7rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding:2px 4px 8px}',
+    '.theme-pop-title{font-size:.95rem;font-weight:800;color:var(--white);padding:2px 4px 2px}',
+    '.theme-pop-desc{font-size:.78rem;line-height:1.45;color:var(--white);opacity:.78;padding:0 4px 6px}',
     '.theme-opt{display:flex;align-items:center;gap:12px;width:100%;padding:8px 10px;margin-top:6px;text-align:left;cursor:pointer;',
     '  background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;color:var(--white);font-family:inherit;transition:border-color .15s,transform .15s}',
     '.theme-opt:hover{transform:translateX(-2px);border-color:var(--cyan)}',
@@ -142,7 +170,9 @@
     '.theme-sub{display:block;font-size:.72rem;color:var(--dim);margin-top:1px}',
     '.theme-check{font-size:.95rem;font-weight:900;color:var(--cyan);visibility:hidden}',
     '.theme-opt.active .theme-check{visibility:visible}',
-    '@media (max-width:480px){#theme-fab{right:12px;bottom:12px}#theme-pop{right:12px;bottom:66px}}'
+    '@media (max-width:480px){#theme-fab{right:12px;bottom:12px;padding-right:14px}#theme-fab-current{display:none}',
+    '  #theme-pop{right:12px;left:12px;width:auto}#theme-tip{right:12px}}',
+    '@media (prefers-reduced-motion:reduce){#theme-fab.attn::before,#theme-tip{animation:none!important}}'
   ].join('\n');
 
   var style = document.createElement('style');
@@ -164,16 +194,19 @@
     var fab = document.createElement('button');
     fab.id = 'theme-fab';
     fab.type = 'button';
-    fab.title = 'Change background theme';
+    fab.title = 'Change the background: Morning, Afternoon or Night Sky';
     fab.setAttribute('aria-label', 'Change background theme');
     fab.setAttribute('aria-haspopup', 'true');
     fab.setAttribute('aria-expanded', 'false');
+    fab.innerHTML = '<span id="theme-fab-icon"></span>' +
+      '<span id="theme-fab-text"><span id="theme-fab-label">Change theme</span><span id="theme-fab-current"></span></span>';
 
     var pop = document.createElement('div');
     pop.id = 'theme-pop';
     pop.setAttribute('role', 'radiogroup');
     pop.setAttribute('aria-label', 'Background theme');
-    var html = '<div class="theme-pop-title">Background theme</div>';
+    var html = '<div class="theme-pop-title">🎨 Choose your background</div>' +
+      '<div class="theme-pop-desc">Changes how MaySon looks, so you can pick whatever is easiest on your eyes. It doesn\'t affect your levels or progress, and your choice is remembered.</div>';
     ORDER.forEach(function (id) {
       var t = THEMES[id];
       html += '<button type="button" class="theme-opt" role="radio" aria-checked="false" data-theme-id="' + id + '">' +
@@ -183,10 +216,39 @@
     });
     pop.innerHTML = html;
 
+    var tip = document.createElement('div');
+    tip.id = 'theme-tip';
+    tip.setAttribute('role', 'note');
+    tip.innerHTML = '<b>New:</b> pick a background! Tap this button to switch between Morning, Afternoon and Night Sky.' +
+      '<button type="button" id="theme-tip-x" aria-label="Dismiss tip">✕</button>';
+
     document.body.appendChild(pop);
+    document.body.appendChild(tip);
     document.body.appendChild(fab);
 
+    var seen = false;
+    try { seen = localStorage.getItem(SEEN) === '1'; } catch (e) {}
+    function markSeen() {
+      if (seen) return;
+      seen = true;
+      try { localStorage.setItem(SEEN, '1'); } catch (e) {}
+      fab.classList.remove('attn');
+      tip.classList.remove('show');
+    }
+    function placeAboveFab(el, gap) {                       // stays right even if a page moves the button (e.g. the IDE)
+      var r = fab.getBoundingClientRect();
+      el.style.bottom = Math.max(8, window.innerHeight - r.top + gap) + 'px';
+    }
+    if (!seen) {
+      fab.classList.add('attn');
+      tip.classList.add('show');
+      placeAboveFab(tip, 12);
+      window.addEventListener('resize', function () { if (!seen) placeAboveFab(tip, 12); });
+    }
+    tip.querySelector('#theme-tip-x').addEventListener('click', function (e) { e.stopPropagation(); markSeen(); });
+
     function open(v) {
+      if (v) { markSeen(); placeAboveFab(pop, 10); }
       pop.classList.toggle('show', v);
       fab.setAttribute('aria-expanded', v ? 'true' : 'false');
     }
