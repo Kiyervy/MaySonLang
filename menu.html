@@ -110,7 +110,7 @@
       .puzzle-back:hover{border-color:var(--cyan);color:var(--cyan)}
       .puzzle-breadcrumb{font-size:.8rem;color:var(--dim)}
       .puzzle-breadcrumb span{color:var(--cyan)}
-      .puzzle-progress{margin-left:auto;display:flex;align-items:center;gap:8px}
+      .puzzle-progress{display:flex;align-items:center;gap:8px}
       .progress-dots{display:flex;gap:5px}
       .pdot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .4s}
       .pdot.done{background:var(--green);box-shadow:0 0 8px var(--green)}
@@ -221,6 +221,22 @@
       .s-next:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(74,222,128,.4)}
 
       /* LEVEL COMPLETE */
+
+      /* LIVES / ATTEMPTS */
+      .lives-hud{margin-left:auto;display:flex;align-items:center;gap:4px;margin-right:14px;padding:5px 10px;border-radius:999px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25)}
+      .life-heart{font-size:1rem;line-height:1;transition:transform .2s,opacity .2s,filter .2s}
+      .life-heart.lost{opacity:.25;filter:grayscale(1);transform:scale(.85)}
+      .life-heart.hit{animation:shake .35s ease}
+      .lives-hud.low{border-color:var(--red);animation:pulseDot 1s ease-in-out infinite}
+      #fail-overlay{position:fixed;inset:0;z-index:110;background:rgba(8,12,24,.92);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center}
+      #fail-overlay.show{display:flex}
+      .fail-card{background:var(--card);border:1px solid rgba(248,113,113,.45);border-radius:24px;padding:44px 52px;text-align:center;box-shadow:0 0 100px rgba(248,113,113,.18);animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;max-width:440px}
+      .fail-icon{font-size:4rem;margin-bottom:12px}
+      .fail-title{font-family:var(--fh);font-size:1.5rem;font-weight:900;color:var(--red);margin-bottom:8px}
+      .fail-sub{font-size:.9rem;color:var(--dim);margin-bottom:24px;line-height:1.65}
+      .fail-btns{display:flex;gap:12px;justify-content:center}
+      .fail-retry{padding:12px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#991b1b,#f87171);color:#fff;font-family:var(--fb);font-weight:800;font-size:.88rem;cursor:pointer;transition:all .2s}
+      .fail-retry:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(248,113,113,.4)}
       #level-complete{position:fixed;inset:0;z-index:100;background:rgba(8,12,24,.9);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center}
       #level-complete.show{display:flex}
       .lc-card{background:var(--card);border:1px solid rgba(251,191,36,.4);border-radius:24px;padding:48px 56px;text-align:center;box-shadow:0 0 100px rgba(251,191,36,.14);animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;max-width:440px}
@@ -502,6 +518,7 @@
       <div class="puzzle-topbar">
         <button class="puzzle-back" onclick="showScreen('levelscreen')">← Levels</button>
         <span class="puzzle-breadcrumb">Level 01 › <span>Writing Code</span></span>
+        <div class="lives-hud" id="lives-hud" title="Attempts left on this level"></div>
         <div class="puzzle-progress">
           <div class="progress-dots">
             <div class="pdot" id="pd1"></div>
@@ -551,6 +568,19 @@
         <div class="lc-btns">
           <button class="lc-home" onclick="lcHome()">🏠 Menu</button>
           <button class="lc-play" id="lc-play-btn" onclick="lcPlay()">🎮 Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL FAILED -->
+    <div id="fail-overlay">
+      <div class="fail-card">
+        <div class="fail-icon" id="fail-icon">💥</div>
+        <div class="fail-title" id="fail-title">Level Failed</div>
+        <div class="fail-sub" id="fail-sub">You used all 5 attempts.<br>Don't worry — the level starts over from the beginning with fresh attempts.</div>
+        <div class="fail-btns">
+          <button class="lc-home" onclick="failToLevels()">☰ Levels</button>
+          <button class="fail-retry" onclick="retryLevel()">↻ Try Again</button>
         </div>
       </div>
     </div>
@@ -7184,6 +7214,61 @@ const RND = (function(){
       t.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1e2d52;border:1px solid #3b82f6;color:#e8eeff;border-radius:10px;padding:11px 20px;font-size:.85rem;z-index:999;font-family:\'Nunito\',sans-serif;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,.4)';
       t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),3800);
     }
+    /* ─── ATTEMPT LIMIT (5 wrong checks per level) ───── */
+    const MAX_ATTEMPTS = 5;
+    let levelFailed = false;
+    function renderLives(hitIdx){
+      const hud=document.getElementById('lives-hud'); if(!hud) return;
+      const left=Math.max(0,MAX_ATTEMPTS-curErrors);
+      let h='';
+      for(let i=0;i<MAX_ATTEMPTS;i++) h+=`<span class="life-heart${i>=left?' lost':''}${i===hitIdx?' hit':''}">❤️</span>`;
+      hud.innerHTML=h;
+      hud.classList.toggle('low', left<=2 && left>0);
+      hud.title=`${left} of ${MAX_ATTEMPTS} attempts left`;
+    }
+    function registerError(){
+      if(levelFailed) return;
+      curErrors++;
+      renderLives(Math.min(curErrors,MAX_ATTEMPTS)-1);
+      if(curErrors>=MAX_ATTEMPTS){
+        levelFailed=true; done=true;            // lock the board
+        setTimeout(()=>showFail('attempts'),800);
+      }
+    }
+    function showFail(reason){
+      const tab = reason==='tab';
+      document.getElementById('fail-icon').textContent  = tab ? '🚫' : '💥';
+      document.getElementById('fail-title').textContent = tab ? 'Level Cancelled' : 'Level Failed';
+      document.getElementById('fail-sub').innerHTML = tab
+        ? 'You left this tab or window during the level.<br>To keep things fair, the level restarts from the beginning.'
+        : 'You used all 5 attempts.<br>Don\'t worry — the level starts over from the beginning with fresh attempts.';
+      document.getElementById('success-overlay')?.classList.remove('show');
+      document.getElementById('fail-overlay').classList.add('show');
+    }
+
+    /* ─── ANTI-TAB-OUT: leaving the tab/window cancels the level ───── */
+    function levelIsActive(){
+      const ps=document.getElementById('puzzlescreen');
+      return ps && !ps.classList.contains('hidden')
+          && !levelFailed
+          && !document.getElementById('level-complete')?.classList.contains('show');
+    }
+    function tabOutBackout(){
+      if(!levelIsActive()) return;
+      levelFailed=true; done=true;              // lock the board
+      clearConf();
+      showFail('tab');
+    }
+    document.addEventListener('visibilitychange',()=>{ if(document.hidden) tabOutBackout(); });
+    window.addEventListener('blur', tabOutBackout);   // also catches split-screen / another window
+    function resetAttempts(){ curErrors=0; levelFailed=false; document.getElementById('fail-overlay')?.classList.remove('show'); renderLives(); }
+    function retryLevel(){
+      resetAttempts();
+      document.getElementById('success-overlay')?.classList.remove('show');
+      planSession(); curHints=0; buildDots(); curPage=0; renderPage(0);
+    }
+    function failToLevels(){ resetAttempts(); showLevels(); }
+
     function startLevel(n){
       const cfg = LEVEL_CONFIG[n];
       if(!cfg) return;
@@ -7205,7 +7290,7 @@ const RND = (function(){
       curLevel = n;
       BASE_PAGES = cfg.pages;
       planSession();
-      curHints = 0; curErrors = 0;
+      curHints = 0; resetAttempts();
       // Update topbar breadcrumb
       document.querySelector('.puzzle-breadcrumb').innerHTML = `${cfg.badge} › <span>${cfg.title}</span>`;
       document.querySelector('.puzzle-badge').textContent = cfg.badge;
@@ -8280,7 +8365,7 @@ const RND = (function(){
     const { out, err } = interpret(code, simQueue);
 
     if(err){
-      curErrors++;
+      registerError();
       noteAttempt({kind:'ide',sub:'run',err});
       outputEl.innerHTML = `<span class="ide-error">❌ ${escHtml(err)}</span>`;
       showFB('wrong','❌', escHtml(err));
@@ -8296,16 +8381,16 @@ const RND = (function(){
     // Legacy static-page validation (only used if the randomizer fell back to the original page)
     if(p && p.ideRequireCondition){
       const codeLC = code.toLowerCase();
-      if(!codeLC.includes('if ') && !codeLC.includes('if\t')){ curErrors++; showFB('wrong','❌','Your code must use an <strong>if</strong> statement to check the condition!'); return; }
-      if(!codeLC.includes('else')){ curErrors++; showFB('wrong','❌','Your code must also use an <strong>else</strong> branch for when the condition is false!'); return; }
-      if(!codeLC.includes('set x')){ curErrors++; showFB('wrong','❌','Make sure to <strong>set x to 2</strong> before the if statement!'); return; }
+      if(!codeLC.includes('if ') && !codeLC.includes('if\t')){ registerError(); showFB('wrong','❌','Your code must use an <strong>if</strong> statement to check the condition!'); return; }
+      if(!codeLC.includes('else')){ registerError(); showFB('wrong','❌','Your code must also use an <strong>else</strong> branch for when the condition is false!'); return; }
+      if(!codeLC.includes('set x')){ registerError(); showFB('wrong','❌','Make sure to <strong>set x to 2</strong> before the if statement!'); return; }
     }
 
     // Anything the task forbids (e.g. quotes around a number)
     if(p && p.ideForbid){
       for(let i=0;i<p.ideForbid.length;i++){
         if(code.includes(p.ideForbid[i])){
-          curErrors++;
+          registerError();
           noteAttempt({kind:'ide',sub:'forbid'});
           showFB('wrong','❌', (p.ideForbidMsgs && p.ideForbidMsgs[i]) || `Your code should not contain <strong>${escHtml(p.ideForbid[i])}</strong>.`);
           return;
@@ -8318,7 +8403,7 @@ const RND = (function(){
       const codeLC = code.toLowerCase();
       for(let i=0;i<p.ideRequiredKeywords.length;i++){
         if(!codeLC.includes(p.ideRequiredKeywords[i].toLowerCase())){
-          curErrors++;
+          registerError();
           noteAttempt({kind:'ide',sub:'req'});
           const msg = (p.ideRequiredMsgs && p.ideRequiredMsgs[i]) || `Your code is missing <strong>${p.ideRequiredKeywords[i]}</strong>!`;
           showFB('wrong','❌', msg);
@@ -8339,7 +8424,7 @@ const RND = (function(){
           if(!applicable) continue;
           const rr = interpret(testSrc, tc.inputs.slice());
           if(rr.err || rr.out.join('\n').trim() !== tc.expected.trim()){
-            curErrors++;
+            registerError();
             noteAttempt({kind:'ide',sub:'hidden'});
             const shown = tc.inputs.length ? `When the input is <strong>${escHtml(tc.inputs.join(', '))}</strong>` : 'When the starting value changes';
             const got = rr.err ? `an error (${escHtml(rr.err)})` : `"${escHtml(rr.out.join(' / '))}"`;
@@ -8353,7 +8438,7 @@ const RND = (function(){
       showFB('correct','🎉', winMsg);
       problemSolved(p);
     } else {
-      curErrors++;
+      registerError();
       noteAttempt({kind:'ide',sub:'out',got:outputText,want:expected});
       showFB('wrong','❌',`Output was "${escHtml(outputText.trim())}" — expected exactly "${escHtml(expected)}"`);
     }
@@ -8444,7 +8529,7 @@ const RND = (function(){
       showFB('correct','🎉', p.successMsg);
       problemSolved(p);
     } else {
-      curErrors++;
+      registerError();
       noteAttempt({kind:'mc',mode:p.mcMode,got:choice,want:p.mcCorrect});
       document.querySelectorAll('.mc-btn').forEach(btn=>{
         if(btn.dataset.val===choice) btn.classList.add('wrong-lock');
@@ -8550,7 +8635,7 @@ const RND = (function(){
           showFB('correct','🎉', p.semantic||p.successMsg ? (p.successMsg||'Correct order!') : 'Correct order!');
           problemSolved(p);
         } else {
-          curErrors++;
+          registerError();
           if(p.semantic){ noteAttempt({kind:'ord',sem:true,err:semR&&semR.err,gotLen:semR?semR.out.length:0,wantLen:p.semantic.expected.length}); }
           else { const bad=p.zones.map((z,i)=>document.getElementById(z.id).dataset.value!==z.correct?i:-1).filter(i=>i>=0); noteAttempt({kind:'ord',trace:true,first:bad[0],count:bad.length}); }
           showFB('wrong','❌','The order isn\'t quite right — check the highlighted steps!');
@@ -8580,7 +8665,7 @@ const RND = (function(){
         showFB('correct','🎉', ROUND ? (p.successMsg||'Correct!') : (PAGES[curPage].isLast?'Amazing! You completed all pages!':'Perfect! Moving to next page...'));
         problemSolved(p);
       } else {
-        curErrors++;
+        registerError();
         { const bad=[]; p.zones.forEach((z,i)=>{ const el=document.getElementById(z.id); if(el.dataset.value!==z.correct) bad.push({i,kind:z.b?z.b.kind:'kw',got:el.dataset.value,want:z.correct}); });
           noteAttempt({kind:'dd',bad,total:p.zones.length}); }
         showFB('wrong','❌','Not quite — check the highlighted blanks!');
@@ -8862,7 +8947,7 @@ const RND = (function(){
       }
     }
     function lcHome(){ document.getElementById('level-complete').classList.remove('show'); clearConf(); showScreen('home'); }
-    function lcPlay(){ document.getElementById('level-complete').classList.remove('show'); clearConf(); planSession(); buildDots(); curPage=0; curHints=0; curErrors=0; renderPage(0); }
+    function lcPlay(){ document.getElementById('level-complete').classList.remove('show'); clearConf(); planSession(); buildDots(); curPage=0; curHints=0; resetAttempts(); renderPage(0); }
     function lcNext(n){ document.getElementById('level-complete').classList.remove('show'); clearConf(); startLevel(n); }
 
     /* ─── CONFETTI ───────────────────────────────────── */
