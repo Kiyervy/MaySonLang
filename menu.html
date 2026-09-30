@@ -378,7 +378,7 @@
           <span class="btn-arrow">›</span>
         </button>
       </div>
-      <div class="version-tag">MaySon beta · MaySon Language Edition</div>
+      <div class="version-tag">MaySon Alpha · MaySon Language Edition</div>
     </div>
 
     <!-- LEVEL SELECT -->
@@ -5837,7 +5837,7 @@ const RND = (function(){
     return { type:'ide', isIDE:true, name, lang:t.lang, taskDesc: fmtTaskBlock(t.task+(simTxt?'\n'+simTxt:'')+'\n'+expList(r.out)),
       ideLang: py?'python':undefined, ideLabel: py?'Python Editor':'MaySon Editor', idePlaceholder: py?'# Type your Python code here...':'# Type your code here...',
       ideSimInputs:sim, ideExpected:r.out.join('\n'), ideRequiredKeywords:t.req||[], ideRequiredMsgs:t.reqMsgs||[], ideForbid:t.forbid||[], ideForbidMsgs:t.forbidMsgs||[],
-      ideStarter:t.starter||'', ideTests:tests, _ref:t.ref, ideWinMsg:win, hint, successMsg:win, sig:'ide|'+name };
+      ideStarter:t.starter||'', mascot:t.mascot||null, ideTests:tests, _ref:t.ref, ideWinMsg:win, hint, successMsg:win, sig:'ide|'+name };
   }
 
   /* ── one page = PROBLEMS_PER_PAGE fresh problems ──── */
@@ -6195,47 +6195,21 @@ const RND = (function(){
   const PAIRS=[['True','False'],['Yes','No'],['Open','Closed'],['Pass','Fail'],['Win','Lose'],['Big','Small']];
   IDE.l3_a = R=>{ const v=R.pick(['x','num','temp','level']); const op=pick(['>','<','>=','<=']); const k=R.num(6,25); const n=R.num(1,k-1)+(Math.random()<.3?k:0); const [a,b]=pick(PAIRS); const alt=[R.num(1,k-3), k, k+R.num(1,9)];
     return { lang:'may', task:`Write code that does this:\n- Start with a variable **${v}** holding the number **${n}**\n- Print **${a}** if ${v} is ${CMPW[op]} ${k}\n- Otherwise, print **${b}**`, ref:[`set ${v} to ${n}`,`if ${v} ${op} ${k}:`,`  say "${a}"`,`else:`,`  say "${b}"`], req:['if ','else','set '+v], reqMsgs:['Your code must use an <strong>if</strong> statement!','Add an <strong>else</strong> branch for when the condition is false!',`Make sure to <strong>set ${v} to ${n}</strong> first!`], tests:alt.map(x=>({subs:[setTo(v,x)]})), hint:`Say it aloud: "if ${v} ${CMPW[op]} ${k}". Remember the colon and the indented lines.`, win:`🎉 With ${v} = ${n} the condition is ${cmpTrue(n,op,k)?'true':'false'}, so it printed "${cmpTrue(n,op,k)?a:b}". Level 3 complete!` }; };
-  IDE.l3_chain = R=>{ const L=pick([['A','B','C'],['Gold','Silver','Bronze'],['High','Medium','Low'],['Hot','Warm','Cold']]); const t1=R.pick([90,80,70]), t2=t1-R.pick([20,25,30]); const s=R.pick([t1+R.num(0,9),t2+R.num(0,9),t2-R.num(1,20)]); const v=R.pick(['score','power','points']);
-    return { lang:'may', task:`Write code that does this:\n- Start with a variable **${v}** holding the number **${s}**\n- Print **${L[0]}** if ${v} is ${t1} or more\n- Otherwise, print **${L[1]}** if ${v} is ${t2} or more\n- Otherwise, print **${L[2]}**`, ref:[`set ${v} to ${s}`,`if ${v} >= ${t1}:`,`  say "${L[0]}"`,`else if ${v} >= ${t2}:`,`  say "${L[1]}"`,`else:`,`  say "${L[2]}"`], req:['if ','else if','else:','set '+v], reqMsgs:['Start with an <strong>if</strong>!','Use <strong>else if</strong> for the middle case!','Finish with <strong>else:</strong>!',`Set <strong>${v}</strong> first!`], tests:[t1+1,t2+1,t2-1].map(x=>({subs:[setTo(v,x)]})), hint:'Check the highest tier first, then `else if`, then `else`.', win:`🎉 A full if / else if / else chain — it printed "${s>=t1?L[0]:s>=t2?L[1]:L[2]}". Level 3 complete!` }; };
-  IDE.l3_eq = R=>{ const w=R.sample(WORDS,2); const v=R.pick(['pet','word','secret']); const [a,b]=pick(PAIRS); const same=Math.random()<.5; const val=same?w[0]:w[1];
-    return { lang:'may', task:`Write code that does this:\n- Start with a variable **${v}** holding the text **${val}**\n- Print **${a}** if ${v} is equal to the text **${w[0]}**\n- Otherwise, print **${b}**`, ref:[`set ${v} to "${val}"`,`if ${v} == "${w[0]}":`,`  say "${a}"`,`else:`,`  say "${b}"`], req:['if ','else','==','set '+v], reqMsgs:['Use an <strong>if</strong> statement!','Add an <strong>else</strong> branch!','Compare with <strong>==</strong> (two equals signs)!',`Set <strong>${v}</strong> first!`], tests:[{subs:[[new RegExp('set\\s+'+v+'\\s*(?:to|=)\\s*"[^"]*"','i'),'set '+v+' to "'+w[0]+'"']]},{subs:[[new RegExp('set\\s+'+v+'\\s*(?:to|=)\\s*"[^"]*"','i'),'set '+v+' to "'+w[1]+'"']]}], hint:'`==` tests equality; a single `=` only stores.', win:'🎉 You compared text with == — nicely done. Level 3 complete!' }; };
 
   /* L4 (Python) */
   const pyTiers=(R)=>{ const L=pick([['Hot','Warm','Cold'],['High','Medium','Low'],['Gold','Silver','Bronze'],['Fast','Steady','Slow']]); const a=R.pick([30,25,80,90]), b=a-R.pick([10,15,20]); return {L,a,b}; };
-  IDE.l4_a = R=>{ const {L,a,b}=pyTiers(R); const v=R.pick(['temp','speed','level','power']); const s=R.pick([a+R.num(1,9),b+R.num(1,a-b-1),b-R.num(0,9)]);
-    return { lang:'py', task:`Write a program that does this:\n- Start with a variable **${v}** holding the number **${s}**\n- Print **${L[0]}** if ${v} is above ${a}\n- Otherwise, print **${L[1]}** if ${v} is above ${b}\n- Otherwise, print **${L[2]}**`, ref:[`${v} = ${s}`,`if ${v} > ${a}:`,`  print("${L[0]}")`,`elif ${v} > ${b}:`,`  print("${L[1]}")`,`else:`,`  print("${L[2]}")`], req:['if ','elif','else','print('], reqMsgs:['Use an <strong>if</strong> statement!','Use <strong>elif</strong> for the second condition!','Add an <strong>else</strong> branch!','Use <strong>print( )</strong> to show messages!'], tests:[a+3,b+2,b-3].map(x=>({subs:[setTo(v,x,true)]})), hint:'Python chain: `if` … `elif` … `else`, each ending with a colon.', win:`🎉 Real Python from scratch! It printed "${s>a?L[0]:s>b?L[1]:L[2]}". Level 4 complete!` }; };
-  IDE.l4_b = R=>{ const v=R.pick(['age','score','coins']); const k=R.pick([13,16,18,21]); const s=R.pick([k-R.num(1,5),k,k+R.num(1,9)]); const [a,b]=pick(PAIRS); const m=R.msg();
-    return { lang:'py', task:`Write a program that does this:\n- Start with a variable **${v}** holding the number **${s}**\n- Print **${a}** if ${v} is ${k} or more\n- Otherwise, print **${b}**`, ref:[`${v} = ${s}`,`if ${v} >= ${k}:`,`  print("${a}")`,`else:`,`  print("${b}")`], req:['if ','else','print('], reqMsgs:['Use an <strong>if</strong> statement!','Add an <strong>else</strong> branch!','Use <strong>print( )</strong>!'], tests:[k,k-1,k+4].map(x=>({subs:[setTo(v,x,true)]})), hint:'"or more" means `>=`.', win:'🎉 A complete Python if / else. Level 4 complete!' }; };
-  IDE.l4_c = R=>{ const v=R.pick(['lives','stock','tickets']); const s=R.pick([0,R.num(1,5)]); const [a,b]=pick([['Game Over','Keep Going'],['Sold Out','Available'],['Empty','In Stock']]);
-    return { lang:'py', task:`Write a program that does this:\n- Start with a variable **${v}** holding the number **${s}**\n- Print **${a}** if ${v} is equal to 0\n- Otherwise, print **${b}**`, ref:[`${v} = ${s}`,`if ${v} == 0:`,`  print("${a}")`,`else:`,`  print("${b}")`], req:['if ','else','==','print('], reqMsgs:['Use an <strong>if</strong> statement!','Add an <strong>else</strong> branch!','Compare with <strong>==</strong>!','Use <strong>print( )</strong>!'], tests:[0,R.num(1,6)].map(x=>({subs:[setTo(v,x,true)]})), hint:'`==` compares two values.', win:'🎉 Python comparison working! Level 4 complete!' }; };
 
   /* L5 */
-  IDE.l5_a = R=>{ const n=R.num(2,6), m=R.msg(); return { lang:'may', task:`Write a loop that prints \`${m}\` exactly ${n} times.`, ref:[`repeat ${n} times:`,`  say "${m}"`], req:['repeat','times','say'], reqMsgs:['Use <strong>repeat</strong> to build a loop!','A loop looks like <strong>repeat N times:</strong>','Use <strong>say</strong> inside the loop!'], hint:'`repeat N times:` then an indented `say` line.', win:`🎉 \`repeat ${n} times\` printed the message ${n} times. Level 5 complete!` }; };
-  IDE.l5_two = R=>{ const n=R.num(2,4), [a,b]=R.msgs(2); return { lang:'may', task:`Write a loop that runs ${n} times. Each round must:\n- Print \`${a}\`\n- Then print \`${b}\``, ref:[`repeat ${n} times:`,`  say "${a}"`,`  say "${b}"`], req:['repeat','times','say'], reqMsgs:['Use <strong>repeat</strong>!','Use <strong>times:</strong>','Use <strong>say</strong>!'], hint:'Put both `say` lines under the loop, indented.', win:'🎉 Two actions per round — level 5 complete!' }; };
-  IDE.l5_var = R=>{ const v=R.pick(['n','count','rounds']), n=R.num(2,6), m=R.msg(); return { lang:'may', task:`Write code that does this:\n- Create a variable **${v}** holding the number **${n}**\n- Print \`${m}\` as many times as the number stored in **${v}**`, ref:[`set ${v} to ${n}`,`repeat ${v} times:`,`  say "${m}"`], req:['set '+v,'repeat '+v,'say'], reqMsgs:[`Set <strong>${v}</strong> first!`,`Use <strong>repeat ${v} times:</strong> — the variable is the count!`,'Use <strong>say</strong>!'], tests:[2,4].map(x=>({subs:[setTo(v,x)]})), hint:'A loop can use a variable as its count.', win:'🎉 A loop driven by a variable. Level 5 complete!' }; };
-  IDE.l5_sandwich = R=>{ const n=R.num(2,5), [a,b,c]=R.msgs(3); return { lang:'may', task:`Write code that does this:\n- Print \`${a}\` once\n- Then print \`${b}\` ${n} times using a loop\n- Then print \`${c}\` once`, ref:[`say "${a}"`,`repeat ${n} times:`,`  say "${b}"`,`say "${c}"`], req:['repeat','times','say'], reqMsgs:['Use <strong>repeat</strong>!','Use <strong>times:</strong>','Use <strong>say</strong>!'], hint:'Only the indented line repeats.', win:'🎉 A loop in the middle of a program. Level 5 complete!' }; };
 
   /* L6 */
-  IDE.l6_mult = R=>{ const k=R.pick([2,3,4,5]), w={2:'doubled',3:'tripled',4:'quadrupled',5:'multiplied by five'}[k]; const n=R.num(2,12); return { lang:'may', task:`Write code that does this:\n- Ask the user for a number and keep the answer in **n**\n- Work out **result** as n multiplied by ${k}\n- Print **result**`, sim:[n], tests:[{inputs:[3]},{inputs:[10]},{inputs:[7]}], ref:[`ask "Number?" into n`,`set result to n * ${k}`,`say result`], req:['ask','into','say','* '+k], reqMsgs:['Use <strong>ask ... into ...</strong> to read the number!','Store the answer <strong>into</strong> n!','Use <strong>say</strong>!',`Multiply with <strong>* ${k}</strong>!`], hint:`\`ask "Number?" into n\` then \`set result to n * ${k}\`.`, win:`🎉 You combined input and operators! Level 6 complete!` }; };
-  IDE.l6_change = R=>{ const price=R.num(3,15), cash=price+R.num(1,20); return { lang:'may', task:`Write code that does this:\n- Ask for the **price** and keep it in a variable called **price**\n- Ask for the **cash** paid and keep it in a variable called **cash**\n- Work out **change** as the cash minus the price\n- Print **change**`, sim:[price,cash], tests:[{inputs:[4,10]},{inputs:[9,20]}], ref:[`ask "Price?" into price`,`ask "Cash?" into cash`,`set change to cash - price`,`say change`], req:['ask','into','say','-'], reqMsgs:['Use <strong>ask ... into ...</strong>!','Store answers <strong>into</strong> variables!','Use <strong>say</strong>!','Subtract with <strong>-</strong>!'], hint:'Ask twice, subtract, then say the answer.', win:'🎉 A little cash register! Level 6 complete!' }; };
-  IDE.l6_pin = R=>{ const pin=R.num(1000,9999); const [a,b]=pick([['Access Granted','Access Denied'],['Door Open','Door Locked'],['Welcome!','Try Again']]); return { lang:'may', task:`Write code that does this:\n- Ask the user for a **pin** and keep it in a variable called **pin**\n- Print **${a}** if the pin equals the number **${pin}**\n- Otherwise, print **${b}**`, sim:[pin], tests:[{inputs:[pin+1]},{inputs:[pin]},{inputs:[R.num(1,999)]}], ref:[`ask "PIN?" into pin`,`if pin == ${pin}:`,`  say "${a}"`,`else:`,`  say "${b}"`], req:['ask','into','if ','else','=='], reqMsgs:['Use <strong>ask ... into ...</strong>!','Store it <strong>into</strong> pin!','Use an <strong>if</strong>!','Add an <strong>else</strong>!','Compare with <strong>==</strong>!'], hint:'`if pin == 1234:` compares the typed pin.', win:'🎉 A working PIN checker. Level 6 complete!' }; };
-  IDE.l6_share = R=>{ const f=R.num(2,6), per=R.num(3,12); const bill=f*per; return { lang:'may', task:`Write code that does this:\n- Ask for the **bill** and keep it in a variable called **bill**\n- Ask for the number of **friends** and keep it in a variable called **friends**\n- Work out **share** by dividing the bill between the friends\n- Print **share**`, sim:[bill,f], tests:[{inputs:[20,4]},{inputs:[36,6]},{inputs:[45,5]}], ref:[`ask "Bill?" into bill`,`ask "Friends?" into friends`,`set share to bill / friends`,`say share`], req:['ask','into','say','/'], reqMsgs:['Use <strong>ask ... into ...</strong>!','Store answers <strong>into</strong> variables!','Use <strong>say</strong>!','Divide with <strong>/</strong>!'], hint:'Ask twice, then divide.', win:'🎉 Splitting the bill fairly. Level 6 complete!' }; };
 
   /* L7 — nested logic (Python) */
-  IDE.l7_a = R=>{ const [a,b]=R.msgs(2), n=R.num(2,6); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **n**\n- If n is greater than 0, count through the numbers from 0 up to one less than n using a counter called **i**:\n  - Print **${a}** when i is 0\n  - Print **${b}** on every other round\n- Otherwise, print nothing`, sim:[n], tests:[{inputs:[1]},{inputs:[3]},{inputs:[0]}], ref:[`n = int(input("N?"))`,`if n > 0:`,`  for i in range(n):`,`    if i == 0:`,`      print("${a}")`,`    else:`,`      print("${b}")`], req:['input(','if ','for ','range','print('], reqMsgs:['Read the number with <strong>int(input(...))</strong>!','Use an <strong>if</strong> to check n first!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Use <strong>print( )</strong>!'], hint:'Three levels: an `if` outside, a `for` inside it, and another `if` inside the loop.', win:'🎉 Three levels of nested logic! Level 7 complete!' }; };
-  IDE.l7_b = R=>{ const [a,b,c]=R.msgs(3), n=R.num(2,6); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **n**\n- If n is greater than 0, count through the numbers from 0 up to one less than n using a counter called **i**:\n  - Print **${b}** on every round except the last\n  - On the last round, print **${c}** instead\n- If n is 0 or less, print **${a}**`, sim:[n], tests:[{inputs:[1]},{inputs:[4]},{inputs:[0]}], ref:[`n = int(input("N?"))`,`if n > 0:`,`  for i in range(n):`,`    if i == n - 1:`,`      print("${c}")`,`    else:`,`      print("${b}")`,`else:`,`  print("${a}")`], req:['input(','if ','for ','range','else','print('], reqMsgs:['Read with <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Add <strong>else</strong> branches!','Use <strong>print( )</strong>!'], hint:'The last round has `i == n - 1`.', win:'🎉 Nested logic with an edge case handled. Level 7 complete!' }; };
-  IDE.l7_c = R=>{ const a=R.msg(), n=R.num(2,6); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **n**\n- If n is greater than 0, print every whole number from 0 up to one less than n, one per line\n- Otherwise, print **${a}**`, sim:[n], tests:[{inputs:[1]},{inputs:[5]},{inputs:[0]}], ref:[`n = int(input("N?"))`,`if n > 0:`,`  for i in range(n):`,`    print(i)`,`else:`,`  print("${a}")`], req:['input(','if ','for ','range','else','print('], reqMsgs:['Read with <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Add an <strong>else</strong>!','Use <strong>print( )</strong>!'], hint:'`print(i)` shows the loop counter itself.', win:'🎉 A loop inside an if, with an else! Level 7 complete!' }; };
 
   /* L8 — Python bridge 2 */
-  IDE.l8_a = R=>{ const v=R.pick(['laps','reps','rounds']), m=R.msg(), n=R.num(2,6); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into a variable called **${v}**\n- Print **${m}** that many times`, sim:[n], tests:[{inputs:[1]},{inputs:[4]}], ref:[`${v} = int(input("How many?"))`,`for i in range(${v}):`,`  print("${m}")`], req:['input(','for ','range','print('], reqMsgs:['Use <strong>input(...)</strong> to read the number!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Use <strong>print( )</strong>!'], hint:`\`${v} = int(input("..."))\` then \`for i in range(${v}):\`.`, win:`🎉 You bridged MaySon and Python into one program! Level 8 complete!` }; };
-  IDE.l8_b = R=>{ const [a,b]=R.msgs(2), n=R.num(2,5); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **n**\n- Print **${a}** once\n- Then print **${b}** n times`, sim:[n], tests:[{inputs:[1]},{inputs:[3]}], ref:[`n = int(input("N?"))`,`print("${a}")`,`for i in range(n):`,`  print("${b}")`], req:['input(','for ','range','print('], reqMsgs:['Use <strong>input(...)</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Use <strong>print( )</strong>!'], hint:'Print the first message before the loop.', win:'🎉 Input + loop in Python. Level 8 complete!' }; };
-  IDE.l8_c = R=>{ const n=R.num(3,7); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **n**\n- Count up from 0, printing each number on its own line, until n numbers have been printed`, sim:[n], tests:[{inputs:[2]},{inputs:[5]}], ref:[`n = int(input("N?"))`,`for i in range(n):`,`  print(i)`], req:['input(','for ','range','print('], reqMsgs:['Use <strong>input(...)</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Use <strong>print( )</strong>!'], hint:'`print(i)` — no quotes — prints the counter.', win:'🎉 Counting with range! Level 8 complete!' }; };
 
   /* L9 — lists (MaySon) */
   IDE.l9_a = R=>{ const v=R.pick(['colors','snacks','pets','fruits']), it=sample(WORDS,3); return { lang:'may', task:`Write code that does this:\n- Create a list called **${v}** holding the words ${it.map(x=>'**'+x+'**').join(', ')}\n- Print how many items it holds\n- Print its last item`, ref:[`set ${v} to ${lit(it)}`,`say length(${v})`,`say ${v}[length(${v}) - 1]`], req:['length(','set '+v], reqMsgs:[`Use <strong>length(${v})</strong> to count the items — don't just count them yourself!`,`Create the list with <strong>set ${v} to [...]</strong>`], hint:'The last index is `length(list) - 1`.', win:'🎉 You built a list, measured it, and indexed into it. Level 9 complete!' }; };
   IDE.l9_b = R=>{ const v=R.pick(['games','songs','toys','foods']), n=R.num(3,5), it=sample(WORDS,n); return { lang:'may', task:`Write code that does this:\n- Create a list called **${v}** holding the words ${it.map(x=>'**'+x+'**').join(', ')}\n- Print its **first** item\n- Print how many items it holds`, ref:[`set ${v} to ${lit(it)}`,`say ${v}[0]`,`say length(${v})`], req:['length(','set '+v], reqMsgs:[`Use <strong>length(${v})</strong>!`,`Create the list with <strong>set ${v} to [...]</strong>`], hint:'The first item is index 0.', win:'🎉 First item and length — lists mastered! Level 9 complete!' }; };
-  IDE.l9_c = R=>{ const v=R.pick(['pets','books','teams','heroes']), n=R.num(3,4), it=sample(WORDS,n); return { lang:'may', task:`Write code that does this:\n- Create a list called **${v}** holding the words ${it.map(x=>'**'+x+'**').join(', ')}\n- Go through the list one item at a time, printing each item`, ref:[`set ${v} to ${lit(it)}`,`for each x in ${v}:`,`  say x`], req:['for each','set '+v], reqMsgs:['Use a <strong>for each</strong> loop!',`Create the list with <strong>set ${v} to [...]</strong>`], hint:'`for each item in list:` then an indented `say`.', win:'🎉 Looped through a whole list. Level 9 complete!' }; };
-  IDE.l9_d = R=>{ const v=R.pick(['scores','points','prices']), n=R.num(3,4), it=Array.from({length:n},()=>R.num(2,30)); return { lang:'may', task:`Write code that does this:\n- Create a list called **${v}** holding the numbers ${it.join(', ')}\n- Print its **last** item\n- Then print how many items it holds`, ref:[`set ${v} to [${it.join(', ')}]`,`say ${v}[length(${v}) - 1]`,`say length(${v})`], req:['length(','set '+v], reqMsgs:[`Use <strong>length(${v})</strong>!`,`Create the list with <strong>set ${v} to [...]</strong>`], hint:'Numbers in a list need no quotes.', win:'🎉 Last item and length. Level 9 complete!' }; };
 
   /* L10 — functions (MaySon) */
   IDE.l10_a = R=>{ const [f,op]=pick([['add','+'],['multiply','*'],['subtract','-']]); let a=R.num(3,12), b=R.num(2,9); if(op==='-'&&a<=b) a=b+R.num(1,6); const w={'+':'their sum','*':'their product','-':'the first value minus the second'}[op]; return { lang:'may', task:`Write code that does this:\n- Create a function called **${f}** that takes two values (call them a and b) and gives back ${w}\n- Use it with the numbers **${a}** and **${b}**\n- Print what it gives back`, ref:[`define ${f}(a, b):`,`  return a ${op} b`,`say ${f}(${a}, ${b})`], req:['define '+f,'return'], reqMsgs:[`Define it with <strong>define ${f}(a, b):</strong>`,'Send the value back with <strong>return</strong>!'], hint:`\`define ${f}(a, b):\` then an indented \`return a ${op} b\`.`, win:'🎉 You defined a function, passed in parameters, and returned a value! Level 10 complete!' }; };
@@ -6252,39 +6226,490 @@ const RND = (function(){
   IDE.l11_bound_py = R=>{ const v=R.pick(['age','score','level']), k=R.pick([13,16,18,21]), m=R.pick(['Adult','Allowed','Member','Welcome']); return { lang:'py', task:`Fix the buggy Python code so it prints \`${m}\` when ${v} is exactly ${k}.`, starter:`${v} = ${k}\nif ${v} > ${k}:\n  print("${m}")`, ref:[`${v} = ${k}`,`if ${v} >= ${k}:`,`  print("${m}")`], hint:'Which comparison operator includes the boundary value?', win:'🎉🐞 Boundary bug fixed with >=.' }; };
 
   /* L12 — pure Python */
-  IDE.l12_a = R=>{ const k=R.pick([2,3,4]), T=R.pick([10,12,15,20]), n=R.num(3,10); const [a,b]=pick([['High Score','Keep Going'],['Bonus Round','Try Again'],['Level Up!','Almost There']]); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **points**\n- Work out **bonus** as points multiplied by ${k}\n- Print **${a}** if bonus is above ${T}\n- Otherwise, print **${b}**`, sim:[n], tests:[{inputs:[1]},{inputs:[Math.floor(T/k)]},{inputs:[Math.floor(T/k)+1]},{inputs:[20]}], ref:[`points = int(input("Points?"))`,`bonus = points * ${k}`,`if bonus > ${T}:`,`  print("${a}")`,`else:`,`  print("${b}")`], req:['input(','if ','else','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Add an <strong>else</strong>!','Use <strong>print( )</strong>!'], hint:'Read → multiply → decide → print.', win:'🎉🐍 A complete Python program from scratch! Level 12 complete!' }; };
-  IDE.l12_b = R=>{ const L=pick([['Rich','Okay','Broke'],['Gold','Silver','Bronze'],['Expert','Skilled','Beginner']]); const a=R.pick([50,100]), b=R.pick([10,20,25]); const n=R.pick([a+R.num(1,20),b+R.num(1,9),R.num(0,b-1)]); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **coins**\n- Print **${L[0]}** if coins is ${a} or more\n- Otherwise, print **${L[1]}** if coins is ${b} or more\n- Otherwise, print **${L[2]}**`, sim:[n], tests:[{inputs:[a]},{inputs:[b]},{inputs:[b-1]},{inputs:[a+20]}], ref:[`coins = int(input("Coins?"))`,`if coins >= ${a}:`,`  print("${L[0]}")`,`elif coins >= ${b}:`,`  print("${L[1]}")`,`else:`,`  print("${L[2]}")`], req:['input(','if ','elif','else','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Use <strong>elif</strong>!','Add an <strong>else</strong>!','Use <strong>print( )</strong>!'], hint:'Check the biggest threshold first.', win:'🎉🐍 A full if / elif / else in pure Python! Level 12 complete!' }; };
-  IDE.l12_c = R=>{ const m=R.msg(), n=R.num(2,6); return { lang:'py', task:`Write a program that does this:\n- Read a whole number into **lives**\n- If lives is greater than 0, print **${m}** once for each life\n- Otherwise, print **Game Over**`, sim:[n], tests:[{inputs:[1]},{inputs:[0]},{inputs:[4]}], ref:[`lives = int(input("Lives?"))`,`if lives > 0:`,`  for i in range(lives):`,`    print("${m}")`,`else:`,`  print("Game Over")`], req:['input(','if ','for ','range','else','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Add an <strong>else</strong>!','Use <strong>print( )</strong>!'], hint:'Check first, then loop.', win:'🎉🐍 Input, condition and loop together in Python! Level 12 complete!' }; };
 
   /* L13 — algorithms */
-  IDE.l13_atm = R=>{ const bal=R.pick([20,50,100]), w=R.num(2,5); return { lang:'py', task:`Write a Python program that does this:\n- Read a whole number **balance**\n- Then read a whole number **withdrawal**\n- If the withdrawal is less than or equal to the balance, print \`Dispensing $1\` once for each dollar withdrawn\n- Otherwise, print \`Insufficient funds\``, sim:[bal,w], tests:[{inputs:[10,3]},{inputs:[2,5]},{inputs:[5,5]},{inputs:[0,1]}], ref:[`balance = int(input("Balance?"))`,`withdrawal = int(input("Amount?"))`,`if withdrawal <= balance:`,`  for i in range(withdrawal):`,`    print("Dispensing $1")`,`else:`,`  print("Insufficient funds")`], req:['input(','if ','for ','range','print('], reqMsgs:['Read both numbers with <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Use <strong>print( )</strong>!'], hint:'Decide with `if`, then loop `withdrawal` times.', win:'🎉🏧 You built a whole ATM by choosing the right concepts. Level 13 complete!' }; };
-  IDE.l13_vend = R=>{ const P=R.num(2,9), [a,b]=pick([['Dispense','Insufficient Funds'],['Play!','Need more tokens'],['Ticket Issued','Insert more coins']]); const n=P+R.pick([-2,0,1,3]); return { lang:'py', task:`Write a Python program that does this:\n- Read a whole number **money**\n- Print **${a}** if money is at least ${P}\n- Otherwise, print **${b}**`, sim:[Math.max(0,n)], tests:[{inputs:[P]},{inputs:[P-1]},{inputs:[P+5]},{inputs:[0]}], ref:[`money = int(input("Money?"))`,`if money >= ${P}:`,`  print("${a}")`,`else:`,`  print("${b}")`], req:['input(','if ','else','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Add an <strong>else</strong>!','Use <strong>print( )</strong>!'], hint:'"At least" means `>=`.', win:'🎉🥤 A working vending machine! Level 13 complete!' }; };
-  IDE.l13_pw = R=>{ const pw=pick(PWS), other=pick(PWS.filter(x=>x!==pw)); return { lang:'py', task:`Write a Python program that does this:\n- Read a password from the user into **pw**\n- Print **Access Granted** if pw is exactly **${pw}**\n- Otherwise, print **Access Denied**`, sim:[pw], tests:[{inputs:[other]},{inputs:[pw]},{inputs:[pw+'x']}], ref:[`pw = input("Password?")`,`if pw == "${pw}":`,`  print("Access Granted")`,`else:`,`  print("Access Denied")`], req:['input(','if ','else','==','print('], reqMsgs:['Use <strong>input(...)</strong>!','Use an <strong>if</strong>!','Add an <strong>else</strong>!','Compare with <strong>==</strong>!','Use <strong>print( )</strong>!'], hint:'A password is text, so no `int(...)` around the input.', win:'🎉🔐 A password checker! Level 13 complete!' }; };
-  IDE.l13_change = R=>{ const price=R.num(3,15), cash=price+R.pick([-2,0,3,7]); return { lang:'py', task:`Write a Python program that does this:\n- Read a whole number **price**\n- Then read a whole number **cash**\n- Work out **change** as the cash minus the price\n- If change is 0 or more, print the change\n- Otherwise, print \`Not enough cash\``, sim:[price,Math.max(0,cash)], tests:[{inputs:[5,10]},{inputs:[9,4]},{inputs:[6,6]}], ref:[`price = int(input("Price?"))`,`cash = int(input("Cash?"))`,`change = cash - price`,`if change >= 0:`,`  print(change)`,`else:`,`  print("Not enough cash")`], req:['input(','if ','else','-','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use an <strong>if</strong>!','Add an <strong>else</strong>!','Subtract with <strong>-</strong>!','Use <strong>print( )</strong>!'], hint:'Compute the change first, then decide what to print.', win:'🎉💵 Change calculator done! Level 13 complete!' }; };
 
   /* L14 — project prep (accumulators) */
-  IDE.l14_cart = R=>{ const T=R.pick([40,50,60,80]); const q=R.num(2,6), p=R.pick([5,8,10,12,15,20]); const [a,b]=[ 'Free Shipping!','Add More to Qualify' ]; return { lang:'py', task:`Write a program that does this:\n- Read a whole number **quantity**\n- Then read a whole number **price**\n- Keep a running variable called **total**, starting at 0\n- Add the price to total once for every item in the quantity\n- After that, print **${a}** if total is ${T} or more\n- Otherwise, print **${b}**`, sim:[q,p], tests:[{inputs:[1,10]},{inputs:[4,5]},{inputs:[T,1]},{inputs:[2,T]}], ref:[`quantity = int(input("Quantity?"))`,`price = int(input("Price?"))`,`total = 0`,`for i in range(quantity):`,`  total = total + price`,`if total >= ${T}:`,`  print("${a}")`,`else:`,`  print("${b}")`], req:['input(','for ','range','total','if ','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Keep a running <strong>total</strong>!','Add an <strong>if</strong> after the loop!','Use <strong>print( )</strong>!'], hint:'Accumulator: start at 0, add each round, decide after the loop.', win:'🎉🛒 A complete accumulator program! Level 14 complete!' }; };
-  IDE.l14_steps = R=>{ const k=R.num(2,9); const n=R.num(2,7); return { lang:'py', task:`Write a program that does this:\n- Read a whole number of rounds into **rounds**\n- Keep a running variable called **steps**, starting at 0\n- Add **${k}** to steps once for every round\n- Then print **steps**`, sim:[n], tests:[{inputs:[1]},{inputs:[5]},{inputs:[0]}], ref:[`rounds = int(input("Rounds?"))`,`steps = 0`,`for i in range(rounds):`,`  steps = steps + ${k}`,`print(steps)`], req:['input(','for ','range','steps','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Keep a running <strong>steps</strong> variable!','Use <strong>print( )</strong>!'], hint:'`steps = steps + k` inside the loop.', win:'🎉👣 A running total, round by round! Level 14 complete!' }; };
-  IDE.l14_score = R=>{ const k=R.pick([5,10,15]), T=R.pick([30,50,60]); const n=R.num(2,8); const [a,b]=pick([['Bonus!','Keep Playing'],['Level Up!','Try Again']]); return { lang:'py', task:`Write a program that does this:\n- Read a whole number of wins into **wins**\n- Keep a running variable called **score**, starting at 0\n- Add **${k}** points to score for every win\n- Print **${a}** if score is at least ${T}\n- Otherwise, print **${b}**`, sim:[n], tests:[{inputs:[1]},{inputs:[Math.ceil(T/k)]},{inputs:[Math.ceil(T/k)-1]},{inputs:[0]}], ref:[`wins = int(input("Wins?"))`,`score = 0`,`for i in range(wins):`,`  score = score + ${k}`,`if score >= ${T}:`,`  print("${a}")`,`else:`,`  print("${b}")`], req:['input(','for ','range','score','if ','print('], reqMsgs:['Use <strong>int(input(...))</strong>!','Use a <strong>for</strong> loop!','Use <strong>range</strong>!','Keep a running <strong>score</strong>!','Add an <strong>if</strong> after the loop!','Use <strong>print( )</strong>!'], hint:'Accumulate first, then compare.', win:'🎉🏆 Accumulator + decision! Level 14 complete!' }; };
 
-  /* L15 — capstone: Movie Ticket Booth & Snack Counter (many variants) */
-  const capstone = (R,v)=>{
-    const c1=R.pick([10,12,13,14]), c2=R.pick([60,62,65,70]); const p1=R.num(3,6), p2=R.num(p1+1,8), p3=R.num(p2+1,12);
-    const S=pick(SNACKS); const sp=[R.num(2,9),R.num(2,9),R.num(2,9)]; const T=R.pick([40,50,60,75]);
-    const age=R.pick([R.num(4,c1-1),R.num(c1,c2-1),R.num(c2,90)]), cnt=R.num(2,6);
-    const tests=[[R.num(4,c1-1),R.num(1,5)],[R.num(c1,c2-1),R.num(1,5)],[R.num(c2,90),R.num(1,5)],[c1,2],[c2,3]].map(x=>({inputs:x}));
-    const tail = v===0
-      ? { a:'Group Discount Applied!', b:'Full Price', d:`a discount message` }
-      : { a:'Free Shipping!', b:'Standard Shipping', d:`a shipping message` };
-    const task=`Build the **complete** Movie Ticket Booth & Snack Counter:\n- Read a whole number **age**, then a whole number **count** (the number of tickets)\n- Decide the ticket **price** from the age:\n  - ${p1} for anyone under ${c1}\n  - ${p2} for anyone ${c2} or older\n  - ${p3} for everyone else\n- Create a function called **ticket_total** that takes the price and the count and gives back the cost of all the tickets, and keep what it gives back in **total**\n- Create a list called **snacks** holding ${S.map(x=>'**'+x+'**').join(', ')}, and print one line for each snack in the form: snack name followed by \`added to order\`\n- Print \`Ticket Issued\` once for every ticket\n- Create a list called **snack_prices** holding ${sp.join(', ')}, and add all its values up into **snack_total** (starting at 0)\n- Work out **grand_total** as total plus snack_total\n- Print **${tail.a}** if grand_total is ${T} or more\n- Otherwise, print **${tail.b}**`;
-    return { lang:'py', task, sim:[age,cnt], tests,
-      ref:[`age = int(input("Age?"))`,`count = int(input("Tickets?"))`,`if age < ${c1}:`,`  price = ${p1}`,`elif age >= ${c2}:`,`  price = ${p2}`,`else:`,`  price = ${p3}`,`def ticket_total(price, count):`,`  return price * count`,`total = ticket_total(price, count)`,`snacks = ${lit(S)}`,`for item in snacks:`,`  print(item + " added to order")`,`for i in range(count):`,`  print("Ticket Issued")`,`snack_prices = [${sp.join(', ')}]`,`snack_total = 0`,`for cost in snack_prices:`,`  snack_total = snack_total + cost`,`grand_total = total + snack_total`,`if grand_total >= ${T}:`,`  print("${tail.a}")`,`else:`,`  print("${tail.b}")`],
-      req:['input(','if ','elif','else','def ','return','for ','range','[','print('], reqMsgs:['Read with <strong>int(input(...))</strong>!','Use an <strong>if</strong> to decide the price!','Use <strong>elif</strong> for the middle tier!','Add an <strong>else</strong>!','Define a function with <strong>def</strong>!','The function must <strong>return</strong> a value!','Use a <strong>for</strong> loop!','Use <strong>range</strong> for the tickets!','Use a <strong>list</strong> with [ ]!','Use <strong>print( )</strong>!'],
-      hint:'Build it in stages and press ▶ Run after each stage: price → function → snack loop → ticket loop → totals → final message.',
-      win:`🎉🎬 You built the complete Movie Ticket Booth & Snack Counter from scratch — decisions, a function, lists, loops and an accumulator all working together. Level 15 — Capstones Mini-Project: complete! 🏆` };
+  /* ═══════════ SCENARIO-DRIVEN HANDS-ON TASKS — Levels 6-8 and 12-14 ═══════════
+     Every build picks a different story, variable names, operator, comparison, branch order and messages,
+     so the *shape* of the solution changes too and students cannot memorise one program. */
+  const OPWORD = {'+':'plus','-':'minus','*':'multiplied by','/':'divided by'};
+  const CT  = {'>':'greater than','>=':'at least','<':'less than','<=':'at most','==':'equal to','!=':'not equal to'};
+  const mayAsk = (v,p)=>`ask "${p}?" into ${v}`;
+  const pyIn   = (v,p)=>`${v} = int(input("${p}?"))`;
+  const cap1   = s=>s.charAt(0).toUpperCase()+s.slice(1);
+  const reqAuto = (lang, ref, extra)=>{
+    const src=ref.join('\n'), req=[], msgs=[]; const add=(k,m)=>{ req.push(k); msgs.push(m); };
+    if(lang==='may'){
+      if(/^\s*ask /m.test(src)){ add('ask','Use <strong>ask ... into ...</strong>!'); add('into','Store the answer <strong>into</strong> a variable!'); }
+      if(/^\s*say /m.test(src)) add('say','Use <strong>say</strong>!');
+      if(/^\s*if /m.test(src)) add('if ','Use an <strong>if</strong>!');
+      if(/^\s*else:/m.test(src)) add('else','Add an <strong>else</strong>!');
+    } else {
+      if(/input\(/.test(src)) add('input(','Read with <strong>input(...)</strong>!');
+      if(/^\s*if /m.test(src)) add('if ','Use an <strong>if</strong>!');
+      if(/^\s*elif /m.test(src)) add('elif','Use <strong>elif</strong>!');
+      if(/^\s*else:/m.test(src)) add('else','Add an <strong>else</strong>!');
+      if(/^\s*for /m.test(src)) add('for ','Use a <strong>for</strong> loop!');
+      if(/range\(/.test(src)) add('range','Use <strong>range</strong>!');
+      if(/print\(/.test(src)) add('print(','Use <strong>print( )</strong>!');
+    }
+    (extra||[]).forEach(e=>add(e[0],e[1]));
+    return {req, msgs};
   };
-  IDE.cap_a = R=>capstone(R,0);
-  IDE.cap_b = R=>capstone(R,1);
+  const mk = o=>{ const q=reqAuto(o.lang,o.ref,o.extra); return { lang:o.lang, task:o.task.join('\n'), sim:o.sim, tests:o.tests.map(i=>({inputs:i})), ref:o.ref, req:q.req, reqMsgs:q.msgs, hint:'Build it in small steps and press Run after each one.', win:o.win }; };
+  const two6 = (op,R)=>{ let x,y; if(op==='-'){ y=R.num(3,15); x=y+R.num(1,20); } else if(op==='+'){ x=R.num(2,20); y=R.num(2,20); } else if(op==='*'){ x=R.num(2,12); y=R.num(2,9); } else { y=R.num(2,6); x=y*R.num(3,12); } return [x,y]; };
+  const lbl = (th,v)=> (v===th.y && th.yT) ? th.yT : v;
+
+  /* ── L6 (MaySon): input + arithmetic + if ── */
+  IDE.l6_mult = R=>{
+    const op=R.pick(['*','+','-']), inV=R.pick(['n','hours','coins','laps','boxes','minutes']), outV=R.pick(['result','total','answer','pay','cost']);
+    const k=op==='-'?R.num(1,5):R.num(2,9), echo=Math.random()<.5;
+    return mk({ lang:'may', sim:[R.num(6,15)], tests:[[6],[10],[15]], extra:[[op,`Use the <strong>${op}</strong> operator!`]],
+      task:['Write code that does this:',`- Ask the user for a number and keep the answer in **${inV}**`,`- Work out **${outV}** as ${inV} ${OPWORD[op]} ${k}`, echo?`- Print **${inV}**, then print **${outV}**`:`- Print **${outV}**`],
+      ref:[mayAsk(inV,cap1(inV)),`set ${outV} to ${inV} ${op} ${k}`,...(echo?[`say ${inV}`]:[]),`say ${outV}`],
+      win:'🎉 You combined input and operators! Level 6 complete!' });
+  };
+  const L6_TWO = {
+    '-':[{x:'cash',y:'price',out:'change'},{x:'budget',y:'spent',out:'left'},{x:'distance',y:'walked',out:'remaining'},{x:'capacity',y:'used',out:'free'}],
+    '+':[{x:'apples',y:'pears',out:'fruit'},{x:'red',y:'blue',out:'marbles'},{x:'morning',y:'evening',out:'steps'},{x:'goals',y:'assists',out:'points'}],
+    '*':[{x:'width',y:'height',out:'area'},{x:'price',y:'count',out:'cost'},{x:'speed',y:'hours',out:'distance'},{x:'rows',y:'seats',out:'capacity'}],
+    '/':[{x:'bill',y:'friends',yT:'number of friends',out:'share'},{x:'distance',y:'hours',out:'speed'},{x:'cookies',y:'kids',yT:'number of kids',out:'each'},{x:'pages',y:'days',out:'per_day'}]
+  };
+  IDE.l6_change = R=>{
+    const op=R.pick(['-','+','*','/']), th=R.pick(L6_TWO[op]), swap=Math.random()<.5;
+    const f1=swap?th.y:th.x, f2=swap?th.x:th.y, ord=(x,y)=>swap?[y,x]:[x,y];
+    return mk({ lang:'may', sim:ord(...two6(op,R)), tests:[ord(...two6(op,R)),ord(...two6(op,R)),ord(...two6(op,R))], extra:[[op,`Use the <strong>${op}</strong> operator!`]],
+      task:['Write code that does this:',`- Ask for the **${lbl(th,f1)}** and keep it in a variable called **${f1}**`,`- Ask for the **${lbl(th,f2)}** and keep it in a variable called **${f2}**`,`- Work out **${th.out}** as the ${lbl(th,th.x)} ${OPWORD[op]} the ${lbl(th,th.y)}`,`- Print **${th.out}**`],
+      ref:[mayAsk(f1,cap1(f1)),mayAsk(f2,cap1(f2)),`set ${th.out} to ${th.x} ${op} ${th.y}`,`say ${th.out}`],
+      win:'🎉 Two inputs, one calculation. Level 6 complete!' });
+  };
+  const L6_STEP = [
+    {a:'price',b:'count',t:'subtotal',out:'total',op1:'*',op2:'+',kr:[2,5]},
+    {a:'bill',b:'friends',bT:'number of friends',t:'share',out:'pay',op1:'/',op2:'+',kr:[1,4]},
+    {a:'kills',b:'assists',t:'sum',out:'score',op1:'+',op2:'*',kr:[2,4]},
+    {a:'rows',b:'plants',t:'garden',out:'left',op1:'*',op2:'-',kr:[1,3]}
+  ];
+  IDE.l6_share = R=>{
+    const th=R.pick(L6_STEP), k=R.num(...th.kr), [a0,b0]=two6(th.op1,R);
+    return mk({ lang:'may', sim:[a0,b0], tests:[two6(th.op1,R),two6(th.op1,R),two6(th.op1,R)], extra:[[th.op1,`Use the <strong>${th.op1}</strong> operator!`],[th.op2,`Use the <strong>${th.op2}</strong> operator!`]],
+      task:['Write code that does this:',`- Ask for the **${th.a}** and keep it in a variable called **${th.a}**`,`- Ask for the **${th.bT||th.b}** and keep it in a variable called **${th.b}**`,`- Work out **${th.t}** as the ${th.a} ${OPWORD[th.op1]} the ${th.bT||th.b}`,`- Then work out **${th.out}** as ${th.t} ${OPWORD[th.op2]} ${k}`,`- Print **${th.out}**`],
+      ref:[mayAsk(th.a,cap1(th.a)),mayAsk(th.b,cap1(th.b)),`set ${th.t} to ${th.a} ${th.op1} ${th.b}`,`set ${th.out} to ${th.t} ${th.op2} ${k}`,`say ${th.out}`],
+      win:'🎉 A two-step calculation. Level 6 complete!' });
+  };
+  const L6_CHK = [
+    {v:'pin',ask:'PIN',ops:['==','!='],msgs:[['Access Granted','Access Denied'],['Door Open','Door Locked'],['Welcome!','Try Again']],lo:1000,hi:9999},
+    {v:'code',ask:'Code',ops:['==','!='],msgs:[['Locker Opens','Locker Stays Shut'],['Safe Unlocked','Safe Locked']],lo:10,hi:99},
+    {v:'score',ask:'Score',ops:['>','>=','<','<='],msgs:[['You Passed','You Failed'],['Level Cleared','Try Again']],lo:10,hi:99},
+    {v:'age',ask:'Age',ops:['>=','<','>','<='],msgs:[['Ride Allowed','Too Young'],['Ticket Approved','Not Allowed']],lo:5,hi:20},
+    {v:'temperature',ask:'Temperature',ops:['>','>=','<','<='],msgs:[['Wear Shorts','Take a Jacket'],['Beach Day','Stay Inside']],lo:5,hi:35}
+  ];
+  const L6_PH = {'==':'equals the number','!=':'does not equal the number','>':'is greater than','>=':'is at least','<':'is less than','<=':'is at most'};
+  IDE.l6_pin = R=>{
+    const th=R.pick(L6_CHK), op=R.pick(th.ops), N=R.num(th.lo+1,th.hi-1), [a,b]=R.pick(th.msgs);
+    return mk({ lang:'may', sim:[R.pick([N-1,N,N+1])], tests:[[N-1],[N],[N+1],[R.num(th.lo,th.hi)]],
+      task:['Write code that does this:',`- Ask the user for a **${th.v}** and keep it in a variable called **${th.v}**`,`- Print **${a}** if the ${th.v} ${L6_PH[op]} **${N}**`,`- Otherwise, print **${b}**`],
+      ref:[mayAsk(th.v,th.ask),`if ${th.v} ${op} ${N}:`,`  say "${a}"`,`else:`,`  say "${b}"`],
+      win:'🎉 An input checker. Level 6 complete!' });
+  };
+
+  /* ── L7 (Python): if + for + if ── */
+  const L7_G = [{g:0,c:'>',t:'is greater than 0'},{g:1,c:'>=',t:'is at least 1'},{g:2,c:'>',t:'is greater than 2'},{g:3,c:'>=',t:'is at least 3'}];
+  const l7base = (R,bodyFn)=>{
+    const G=R.pick(L7_G), one=Math.random()<.5, lo=G.c==='>'?G.g+1:G.g;
+    const rng=one?'range(1, n + 1)':'range(n)', rngT=one?'from 1 up to n':'from 0 up to one less than n', f0=one?1:0, last=one?'n':'n - 1', lastLt=one?'n':'n - 1';
+    const b=bodyFn({R,one,f0,last,lastLt,rng,rngT});
+    const alt=Math.random()<.5?R.msg():null;
+    return { G, lo, one, rng, rngT, b, alt };
+  };
+  const l7build = (R,x,winMsg)=> mk({ lang:'py', sim:[R.num(x.lo+1,x.lo+5)], tests:[[Math.max(0,x.lo-1)],[x.lo],[x.lo+3]],
+    task:['Write a program that does this:','- Read a whole number into **n**',`- If n ${x.G.t}, ${x.b.intro(x.rngT)}`,...x.b.sub.map(s=>'  - '+s),x.alt?`- Otherwise, print **${x.alt}**`:'- Otherwise, print nothing'],
+    ref:[pyIn('n','N'),`if n ${x.G.c} ${x.G.g}:`,`  for i in ${x.rng}:`,...x.b.code.map(l=>'    '+l),...(x.alt?['else:',`  print("${x.alt}")`]:[])], win:winMsg });
+  IDE.l7_a = R=>{
+    const [a,b]=R.msgs(2), kk=R.num(2,3), v=R.pick(['first','early','notfirst']);
+    const x=l7base(R,({f0})=> v==='first'
+      ? {intro:t=>`count through the numbers ${t} using a counter called **i**:`, sub:[`Print **${a}** when i is ${f0}`,`Print **${b}** on every other round`], code:[`if i == ${f0}:`,`  print("${a}")`,`else:`,`  print("${b}")`]}
+      : v==='early'
+      ? {intro:t=>`count through the numbers ${t} using a counter called **i**:`, sub:[`Print **${a}** while i is less than ${f0+kk}`,`Print **${b}** on every later round`], code:[`if i < ${f0+kk}:`,`  print("${a}")`,`else:`,`  print("${b}")`]}
+      : {intro:t=>`count through the numbers ${t} using a counter called **i**:`, sub:[`Print **${b}** on every round except the first`,`On the first round, print **${a}** instead`], code:[`if i > ${f0}:`,`  print("${b}")`,`else:`,`  print("${a}")`]});
+    return l7build(R,x,'🎉 Three levels of nested logic! Level 7 complete!');
+  };
+  IDE.l7_b = R=>{
+    const [b,c]=R.msgs(2), s=R.pick(['lastfirst','notlast']);
+    const x=l7base(R,({last,lastLt})=> s==='lastfirst'
+      ? {intro:t=>`count through the numbers ${t} using a counter called **i**:`, sub:[`Print **${b}** on every round except the last`,`On the last round, print **${c}** instead`], code:[`if i == ${last}:`,`  print("${c}")`,`else:`,`  print("${b}")`]}
+      : {intro:t=>`count through the numbers ${t} using a counter called **i**:`, sub:[`On every round before the last, print **${b}**`,`On the last round, print **${c}**`], code:[`if i < ${lastLt}:`,`  print("${b}")`,`else:`,`  print("${c}")`]});
+    return l7build(R,x,'🎉 Nested logic with an edge case handled. Level 7 complete!');
+  };
+  IDE.l7_c = R=>{
+    const k=R.num(2,5), v=R.pick(['plain0','plain1','times0','times1','plus0']);
+    const x=l7base(R,()=>({}));
+    const one=v.endsWith('1'), rng=one?'range(1, n + 1)':'range(n)', rngT=one?'from 1 up to n':'from 0 up to one less than n';
+    const body= v.startsWith('plain') ? {t:`print every whole number ${rngT}, one per line`, l:'print(i)'}
+              : v.startsWith('times') ? {t:`print each number ${rngT} multiplied by ${k}, one per line`, l:`print(i * ${k})`}
+              : {t:`print each number ${rngT} plus ${k}, one per line`, l:`print(i + ${k})`};
+    const alt=Math.random()<.6?R.msg():null;
+    return mk({ lang:'py', sim:[R.num(x.lo+1,x.lo+5)], tests:[[Math.max(0,x.lo-1)],[x.lo],[x.lo+3]],
+      task:['Write a program that does this:','- Read a whole number into **n**',`- If n ${x.G.t}, ${body.t}`,alt?`- Otherwise, print **${alt}**`:'- Otherwise, print nothing'],
+      ref:[pyIn('n','N'),`if n ${x.G.c} ${x.G.g}:`,`  for i in ${rng}:`,`    ${body.l}`,...(alt?['else:',`  print("${alt}")`]:[])],
+      win:'🎉 A loop inside an if. Level 7 complete!' });
+  };
+
+  /* ── L8 (Python): input + for ── */
+  IDE.l8_a = R=>{
+    const v=R.pick(['laps','reps','rounds','repeats','turns','cycles']), m=R.msg(), [st,dn]=R.msgs(2), mode=R.pick(['plain','start','done','both']);
+    const S=(mode==='start'||mode==='both'), D=(mode==='done'||mode==='both');
+    return mk({ lang:'py', sim:[R.num(2,6)], tests:[[1],[4]],
+      task:['Write a program that does this:',`- Read a whole number into a variable called **${v}**`,...(S?[`- Print **${st}** once, before anything else`]:[]),`- Print **${m}** that many times`,...(D?[`- After the last one, print **${dn}**`]:[])],
+      ref:[pyIn(v,'How many'),...(S?[`print("${st}")`]:[]),`for i in range(${v}):`,`  print("${m}")`,...(D?[`print("${dn}")`]:[])],
+      win:'🎉 You bridged MaySon and Python into one program! Level 8 complete!' });
+  };
+  IDE.l8_b = R=>{
+    const v=R.pick(['n','times','count','rounds']), [a,b,c]=R.msgs(3), mode=R.pick(['head','foot','both','head']);
+    const H=mode==='head'||mode==='both', F=mode==='foot'||mode==='both';
+    return mk({ lang:'py', sim:[R.num(2,5)], tests:[[1],[3]],
+      task:['Write a program that does this:',`- Read a whole number into **${v}**`,...(H?[`- Print **${a}** once`]:[]),`- ${H?'Then print':'Print'} **${b}** ${v} times`,...(F?[`- Finally, print **${c}** once`]:[])],
+      ref:[pyIn(v,'N'),...(H?[`print("${a}")`]:[]),`for i in range(${v}):`,`  print("${b}")`,...(F?[`print("${c}")`]:[])],
+      win:'🎉 Input + loop in Python. Level 8 complete!' });
+  };
+  IDE.l8_c = R=>{
+    const kind=R.pick(['zero','one','times','plus','range2']), v=R.pick(['n','limit','total','count']), k=R.num(2,5);
+    if(kind==='range2'){ const lo=R.num(1,5), hi=lo+R.num(2,5);
+      return mk({ lang:'py', sim:[lo,hi], tests:[[1,4],[3,8],[0,3]],
+        task:['Write a program that does this:','- Read a whole number into **lo**, then a whole number into **hi**','- Print every whole number from lo up to one less than hi, one per line'],
+        ref:[pyIn('lo','Start'),pyIn('hi','Stop'),'for i in range(lo, hi):','  print(i)'], win:'🎉 Counting between two numbers! Level 8 complete!' }); }
+    const cfg={ zero:{r:`range(${v})`,l:'print(i)',t:`Count up from 0, printing each number on its own line, until ${v} numbers have been printed`},
+                one:{r:`range(1, ${v} + 1)`,l:'print(i)',t:`Count up from 1 to ${v}, printing each number on its own line`},
+                times:{r:`range(1, ${v} + 1)`,l:`print(i * ${k})`,t:`Count from 1 up to ${v}, printing each number multiplied by ${k}`},
+                plus:{r:`range(${v})`,l:`print(i + ${k})`,t:`Count from 0 up to one less than ${v}, printing each number plus ${k}`} }[kind];
+    return mk({ lang:'py', sim:[R.num(3,7)], tests:[[2],[5]],
+      task:['Write a program that does this:',`- Read a whole number into **${v}**`,`- ${cfg.t}`],
+      ref:[pyIn(v,'N'),`for i in ${cfg.r}:`,`  ${cfg.l}`], win:'🎉 Counting with range! Level 8 complete!' });
+  };
+
+  /* ── L12 (Python): read → compute → decide, tiers, guarded loop ── */
+  const L12_A = [
+    {i:'points',o:'bonus',m:[['High Score','Keep Going'],['Bonus Round','Try Again'],['Level Up!','Almost There']]},
+    {i:'hours',o:'pay',m:[['Good Pay Day','Work More Hours'],['Overtime Reward','Regular Day']]},
+    {i:'laps',o:'distance',m:[['Marathon Ready','Keep Training'],['Goal Reached','Run Some More']]},
+    {i:'minutes',o:'calories',m:[['Great Workout','Keep Moving'],['Burned Enough','Go Again']]},
+    {i:'kids',o:'cookies',m:[['Plenty of Cookies','Bake More'],['Party Ready','Need More Cookies']]}
+  ];
+  IDE.l12_a = R=>{
+    const th=R.pick(L12_A), op=R.pick(['*','+']), k=op==='*'?R.pick([2,3,4]):R.pick([5,10,15]), cmp=R.pick(['>','>=','<']), T=R.pick([10,12,15,20,25,30]), [a,b]=R.pick(th.m), show=Math.random()<.4;
+    const x0=Math.max(1,Math.floor(op==='*'?T/k:T-k));
+    return mk({ lang:'py', sim:[R.pick([x0,x0+1,x0+3,Math.max(0,x0-1)])], tests:[[Math.max(0,x0-1)],[x0],[x0+1],[x0+4]],
+      task:['Write a program that does this:',`- Read a whole number into **${th.i}**`,`- Work out **${th.o}** as ${th.i} ${OPWORD[op]} ${k}`,...(show?[`- Print **${th.o}**`]:[]),`- ${show?'Then print':'Print'} **${a}** if ${th.o} is ${CT[cmp]} ${T}`,`- Otherwise, print **${b}**`],
+      ref:[pyIn(th.i,cap1(th.i)),`${th.o} = ${th.i} ${op} ${k}`,...(show?[`print(${th.o})`]:[]),`if ${th.o} ${cmp} ${T}:`,`  print("${a}")`,`else:`,`  print("${b}")`],
+      win:'🎉🐍 A complete Python program from scratch! Level 12 complete!' });
+  };
+  const L12_B = [
+    {v:'coins',l:[['Rich','Okay','Broke'],['Gold Vault','Piggy Bank','Empty Pockets']],x:'Legendary'},
+    {v:'score',l:[['Gold','Silver','Bronze'],['Champion','Contender','Rookie']],x:'Perfect'},
+    {v:'temp',l:[['Hot','Warm','Cold'],['Beach Day','Jacket Day','Snow Day']],x:'Scorching'},
+    {v:'speed',l:[['Fast','Medium','Slow'],['Sprinter','Jogger','Walker']],x:'Supersonic'},
+    {v:'marks',l:[['Distinction','Pass','Fail'],['Honors','Average','Retake']],x:'Genius'}
+  ];
+  IDE.l12_b = R=>{
+    const th=R.pick(L12_B), L=R.pick(th.l), mode=R.pick(['desc','asc','four']), v=th.v;
+    if(mode==='four'){
+      const a=R.pick([80,100]), b=R.pick([40,50,60]), c=R.pick([10,20,25]), n=R.pick([a+R.num(1,15),b+R.num(1,9),c+R.num(1,9),R.num(0,c-1)]);
+      return mk({ lang:'py', sim:[n], tests:[[a],[a-1],[b],[b-1],[c],[c-1]],
+        task:['Write a program that does this:',`- Read a whole number into **${v}**`,`- Print **${th.x}** if ${v} is at least ${a}`,`- Otherwise, print **${L[0]}** if ${v} is at least ${b}`,`- Otherwise, print **${L[1]}** if ${v} is at least ${c}`,`- Otherwise, print **${L[2]}**`],
+        ref:[pyIn(v,cap1(v)),`if ${v} >= ${a}:`,`  print("${th.x}")`,`elif ${v} >= ${b}:`,`  print("${L[0]}")`,`elif ${v} >= ${c}:`,`  print("${L[1]}")`,`else:`,`  print("${L[2]}")`], win:'🎉🐍 A four-way decision in pure Python! Level 12 complete!' }); }
+    const a=R.pick([50,100]), b=R.pick([10,20,25]), n=R.pick([a+R.num(1,20),b+R.num(1,9),R.num(0,b-1)]);
+    const T3=[[a],[a-1],[b],[b-1],[a+20]];
+    return mode==='desc'
+      ? mk({ lang:'py', sim:[n], tests:T3, task:['Write a program that does this:',`- Read a whole number into **${v}**`,`- Print **${L[0]}** if ${v} is at least ${a}`,`- Otherwise, print **${L[1]}** if ${v} is at least ${b}`,`- Otherwise, print **${L[2]}**`],
+          ref:[pyIn(v,cap1(v)),`if ${v} >= ${a}:`,`  print("${L[0]}")`,`elif ${v} >= ${b}:`,`  print("${L[1]}")`,`else:`,`  print("${L[2]}")`], win:'🎉🐍 A full if / elif / else in pure Python! Level 12 complete!' })
+      : mk({ lang:'py', sim:[n], tests:T3, task:['Write a program that does this:',`- Read a whole number into **${v}**`,`- Print **${L[2]}** if ${v} is less than ${b}`,`- Otherwise, print **${L[1]}** if ${v} is less than ${a}`,`- Otherwise, print **${L[0]}**`],
+          ref:[pyIn(v,cap1(v)),`if ${v} < ${b}:`,`  print("${L[2]}")`,`elif ${v} < ${a}:`,`  print("${L[1]}")`,`else:`,`  print("${L[0]}")`], win:'🎉🐍 A full if / elif / else in pure Python! Level 12 complete!' });
+  };
+  const L12_C = [
+    {v:'lives',u:'life',m:['Heart Left','Life Ready','Extra Life'],alt:'Game Over'},
+    {v:'tickets',u:'ticket',m:['Ticket Printed','Ticket Ready'],alt:'Sold Out'},
+    {v:'refills',u:'refill',m:['Glass Refilled','Cup Filled'],alt:'Machine Empty'},
+    {v:'attempts',u:'attempt',m:['Try Again','Keep Going'],alt:'No Attempts Left'},
+    {v:'guests',u:'guest',m:['Welcome!','Come In!'],alt:'Nobody Came'}
+  ];
+  IDE.l12_c = R=>{
+    const th=R.pick(L12_C), m=R.pick(th.m), G=R.pick(L7_G), lo=G.c==='>'?G.g+1:G.g, body=R.pick(['msg','count']), head=Math.random()<.4?R.pick(['Starting Up','Get Ready','Begin']):null, v=th.v;
+    const loopTxt= body==='msg' ? `print **${m}** once for each ${th.u}` : `count from 1 up to ${v}, printing each number on its own line`;
+    return mk({ lang:'py', sim:[R.num(lo+1,lo+5)], tests:[[Math.max(0,lo-1)],[lo],[lo+3]],
+      task:['Write a program that does this:',`- Read a whole number into **${v}**`,...(head?[`- Print **${head}** once, before anything else`]:[]),`- If ${v} ${G.t}, ${loopTxt}`,`- Otherwise, print **${th.alt}**`],
+      ref:[pyIn(v,cap1(v)),...(head?[`print("${head}")`]:[]),`if ${v} ${G.c} ${G.g}:`,body==='msg'?`  for i in range(${v}):`:`  for i in range(1, ${v} + 1):`,body==='msg'?`    print("${m}")`:`    print(i)`,`else:`,`  print("${th.alt}")`],
+      win:'🎉🐍 Input, condition and loop together in Python! Level 12 complete!' });
+  };
+
+  /* ── L13 (Python): algorithms ── */
+  const L13_ATM = [
+    {s:'balance',a:'withdrawal',u:'Dispensing $1',f:'Insufficient funds',each:'dollar withdrawn',ask:['Balance','Amount']},
+    {s:'stock',a:'order',u:'Packing 1 cookie',f:'Not enough cookies',each:'cookie ordered',ask:['Stock','Order']},
+    {s:'tokens',a:'games',u:'Game Started',f:'Not enough tokens',each:'game requested',ask:['Tokens','Games']},
+    {s:'shelf',a:'request',u:'Lending 1 book',f:'Not enough books',each:'book requested',ask:['Shelf','Request']}
+  ];
+  IDE.l13_atm = R=>{
+    const th=R.pick(L13_ATM), mode=R.pick(['le','gt','lt']), bal=R.pick([20,50,100]), w=R.num(2,5);
+    const cond= mode==='le'?[`${th.a} <= ${th.s}`,`the ${th.a} is less than or equal to the ${th.s}`]: mode==='lt'?[`${th.a} < ${th.s}`,`the ${th.a} is less than the ${th.s}`]:[`${th.a} > ${th.s}`,`the ${th.a} is more than the ${th.s}`];
+    const loop=[`  for i in range(${th.a}):`,`    print("${th.u}")`], fail=[`  print("${th.f}")`];
+    const ref=[pyIn(th.s,th.ask[0]),pyIn(th.a,th.ask[1]),`if ${cond[0]}:`,...(mode==='gt'?[...fail,'else:',...loop]:[...loop,'else:',...fail])];
+    const task=['Write a Python program that does this:',`- Read a whole number **${th.s}**`,`- Then read a whole number **${th.a}**`,
+      ...(mode==='gt'?[`- If ${cond[1]}, print \`${th.f}\``,`- Otherwise, print \`${th.u}\` once for each ${th.each}`]:[`- If ${cond[1]}, print \`${th.u}\` once for each ${th.each}`,`- Otherwise, print \`${th.f}\``])];
+    return mk({ lang:'py', sim:[bal,w], tests:[[10,3],[2,5],[5,5],[0,1],[8,8]], task, ref, win:'🎉🏧 You built a whole machine by choosing the right concepts. Level 13 complete!' });
+  };
+  const L13_VEND = [
+    {v:'money',ask:'Money',two:[['Dispense','Insufficient Funds'],['Ticket Issued','Insert more coins']],three:['Exact Change','Change Returned','Need More Coins']},
+    {v:'tokens',ask:'Tokens',two:[['Play!','Need more tokens'],['Ride Starts','Buy Tokens']],three:['Perfect Fit','Extra Tokens Kept','Not Enough Tokens']},
+    {v:'stars',ask:'Stars',two:[['Prize Unlocked','Collect More Stars'],['Badge Earned','Keep Playing']],three:['Just Enough','Bonus Stars','Too Few Stars']},
+    {v:'points',ask:'Points',two:[['Reward Claimed','Not Yet'],['Free Snack','Earn More Points']],three:['On Target','Over Target','Under Target']}
+  ];
+  IDE.l13_vend = R=>{
+    const th=R.pick(L13_VEND), P=R.num(2,9), mode=R.pick(['ge','gt','three']), v=th.v, tests=[[P],[P-1],[P+5],[0],[P+1]];
+    const n=Math.max(0,P+R.pick([-2,0,1,3]));
+    if(mode==='three'){ const [e,o,u]=th.three;
+      return mk({ lang:'py', sim:[n], tests, task:['Write a Python program that does this:',`- Read a whole number **${v}**`,`- Print **${e}** if ${v} is equal to ${P}`,`- Otherwise, print **${o}** if ${v} is more than ${P}`,`- Otherwise, print **${u}**`],
+        ref:[pyIn(v,th.ask),`if ${v} == ${P}:`,`  print("${e}")`,`elif ${v} > ${P}:`,`  print("${o}")`,`else:`,`  print("${u}")`], win:'🎉🥤 A three-way machine! Level 13 complete!' }); }
+    const [a,b]=R.pick(th.two), cmp=mode==='ge'?'>=':'>';
+    return mk({ lang:'py', sim:[n], tests, task:['Write a Python program that does this:',`- Read a whole number **${v}**`,`- Print **${a}** if ${v} is ${mode==='ge'?'at least':'more than'} ${P}`,`- Otherwise, print **${b}**`],
+      ref:[pyIn(v,th.ask),`if ${v} ${cmp} ${P}:`,`  print("${a}")`,`else:`,`  print("${b}")`], win:'🎉🥤 A working machine! Level 13 complete!' });
+  };
+  const L13_PW = [
+    {v:'pw',ask:'Password',words:['sunshine','moonlight','rainbow','dragon7','pancake','rocket9','maple22'],ok:['Access Granted','Access Denied']},
+    {v:'codeword',ask:'Codeword',words:['falcon','tunnel','marble','comet','anchor'],ok:['Door Opens','Door Stays Shut']},
+    {v:'answer',ask:'Answer',words:['pizza','guitar','planet','turtle','castle'],ok:['Correct!','Wrong Answer']},
+    {v:'username',ask:'Username',words:['skywalker','pixel99','bluefox','nightowl','zenmaster'],ok:['Welcome Back','Unknown User']}
+  ];
+  IDE.l13_pw = R=>{
+    const th=R.pick(L13_PW), mode=R.pick(['eq','ne','confirm']), w=R.pick(th.words), other=R.pick(th.words.filter(x=>x!==w)), [g,d]=th.ok, v=th.v;
+    if(mode==='confirm'){ const [m1,m2]=[R.pick(['Passwords Match','Both Entries Agree']),R.pick(['Passwords Differ','Entries Do Not Agree'])];
+      return mk({ lang:'py', sim:[w,w], tests:[[w,other],[w,w],[other,w+'x']], task:['Write a Python program that does this:',`- Read a word into **first**`,`- Then read a word into **second**`,`- Print **${m1}** if first is exactly equal to second`,`- Otherwise, print **${m2}**`],
+        ref:['first = input("First?")','second = input("Second?")','if first == second:',`  print("${m1}")`,'else:',`  print("${m2}")`], win:'🎉🔐 A confirmation check! Level 13 complete!' }); }
+    const tests=[[other],[w],[w+'x']];
+    return mode==='eq'
+      ? mk({ lang:'py', sim:[w], tests, task:['Write a Python program that does this:',`- Read a word from the user into **${v}**`,`- Print **${g}** if ${v} is exactly **${w}**`,`- Otherwise, print **${d}**`],
+          ref:[`${v} = input("${th.ask}?")`,`if ${v} == "${w}":`,`  print("${g}")`,`else:`,`  print("${d}")`], win:'🎉🔐 A word checker! Level 13 complete!' })
+      : mk({ lang:'py', sim:[w], tests, task:['Write a Python program that does this:',`- Read a word from the user into **${v}**`,`- Print **${d}** if ${v} is not equal to **${w}**`,`- Otherwise, print **${g}**`],
+          ref:[`${v} = input("${th.ask}?")`,`if ${v} != "${w}":`,`  print("${d}")`,`else:`,`  print("${g}")`], win:'🎉🔐 A word checker! Level 13 complete!' });
+  };
+  const L13_CH = [
+    {a:'price',b:'cash',r:'change',f:'Not enough cash',w:'the cash minus the price',left:'the change'},
+    {a:'cost',b:'budget',r:'left',f:'Over budget',w:'the budget minus the cost',left:'the amount left'},
+    {a:'needed',b:'fuel',r:'spare',f:'Not enough fuel',w:'the fuel minus the amount needed',left:'the spare amount'},
+    {a:'fee',b:'wallet',r:'remaining',f:'Cannot afford it',w:'the wallet minus the fee',left:'the amount remaining'}
+  ];
+  IDE.l13_change = R=>{
+    const th=R.pick(L13_CH), mode=R.pick(['ge','short']), price=R.num(3,15), cash=Math.max(0,price+R.pick([-2,0,3,7]));
+    const head=['Write a Python program that does this:',`- Read a whole number **${th.a}**`,`- Then read a whole number **${th.b}**`];
+    return mode==='ge'
+      ? mk({ lang:'py', sim:[price,cash], tests:[[5,10],[9,4],[6,6]], task:[...head,`- Work out **${th.r}** as ${th.w}`,`- If ${th.r} is 0 or more, print ${th.left}`,`- Otherwise, print \`${th.f}\``],
+          ref:[pyIn(th.a,cap1(th.a)),pyIn(th.b,cap1(th.b)),`${th.r} = ${th.b} - ${th.a}`,`if ${th.r} >= 0:`,`  print(${th.r})`,`else:`,`  print("${th.f}")`], win:'🎉💵 Calculator done! Level 13 complete!' })
+      : mk({ lang:'py', sim:[price,cash], tests:[[5,10],[9,4],[6,6]], task:[...head,`- If the ${th.b} is less than the ${th.a}, print \`${th.f}\``,`- Otherwise, work out **${th.r}** as ${th.w} and print it`],
+          ref:[pyIn(th.a,cap1(th.a)),pyIn(th.b,cap1(th.b)),`if ${th.b} < ${th.a}:`,`  print("${th.f}")`,`else:`,`  ${th.r} = ${th.b} - ${th.a}`,`  print(${th.r})`], win:'🎉💵 Calculator done! Level 13 complete!' });
+  };
+
+  /* ── L14 (Python): accumulators ── */
+  const L14_CART = [
+    {q:'quantity',p:'price',t:'total',m:[['Free Shipping!','Add More to Qualify']]},
+    {q:'tickets',p:'fare',t:'bill',m:[['Group Discount!','Regular Price']]},
+    {q:'packs',p:'cost',t:'spend',m:[['Combo Deal!','No Deal Yet']]},
+    {q:'litres',p:'rate',t:'fuel_cost',m:[['Full Tank Bonus!','Keep Pumping']]},
+    {q:'books',p:'fee',t:'order_total',m:[['Library Perk!','Borrow More']]}
+  ];
+  IDE.l14_cart = R=>{
+    const th=R.pick(L14_CART), S=R.pick([0,0,5,10]), T=R.pick([40,50,60,80]), cmp=R.pick(['>=','>']), [a,b]=R.pick(th.m), p0=R.pick([5,8,10]), qB=Math.max(2,Math.ceil((T-S)/p0));
+    return mk({ lang:'py', sim:[R.num(2,6),R.pick([5,8,10,12,15,20])], tests:[[qB,p0],[Math.max(1,qB-1),p0],[1,p0],[qB+2,p0]],
+      task:['Write a program that does this:',`- Read a whole number **${th.q}**`,`- Then read a whole number **${th.p}**`,`- Keep a running variable called **${th.t}**, starting at ${S}`,`- Add the ${th.p} to ${th.t} once for every item in the ${th.q}`,`- After that, print **${a}** if ${th.t} is ${cmp==='>='?T+' or more':'more than '+T}`,`- Otherwise, print **${b}**`],
+      ref:[pyIn(th.q,cap1(th.q)),pyIn(th.p,cap1(th.p)),`${th.t} = ${S}`,`for i in range(${th.q}):`,`  ${th.t} = ${th.t} + ${th.p}`,`if ${th.t} ${cmp} ${T}:`,`  print("${a}")`,`else:`,`  print("${b}")`],
+      extra:[[th.t,`Keep a running <strong>${th.t}</strong>!`]], win:'🎉🛒 A complete accumulator program! Level 14 complete!' });
+  };
+  const L14_STEPS = [{r:'rounds',t:'steps'},{r:'days',t:'pages'},{r:'weeks',t:'savings'},{r:'games',t:'points'},{r:'hours',t:'distance'}];
+  IDE.l14_steps = R=>{
+    const th=R.pick(L14_STEPS), op=R.pick(['+','+','-','*']), k=op==='*'?2:R.num(2,9), S=op==='*'?1:op==='-'?k*8:R.pick([0,0,5,10]), out=R.pick(['end','end','each']);
+    const opTxt= op==='+'?`Add **${k}** to ${th.t} once for every ${th.r.replace(/s$/,'')}`: op==='-'?`Subtract **${k}** from ${th.t} once for every ${th.r.replace(/s$/,'')}`:`Multiply ${th.t} by **${k}** once for every ${th.r.replace(/s$/,'')}`;
+    return mk({ lang:'py', sim:[R.num(2,7)], tests:[[1],[5],[0]],
+      task:['Write a program that does this:',`- Read a whole number of ${th.r} into **${th.r}**`,`- Keep a running variable called **${th.t}**, starting at ${S}`,`- ${opTxt}`,out==='end'?`- Then print **${th.t}**`:`- Print **${th.t}** at the end of every ${th.r.replace(/s$/,'')} (inside the loop)`],
+      ref:[pyIn(th.r,cap1(th.r)),`${th.t} = ${S}`,`for i in range(${th.r}):`,`  ${th.t} = ${th.t} ${op} ${k}`,...(out==='each'?[`  print(${th.t})`]:[]),...(out==='end'?[`print(${th.t})`]:[])],
+      extra:[[th.t,`Keep a running <strong>${th.t}</strong> variable!`]], win:'🎉👣 A running total, round by round! Level 14 complete!' });
+  };
+  const L14_SCORE = [
+    {w:'wins',s:'score',m:[['Bonus!','Keep Playing'],['Level Up!','Try Again']]},
+    {w:'goals',s:'points',m:[['Golden Boot!','Keep Shooting']]},
+    {w:'laps',s:'distance',m:[['Record Pace!','Speed Up']]},
+    {w:'sales',s:'earnings',m:[['Bonus Earned!','Sell More']]},
+    {w:'levels',s:'xp',m:[['Rank Up!','Keep Grinding']]}
+  ];
+  IDE.l14_score = R=>{
+    const th=R.pick(L14_SCORE), k=R.pick([5,10,15]), T=R.pick([30,50,60]), S=R.pick([0,0,5,10]), cmp=R.pick(['>=','>']), [a,b]=R.pick(th.m), tB=Math.max(1,Math.ceil((T-S)/k));
+    return mk({ lang:'py', sim:[R.num(2,8)], tests:[[1],[tB],[Math.max(0,tB-1)],[0]],
+      task:['Write a program that does this:',`- Read a whole number of ${th.w} into **${th.w}**`,`- Keep a running variable called **${th.s}**, starting at ${S}`,`- Add **${k}** to ${th.s} for every ${th.w.replace(/s$/,'')}`,`- Print **${a}** if ${th.s} is ${cmp==='>='?'at least '+T:'more than '+T}`,`- Otherwise, print **${b}**`],
+      ref:[pyIn(th.w,cap1(th.w)),`${th.s} = ${S}`,`for i in range(${th.w}):`,`  ${th.s} = ${th.s} + ${k}`,`if ${th.s} ${cmp} ${T}:`,`  print("${a}")`,`else:`,`  print("${b}")`],
+      extra:[[th.s,`Keep a running <strong>${th.s}</strong>!`]], win:'🎉🏆 Accumulator + decision! Level 14 complete!' });
+  };
+
+  /* ═══════════ MORE VARIETY — Levels 3, 4, 5 and 9 (story, names, comparison, branch order, structure) ═══════════ */
+  const TIER_TH = [
+    {v:'points',L:['High','Medium','Low']},{v:'grade',L:['A','B','C']},{v:'speed',L:['Fast','Medium','Slow']},
+    {v:'temp',L:['Hot','Warm','Cold']},{v:'stars',L:['Gold Badge','Silver Badge','No Badge']},{v:'level',L:['Expert','Skilled','Beginner']}
+  ];
+  const tierNums = R=>{ const a=R.pick([70,80,90]), b=R.pick([30,40,50,60]); return {a,b,s:R.pick([a+R.num(1,9),b+R.num(1,a-b-1),b-R.num(1,9)])}; };
+  const tierBuild = (R,lang)=>{
+    const th=R.pick(TIER_TH), {a,b,s}=tierNums(R), mode=R.pick(['desc','asc','descGt']), v=th.v, L=th.L, may=lang==='may';
+    const set= may?`set ${v} to ${s}`:`${v} = ${s}`, out=t=>may?`  say "${t}"`:`  print("${t}")`, mid=may?'else if':'elif';
+    const head=['Write '+(may?'code':'a program')+' that does this:',`- Start with a variable **${v}** holding the number **${s}**`];
+    if(mode==='asc') return mk({ lang, sim:[], tests:[], task:[...head,`- Print **${L[2]}** if ${v} is less than ${b}`,`- Otherwise, print **${L[1]}** if ${v} is less than ${a}`,`- Otherwise, print **${L[0]}**`],
+      ref:[set,`if ${v} < ${b}:`,out(L[2]),`${mid} ${v} < ${a}:`,out(L[1]),'else:',out(L[0])], win:'🎉 Tiers checked from the bottom up!' });
+    const op=mode==='desc'?'>=':'>', ph=mode==='desc'?t=>`${t} or more`:t=>`above ${t}`;
+    return mk({ lang, sim:[], tests:[], task:[...head,`- Print **${L[0]}** if ${v} is ${ph(a)}`,`- Otherwise, print **${L[1]}** if ${v} is ${ph(b)}`,`- Otherwise, print **${L[2]}**`],
+      ref:[set,`if ${v} ${op} ${a}:`,out(L[0]),`${mid} ${v} ${op} ${b}:`,out(L[1]),'else:',out(L[2])], win:'🎉 Tiers checked from the top down!' });
+  };
+  IDE.l3_chain = R=>{ const o=tierBuild(R,'may'); o.win='🎉 A whole if / else if / else chain. Level 3 complete!'; return o; };
+  IDE.l3_eq = R=>{
+    const v=R.pick(['word','pet','color','fruit','name']), [w0,w1]=sample(WORDS,2), same=Math.random()<.5, neq=Math.random()<.5, [a,b]=R.pick([['Match','No Match'],['Correct','Wrong'],['Pass','Fail'],['Same','Different']]);
+    const val=same?w0:w1;
+    return mk({ lang:'may', sim:[], tests:[],
+      task:['Write code that does this:',`- Start with a variable **${v}** holding the text **${val}**`,neq?`- Print **${b}** if ${v} is not equal to the text **${w0}**`:`- Print **${a}** if ${v} is equal to the text **${w0}**`,neq?`- Otherwise, print **${a}**`:`- Otherwise, print **${b}**`],
+      ref:[`set ${v} to "${val}"`,neq?`if ${v} != "${w0}":`:`if ${v} == "${w0}":`,`  say "${neq?b:a}"`,'else:',`  say "${neq?a:b}"`], win:'🎉 Comparing text. Level 3 complete!' });
+  };
+  IDE.l4_a = R=>{ const o=tierBuild(R,'py'); o.win='🎉🐍 A full if / elif / else in Python! Level 4 complete!'; return o; };
+  IDE.l4_b = R=>{
+    const v=R.pick(['age','score','coins','points','height']), k=R.pick([13,16,18,21,50]), s=R.pick([k-R.num(1,5),k,k+R.num(1,9)]), [a,b]=R.pick(PAIRS), mode=R.pick(['ge','lt','gt','le']);
+    const cfg={ge:['>=',`${k} or more`,a,b,false],gt:['>',`more than ${k}`,a,b,false],lt:['<',`less than ${k}`,b,a,true],le:['<=',`${k} or less`,b,a,true]}[mode];
+    return mk({ lang:'py', sim:[], tests:[], task:['Write a program that does this:',`- Start with a variable **${v}** holding the number **${s}**`,`- Print **${cfg[2]}** if ${v} is ${cfg[1]}`,`- Otherwise, print **${cfg[3]}**`],
+      ref:[`${v} = ${s}`,`if ${v} ${cfg[0]} ${k}:`,`  print("${cfg[2]}")`,'else:',`  print("${cfg[3]}")`], win:'🎉🐍 One if / else in Python! Level 4 complete!' });
+  };
+  IDE.l4_c = R=>{
+    const th=R.pick([{v:'lives',m:[['Game Over','Keep Going']]},{v:'stock',m:[['Sold Out','Available'],['Empty','In Stock']]},{v:'tickets',m:[['Sold Out','Available']]},{v:'battery',m:[['Please Charge','Battery OK']]}]);
+    const [a,b]=R.pick(th.m), s=R.pick([0,R.num(1,5)]), mode=R.pick(['eq','ne','le','gt']);
+    const cfg={eq:['==','equal to 0',a,b],ne:['!=','not equal to 0',b,a],le:['<=','0 or less',a,b],gt:['>','greater than 0',b,a]}[mode];
+    return mk({ lang:'py', sim:[], tests:[], task:['Write a program that does this:',`- Start with a variable **${th.v}** holding the number **${s}**`,`- Print **${cfg[2]}** if ${th.v} is ${cfg[1]}`,`- Otherwise, print **${cfg[3]}**`],
+      ref:[`${th.v} = ${s}`,`if ${th.v} ${cfg[0]} 0:`,`  print("${cfg[2]}")`,'else:',`  print("${cfg[3]}")`], win:'🎉🐍 Checking for zero. Level 4 complete!' });
+  };
+
+  /* ── L5 (MaySon): loops ── */
+  IDE.l5_a = R=>{
+    const n=R.num(2,6), m=R.msg(), [d]=R.msgs(1), mode=R.pick(['plain','plain','var','done']), item=R.pick(['item','word','line','note']);
+    if(mode==='var') return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',`- Create a variable **${item}** holding the text **${m}**`,`- Print **${item}** exactly ${n} times using a loop`], ref:[`set ${item} to "${m}"`,`repeat ${n} times:`,`  say ${item}`], extra:[['repeat','Use <strong>repeat</strong> to build a loop!'],['times','A loop looks like <strong>repeat N times:</strong>']], win:'🎉 A loop that repeats a variable. Level 5 complete!' });
+    if(mode==='done') return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',`- Print \`${m}\` exactly ${n} times using a loop`,`- After the loop has finished, print \`${d}\` once`], ref:[`repeat ${n} times:`,`  say "${m}"`,`say "${d}"`], extra:[['repeat','Use <strong>repeat</strong> to build a loop!'],['times','A loop looks like <strong>repeat N times:</strong>']], win:'🎉 Code after a loop. Level 5 complete!' });
+    return mk({ lang:'may', sim:[], tests:[], task:[`Write a loop that prints \`${m}\` exactly ${n} times.`], ref:[`repeat ${n} times:`,`  say "${m}"`], extra:[['repeat','Use <strong>repeat</strong> to build a loop!'],['times','A loop looks like <strong>repeat N times:</strong>']], win:`🎉 \`repeat ${n} times\` printed the message ${n} times. Level 5 complete!` });
+  };
+  IDE.l5_two = R=>{
+    const n=R.num(2,4), cnt=R.pick([2,3]), ms=R.msgs(3).slice(0,cnt), ex=[['repeat','Use <strong>repeat</strong> to build a loop!'],['times','A loop looks like <strong>repeat N times:</strong>']];
+    return mk({ lang:'may', sim:[], tests:[], task:[`Write a loop that runs ${n} times. Each round must:`,...ms.map((x,i)=>`- ${i===0?'Print':'Then print'} \`${x}\``)], ref:[`repeat ${n} times:`,...ms.map(x=>`  say "${x}"`)], extra:ex, win:'🎉 Several actions per round — level 5 complete!' });
+  };
+  IDE.l5_var = R=>{
+    const v=R.pick(['n','count','rounds','laps','turns']), n=R.num(2,6), m=R.msg(), mode=R.pick(['plain','showfirst','textvar']), ex=[['repeat','Use <strong>repeat</strong> to build a loop!'],['times','A loop looks like <strong>repeat N times:</strong>']];
+    const tests=[2,4].map(x=>({subs:[setTo(v,x)]}));
+    if(mode==='showfirst') return { ...mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',`- Create a variable **${v}** holding the number **${n}**`,`- Print **${v}** once`,`- Then print \`${m}\` as many times as the number stored in **${v}**`], ref:[`set ${v} to ${n}`,`say ${v}`,`repeat ${v} times:`,`  say "${m}"`], extra:[['set '+v,`Set <strong>${v}</strong> first!`],...ex], win:'🎉 A loop driven by a variable. Level 5 complete!' }), tests };
+    if(mode==='textvar'){ const w=R.pick(['msg','note','text']);
+      return { ...mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',`- Create a variable **${v}** holding the number **${n}**`,`- Create a variable **${w}** holding the text **${m}**`,`- Print **${w}** as many times as the number stored in **${v}**`], ref:[`set ${v} to ${n}`,`set ${w} to "${m}"`,`repeat ${v} times:`,`  say ${w}`], extra:[['set '+v,`Set <strong>${v}</strong> first!`],...ex], win:'🎉 Two variables, one loop. Level 5 complete!' }), tests }; }
+    return { ...mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',`- Create a variable **${v}** holding the number **${n}**`,`- Print \`${m}\` as many times as the number stored in **${v}**`], ref:[`set ${v} to ${n}`,`repeat ${v} times:`,`  say "${m}"`], extra:[['set '+v,`Set <strong>${v}</strong> first!`],...ex], win:'🎉 A loop driven by a variable. Level 5 complete!' }), tests };
+  };
+  IDE.l5_sandwich = R=>{
+    const n=R.num(2,5), k=R.num(2,4), [a,b,c]=R.msgs(3), mode=R.pick(['sandwich','twoloops','head','foot']), ex=[['repeat','Use <strong>repeat</strong> to build a loop!'],['times','A loop looks like <strong>repeat N times:</strong>']];
+    const spec={
+      sandwich:{t:[`- Print \`${a}\` once`,`- Then print \`${b}\` ${n} times using a loop`,`- Then print \`${c}\` once`],r:[`say "${a}"`,`repeat ${n} times:`,`  say "${b}"`,`say "${c}"`]},
+      twoloops:{t:[`- Print \`${a}\` ${n} times using a loop`,`- Then print \`${b}\` ${k} times using a second loop`],r:[`repeat ${n} times:`,`  say "${a}"`,`repeat ${k} times:`,`  say "${b}"`]},
+      head:{t:[`- Print \`${a}\` once`,`- Then print \`${b}\` ${n} times using a loop`],r:[`say "${a}"`,`repeat ${n} times:`,`  say "${b}"`]},
+      foot:{t:[`- Print \`${a}\` ${n} times using a loop`,`- Then print \`${b}\` once`],r:[`repeat ${n} times:`,`  say "${a}"`,`say "${b}"`]}
+    }[mode];
+    return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',...spec.t], ref:spec.r, extra:ex, win:'🎉 Loops in the middle of a program. Level 5 complete!' });
+  };
+
+  /* ── L9 (MaySon): lists — extra shapes ── */
+  IDE.l9_c = R=>{
+    const v=R.pick(['colors','snacks','pets','fruits','heroes']), it=sample(WORDS,R.num(3,4)), mode=R.pick(['each','twice','intro','outro']), [h]=R.msgs(1);
+    const L=`- Create a list called **${v}** holding the words ${it.map(x=>'**'+x+'**').join(', ')}`, S=`set ${v} to ${lit(it)}`, ex=[['for each','Use a <strong>for each</strong> loop!']];
+    const spec={ each:{t:['- Go through the list one item at a time, printing each item'],r:[`for each x in ${v}:`,'  say x']},
+                 twice:{t:['- Go through the list one item at a time, printing each item twice in a row'],r:[`for each x in ${v}:`,'  say x','  say x']},
+                 intro:{t:[`- Print \`${h}\` once`,'- Then go through the list one item at a time, printing each item'],r:[`say "${h}"`,`for each x in ${v}:`,'  say x']},
+                 outro:{t:['- Go through the list one item at a time, printing each item',`- Then print \`${h}\` once`],r:[`for each x in ${v}:`,'  say x',`say "${h}"`]} }[mode];
+    return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',L,...spec.t], ref:[S,...spec.r], extra:ex, win:'🎉 Looping through a list. Level 9 complete!' });
+  };
+  IDE.l9_d = R=>{
+    const v=R.pick(['scores','points','prices','weights','distances']), n=R.num(3,4), it=Array.from({length:n},()=>R.num(2,30)), mode=R.pick(['lastlen','sum','firstlast','count']);
+    const L=`- Create a list called **${v}** holding the numbers ${it.join(', ')}`, S=`set ${v} to [${it.join(', ')}]`, ex=[['length(','Use <strong>length(...)</strong>!']];
+    if(mode==='sum') return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',L,'- Keep a running variable called **total**, starting at 0','- Go through the list one item at a time, adding each item to total','- Then print **total**'], ref:[S,'set total to 0',`for each x in ${v}:`,'  set total to total + x','say total'], extra:[['for each','Use a <strong>for each</strong> loop!'],['total','Keep a running <strong>total</strong>!']], win:'🎉 Adding up a list. Level 9 complete!' });
+    if(mode==='firstlast') return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',L,'- Print its **first** item','- Then print its **last** item'], ref:[S,`say ${v}[0]`,`say ${v}[length(${v}) - 1]`], extra:ex, win:'🎉 First and last item. Level 9 complete!' });
+    if(mode==='count') return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',L,'- Print how many items it holds','- Then print the **first** item'], ref:[S,`say length(${v})`,`say ${v}[0]`], extra:ex, win:'🎉 Length and first item. Level 9 complete!' });
+    return mk({ lang:'may', sim:[], tests:[], task:['Write code that does this:',L,'- Print its **last** item','- Then print how many items it holds'], ref:[S,`say ${v}[length(${v}) - 1]`,`say length(${v})`], extra:ex, win:'🎉 Last item and length. Level 9 complete!' });
+  };
+
+  /* L15 — capstone: a different mini-project every time (scenario, names, tiers, order, numbers, messages all vary) */
+  const CAP_SCENES = [
+    { title:'Movie Ticket Booth & Snack Counter', emoji:'🎬', kind:'age',      drv:'age',      qty:'count',   qtyText:'the number of tickets',          price:'price',      fn:'ticket_total', fnText:'takes the price and the count and gives back the cost of all the tickets', total:'total',
+      list:'snacks',     word:'snack',     pool:['Popcorn','Soda','Candy','Nachos','Juice','Gummies','Pretzel','Water','Chips','Hot Dog','Fries','Taco'],            suffix:' added to order',   unit:'Ticket Issued',      unitText:'once for every ticket',  pl:'snack_prices',    sum:'snack_total',    grand:'grand_total' },
+    { title:'Theme Park Gate & Souvenir Cart',   emoji:'🎢', kind:'height',   drv:'height',   qty:'guests',  qtyText:'the number of guests in the group', price:'fee',       fn:'entry_cost',   fnText:'takes the fee and the number of guests and gives back the cost of everyone\'s entry', total:'entry_total',
+      list:'souvenirs',  word:'souvenir',  pool:['Cap','Keychain','Magnet','Poster','Sticker','Badge','Mug','Plush Bear','Pin','Bracelet'],                           suffix:' packed in bag',    unit:'Wristband Attached', unitText:'once for every guest',   pl:'souvenir_prices', sum:'souvenir_total', grand:'bill_total' },
+    { title:'Bus Terminal Ticket Desk & Kiosk',  emoji:'🚌', kind:'distance', drv:'distance', qty:'seats',   qtyText:'the number of seats to book',    price:'fare',       fn:'fare_total',   fnText:'takes the fare and the number of seats and gives back the cost of all the seats', total:'trip_total',
+      list:'extras',     word:'extra',     pool:['Water','Sandwich','Blanket','Pillow','Earbuds','Map','Snack Box','Magazine','Fan'],                                 suffix:' loaded on board',  unit:'Seat Reserved',      unitText:'once for every seat',    pl:'extra_prices',    sum:'extras_total',   grand:'final_total' },
+    { title:'Bakery Order Desk & Topping Bar',   emoji:'🥐', kind:'party',    drv:'party',    qty:'boxes',   qtyText:'the number of cake boxes',       price:'box_price',  fn:'order_cost',   fnText:'takes the box price and the number of boxes and gives back the cost of all the boxes', total:'cake_total',
+      list:'toppings',   word:'topping',   pool:['Sprinkles','Cherry','Fudge','Caramel','Almonds','Berries','Coconut','Honey','Cream'],                                suffix:' added to cake',    unit:'Box Packed',         unitText:'once for every box',     pl:'topping_prices',  sum:'topping_total',  grand:'order_total' },
+    { title:'Arcade Token Counter & Prize Shelf',emoji:'🕹️', kind:'level',    drv:'level',    qty:'games',   qtyText:'the number of games to play',    price:'token_cost', fn:'game_cost',    fnText:'takes the token cost and the number of games and gives back the total tokens needed', total:'games_total',
+      list:'prizes',     word:'prize',     pool:['Yo-yo','Robot','Ball','Puzzle','Kite','Whistle','Sticker Book','Frisbee','Marbles'],                                suffix:' placed in bag',    unit:'Game Started',       unitText:'once for every game',    pl:'prize_costs',     sum:'prize_total',    grand:'token_total' },
+    { title:'Zoo Entrance & Gift Shop',          emoji:'🦁', kind:'age',      drv:'years',    qty:'visitors',qtyText:'the number of visitors',         price:'entry',      fn:'gate_total',   fnText:'takes the entry price and the number of visitors and gives back the cost of everyone\'s entry', total:'gate_cost',
+      list:'gifts',      word:'gift',      pool:['Plush Lion','Postcard','Bookmark','Pencil','Toy Zebra','T-Shirt','Poster','Puzzle','Sticker'],                        suffix:' wrapped',          unit:'Stamp Printed',      unitText:'once for every visitor', pl:'gift_prices',     sum:'gift_total',     grand:'bill' }
+  ];
+  const CAP_KIND = {
+    age:      { label:'age',        c1:[10,12,13,14],      c2:[60,62,65,70],      lo:4,  hi:90,  low:c=>`anyone under ${c}`,                 high:c=>`anyone ${c} or older`,             rest:'everyone else' },
+    height:   { label:'height',     c1:[110,120,125,130],  c2:[150,155,160,170],  lo:90, hi:200, low:c=>`guests shorter than ${c} cm`,        high:c=>`guests ${c} cm or taller`,         rest:'every other guest' },
+    distance: { label:'distance',   c1:[5,8,10,15],        c2:[40,50,60,80],      lo:1,  hi:120, low:c=>`trips shorter than ${c} km`,          high:c=>`trips of ${c} km or more`,         rest:'every other trip' },
+    party:    { label:'party size', c1:[3,4,5,6],          c2:[10,12,15,20],      lo:1,  hi:40,  low:c=>`parties of fewer than ${c} people`,   high:c=>`parties of ${c} people or more`,   rest:'every other party' },
+    level:    { label:'level',      c1:[5,8,10],           c2:[30,35,40],         lo:1,  hi:60,  low:c=>`players below level ${c}`,            high:c=>`players at level ${c} or above`,   rest:'every other player' }
+  };
+  const CAP_FINALS = [['Group Discount Applied!','Full Price'],['Free Shipping!','Standard Shipping'],['Bonus Gift Added!','No Bonus'],['VIP Lane Unlocked!','Regular Lane'],['Free Delivery!','Delivery Fee Applies'],['Loyalty Points Earned!','No Points Today']];
+  let CAP_LAST = -1;
+  const capstone = (R)=>{
+    let si; do{ si=ri(0,CAP_SCENES.length-1); }while(si===CAP_LAST && CAP_SCENES.length>1); CAP_LAST=si;
+    const sc=CAP_SCENES[si], K=CAP_KIND[sc.kind];
+    const c1=R.pick(K.c1), c2=R.pick(K.c2);
+    const [p1,p2,p3]=R.sample([3,4,5,6,7,8,9,10,11,12],3);
+    const items=R.sample(sc.pool, R.num(2,4));
+    const sp=Array.from({length:R.num(2,4)},()=>R.num(2,9));
+    const [fa,fb]=R.pick(CAP_FINALS);
+    const highFirst=Math.random()<.5, itemsFirst=Math.random()<.5, strict=Math.random()<.4;
+    const pf=d=> d<c1 ? p1 : d>=c2 ? p2 : p3;
+    const drvVal=R.pick([R.num(K.lo,c1-1),R.num(c1,c2-1),R.num(c2,K.hi)]), qtyVal=R.num(2,6);
+    const grandSim=pf(drvVal)*qtyVal+sp.reduce((a,b)=>a+b,0);
+    const T=Math.max(5, grandSim+R.pick([-9,-4,-1,0,1,5,8]));
+    const cmp=strict?'>':'>=';
+    const tests=[[R.num(K.lo,c1-1),R.num(1,5)],[R.num(c1,c2-1),R.num(1,5)],[R.num(c2,K.hi),R.num(1,5)],[c1,2],[c2,3],[c1-1>=K.lo?c1-1:c1,1]].map(x=>({inputs:x}));
+    const V=sc.drv, Q=sc.qty, P=sc.price;
+    const lowPart =[`  - ${p1} for ${K.low(c1)}`], highPart=[`  - ${p2} for ${K.high(c2)}`];
+    const tierText=[...(highFirst?[...highPart,...lowPart]:[...lowPart,...highPart]), `  - ${p3} for ${K.rest}`];
+    const itemsTask=`- Create a list called **${sc.list}** holding ${items.map(x=>'**'+x+'**').join(', ')}, and print one line for each ${sc.word} in the form: ${sc.word} name followed by \`${sc.suffix.trim()}\``;
+    const unitsTask=`- Print \`${sc.unit}\` ${sc.unitText}`;
+    const task=[`Build the **complete** ${sc.title}:`,
+      `- Read a whole number **${V}**, then a whole number **${Q}** (${sc.qtyText})`,
+      `- Decide the **${P}** from the ${K.label}:`, ...tierText,
+      `- Create a function called **${sc.fn}** that ${sc.fnText}, and keep what it gives back in **${sc.total}**`,
+      ...(itemsFirst?[itemsTask,unitsTask]:[unitsTask,itemsTask]),
+      `- Create a list called **${sc.pl}** holding ${sp.join(', ')}, and add all its values up into **${sc.sum}** (starting at 0)`,
+      `- Work out **${sc.grand}** as ${sc.total} plus ${sc.sum}`,
+      `- Print **${fa}** if ${sc.grand} is ${strict?'more than '+T:T+' or more'}`,
+      `- Otherwise, print **${fb}**`].join('\n');
+    const priceRef = highFirst
+      ? [`if ${V} >= ${c2}:`,`  ${P} = ${p2}`,`elif ${V} < ${c1}:`,`  ${P} = ${p1}`,`else:`,`  ${P} = ${p3}`]
+      : [`if ${V} < ${c1}:`,`  ${P} = ${p1}`,`elif ${V} >= ${c2}:`,`  ${P} = ${p2}`,`else:`,`  ${P} = ${p3}`];
+    const itemsRef=[`${sc.list} = ${lit(items)}`,`for item in ${sc.list}:`,`  print(item + "${sc.suffix}")`];
+    const unitsRef=[`for i in range(${Q}):`,`  print("${sc.unit}")`];
+    const steps=[`if / elif / else decides the ${P}`,`a function returns the cost for the whole group`,
+      ...(itemsFirst?[`a list of ${sc.word}s is announced with a loop`,`a for loop handles each one in the group`]:[`a for loop handles each one in the group`,`a list of ${sc.word}s is announced with a loop`]),
+      `an accumulator totals the prices`,`a final if / else picks the last message`];
+    const demo=`<span class="cmt"># Reminder — all the pieces you've built:</span><br>`+steps.map((x,i)=>`<span class="cmt"># ${i+1}) ${esc(x)}</span>`).join('<br>');
+    return { lang:'py', task, sim:[drvVal,qtyVal], tests,
+      ref:[`${V} = int(input("${V}?"))`,`${Q} = int(input("${Q}?"))`,...priceRef,
+           `def ${sc.fn}(${P}, ${Q}):`,`  return ${P} * ${Q}`,`${sc.total} = ${sc.fn}(${P}, ${Q})`,
+           ...(itemsFirst?[...itemsRef,...unitsRef]:[...unitsRef,...itemsRef]),
+           `${sc.pl} = [${sp.join(', ')}]`,`${sc.sum} = 0`,`for cost in ${sc.pl}:`,`  ${sc.sum} = ${sc.sum} + cost`,
+           `${sc.grand} = ${sc.total} + ${sc.sum}`,`if ${sc.grand} ${cmp} ${T}:`,`  print("${fa}")`,`else:`,`  print("${fb}")`],
+      req:['input(','if ','elif','else','def ','return','for ','range','[','print('], reqMsgs:['Read with <strong>int(input(...))</strong>!','Use an <strong>if</strong> to decide the price!','Use <strong>elif</strong> for the middle tier!','Add an <strong>else</strong>!','Define a function with <strong>def</strong>!','The function must <strong>return</strong> a value!','Use a <strong>for</strong> loop!','Use <strong>range</strong> for the group!','Use a <strong>list</strong> with [ ]!','Use <strong>print( )</strong>!'],
+      hint:'Build it in stages and press ▶ Run after each stage.',
+      mascot:{ title:`Final project — build the WHOLE ${esc(sc.title)}! ⌨️${sc.emoji}🏆`, body:"This is it — your complete mini project. No chips, no blanks. Combine <strong>every</strong> concept from Levels 1–14 into one finished program, entirely your own design.", demo },
+      win:`🎉${sc.emoji} You built the complete ${sc.title} from scratch — decisions, a function, lists, loops and an accumulator all working together. Level 15 — Capstones Mini-Project: complete! 🏆` };
+  };
+  IDE.cap_a = R=>capstone(R);
+  IDE.cap_b = R=>capstone(R);
 
   /* ═══════════ PAGE SPECS — 5 randomized problems per page; last page = randomized hands-on task ═══════════ */
   const M = (...t)=>({mix:t});
@@ -6817,12 +7242,13 @@ const RND = (function(){
         if(gen && gen.problems && gen.problems.length) ROUND = gen.problems;
       }catch(e){ console.warn('Randomizer fell back to the static page (level '+curLevel+', page '+(idx+1)+'):', e); ROUND=null; }
 
+      const ov = (ROUND && ROUND[0] && ROUND[0].mascot) || null;   // randomized capstone supplies its own header text
       document.getElementById('puzzle-body').innerHTML=`
         <div class="mascot-bubble">
           <div class="mascot">🤖</div>
-          <div class="mascot-text"><h3>${shell.mascotTitle}</h3><p>${shell.mascotBody}</p></div>
+          <div class="mascot-text"><h3>${ov?ov.title:shell.mascotTitle}</h3><p>${ov?ov.body:shell.mascotBody}</p></div>
         </div>
-        <div class="code-demo">${shell.demoCode}</div>
+        <div class="code-demo">${ov?ov.demo:shell.demoCode}</div>
         <div id="prob-area"></div>`;
       renderProblem(ROUND ? ROUND[0] : shell, false);
     }
