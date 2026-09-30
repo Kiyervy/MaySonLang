@@ -6,6 +6,7 @@
     <title>MaySonLang IDE</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon", type="image/png", href="titleIDELogo.png">
+    <script src="theme.js"></script>
     <style>
       /* ── RESET & ROOT ─────────────────────────────────────────────── */
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -389,6 +390,42 @@
         color: var(--bg0); font-family: var(--font-ui); font-size: 12px;
         font-weight: 600; cursor: pointer;
       }
+
+      /* ── BACKGROUND THEMES (Morning / Afternoon / Night Sky) ────────────
+         theme.js sets <html data-theme="…"> and draws the sky behind the page.
+         Here we map each theme onto the IDE's own colour variables and make the
+         panels slightly translucent so the sky shows through. Night Sky keeps
+         the original IDE colours. */
+      html[data-theme="night"] {
+        --bg0: rgba(14,16,20,.84);  --bg1: rgba(19,22,29,.88);
+        --bg2: rgba(24,28,37,.95);  --bg3: rgba(30,35,48,.92);
+        --pop-shadow: rgba(0,0,0,.5);
+      }
+      html[data-theme="morning"] {
+        --bg0: rgba(255,255,255,.80); --bg1: rgba(236,247,255,.86);
+        --bg2: rgba(255,255,255,.95); --bg3: rgba(211,231,249,.92);
+        --border2: #9fc3e3; --sel: rgba(37,99,235,.18);
+        --fg: #12304f; --fg-mid: #3f5b78; --fg-dim: #5c7793; --fg-hi: #0a1f36;
+        --pop-shadow: rgba(40,70,110,.22);
+      }
+      html[data-theme="afternoon"] {
+        --bg0: rgba(255,250,241,.80); --bg1: rgba(255,241,220,.86);
+        --bg2: rgba(255,250,241,.95); --bg3: rgba(250,226,187,.92);
+        --border2: #dcb677; --sel: rgba(194,65,12,.16);
+        --fg: #3a2410; --fg-mid: #6b4a2a; --fg-dim: #86663f; --fg-hi: #24140a;
+        --pop-shadow: rgba(110,70,30,.24);
+      }
+      html[data-theme] :is(#titlebar, #sidebar, #tabs, .panel-header, #code-wrap, #output-panel) {
+        -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      }
+      html[data-theme] :is(#modal, #ctx-menu) { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+      html[data-theme] :is(#modal, #ctx-menu) { box-shadow: 0 24px 64px var(--pop-shadow); }
+      html:is([data-theme="morning"],[data-theme="afternoon"]) #modal-overlay { background: var(--scrim); }
+      html:is([data-theme="morning"],[data-theme="afternoon"]) .lang-btn.active.lang-mayson { color: #fff; }
+
+      /* Keep theme.js's picker button clear of the status bar */
+      #theme-fab { bottom: calc(var(--status-h) + 14px) !important; }
+      #theme-pop { bottom: calc(var(--status-h) + 68px) !important; }
     </style>
   </head>
   <body>
@@ -1774,7 +1811,7 @@
         showDropdown(130, 42, items);
       }
       function menuView(){
-        const items=[['Toggle Sidebar','toggleSidebar()'],['Clear Output','clearOutput()']];
+        const items=[['Toggle Sidebar','toggleSidebar()'],['Clear Output','clearOutput()'],['Background Theme…','setTimeout(()=>document.getElementById(\'theme-fab\')?.click(),0)']];
         showDropdown(200, 42, items);
       }
       function showHelp(){
@@ -1836,7 +1873,7 @@
       function showDropdown(x,y,items){
         if(dropdown) dropdown.remove();
         dropdown=document.createElement('div');
-        dropdown.style.cssText=`position:fixed;left:${x}px;top:${y}px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:4px;z-index:999;min-width:140px;`;
+        dropdown.style.cssText=`position:fixed;left:${x}px;top:${y}px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;box-shadow:0 8px 32px var(--pop-shadow,rgba(0,0,0,.5));padding:4px;z-index:999;min-width:140px;`;
         items.forEach(([label,action])=>{
           const d=document.createElement('div');
           d.className='ctx-item'; d.textContent=label;
